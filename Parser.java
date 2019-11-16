@@ -41,71 +41,6 @@ public class Parser{
         // constraint counter which is used to count the headers
         int constraintCounter = 0;
         // make Forbidden machine element object
-//        try {
-//            // open up the file
-//            fr = new FileReader(fileName);
-//            // make a new buffered reader in the file
-//            br = new BufferedReader(fr);
-//            // read till the file till nothing left
-//            while ((line = br.readLine()) != null) {
-//                // uses regular expressions to catch empty lines [\\s]* checks for an infinite amount of white space
-//                // creates a matcher object with a specific pattern that it looks for
-//                // this is how most of the error checking is done
-//                Matcher emptyCheck = Pattern.compile("[\\s]*").matcher(line);
-//                // if line empty skip
-//                if (emptyCheck.matches())
-//                    continue;
-//                // looks for name header along with an infinite amount of white space that
-//                // follows
-//                // there can be no white space before though
-//                if (line.matches("Name:[\\s]*")) {
-//                    constraintCounter++;
-//                    // TODO this should just check that there is a name for the file
-//                }
-//                if (line.matches("Course slots:[\\s]*")) {
-//                    constraintCounter++;
-//                }
-//
-//                if (line.matches("Lab slots:[\\s]*")) {
-//                    constraintCounter++;
-//                    // passing in corresponding object for the constraint
-//
-//                }
-//
-//                if (line.matches("Courses:[\\s]*")) {
-//                    constraintCounter++;
-//
-//                }
-//
-//                if (line.matches("Labs:[\\s]*")) {
-//                    constraintCounter++;
-//
-//                }
-//
-//                if (line.matches("Not compatible:[\\s]*")) {
-//                    constraintCounter++;
-//
-//                }
-//
-//                //System.out.println(line);
-//            }
-//            // checks constraint counter to see if = 6 if not err.
-//            if (constraintCounter != 6) {
-//                Shell.constructFileOutPut(1);
-//            }
-//            // System.out.println(constraintCounter);
-//            br.close();
-//        } catch (FileNotFoundException ex) {
-//            // SHOULD THIS BE ERROR WHILE PARSING
-//            System.out.println("File not found");
-//            System.exit(0);
-//            return;
-//
-//        } catch (IOException e) {
-//            System.out.println("bitchin'");
-//            Shell.constructFileOutPut(1);
-//        }
-
         // try catch
         try {
             constraintCounter = 0;
@@ -169,7 +104,7 @@ public class Parser{
                 }
 
                 if (line.matches("Courses:[\\s]*")) {
-                    if (labSlotRead) {
+                    if (labRead) {
                         constraintCounter++;
                         //line = readToNearTask(br, tntElement, line);
                         System.out.println(line);
@@ -180,7 +115,7 @@ public class Parser{
                 }
 
                 if (line.matches("Labs:[\\s]*")) {
-                    if (tntRead) {
+                    if (courseSlotRead) {
                         constraintCounter++;
                         //line = readMachinePenalties(br, line);
                         mpRead = true;
