@@ -1,4 +1,5 @@
 public class LabSlot {
+
     private String day;
     private String startTime;
     private int labMax;
