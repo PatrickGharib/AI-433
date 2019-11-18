@@ -4,41 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+
 public class Parser {
 
-
-//    String COURSE_MAX = ("[\\s]*([\\d]+)[\\s]*");
-//    String COURSE_MIN = ("[\\s]*([\\d]+)[\\s]*");
-//    String LAB_MAX = COURSE_MAX;
-//    String LAB_MIN = COURSE_MIN;
-//    String VALID_COURSE_NAME = ("[\\s]*(CPSC|SENG)[\\s]*");
-//    String LEC_VALID = ("[\\s]*(LEC)[\\s]*");
-//    String TUT_LAB_VALID = ("[\\s]*(LAB|TUT)[\\s]*");
-//    String TUT_LAB_NUMBER = ("[\\s]*([\\d]+)[\\s]*");
-//    String COMMA = ("[\\s]*,[\\s]*");
-
-    private final String COURSE_VALID_DAY = ("[\\s*](MO|TU)[\\s]*");
-    private final String LAB_VALID_DAY = ("[\\s*](MO|TU|FR)([\\s]*)");
-    private final String TIMES = "[\\s*](((([0|1]?)[\\d])|([2][0-3])):([0-5][\\d]))[\\s]*";
-    private final String COURSE_SLOTS = ("([\\s]*(MO|TU)[\\s]*,[\\s]*(([0|1]?[\\d]|[2][0-3]):([0-5][\\d]))[\\s]*,[\\s]*([\\d]+)[\\s]*,[\\s]*([\\d]+)[\\s]*)");
-    private final String LAB_SLOTS = ("([\\s]*(MO|TU|FR)[\\s]*,[\\s]*(([0|1]?[\\d]|[2][0-3]):([0-5][\\d]))[\\s]*,[\\s]*([\\d]+)[\\s]*,[\\s]*([\\d]+)[\\s]*)");
-    private final String COURSES = ("([\\s]*(CPSC|SENG)[\\s]*([\\d]{3})[\\s]*(LEC)[\\s]*([\\d]{2})[\\s]*)");
-    private final String LABS = ("([\\s]*(CPSC|SENG)[\\s]*([\\d]{3})[\\s]*(LEC)[\\s]*([\\d]{2})[\\s]*(TUT|LAB)[\\s]*([\\d]{2})[\\s]*)|" +
-            "(([\\s]*(CPSC|SENG)[\\s]*([\\d]{3})[\\s]*(TUT|LAB)[\\s]*([\\d]{2}))[\\s]*)");
-
-    private final String NOTCOMPATABLE = COURSES + "|" + LABS + "," + COURSES + "|" + LABS;
-    private final String UNWANTED = "(" + COURSES + "," + COURSE_VALID_DAY + ")|(" + LABS + "," + LAB_VALID_DAY + ")" + "," + TIMES;
-    private final String PREFERENCES_C = COURSE_VALID_DAY + "," + TIMES + "," + COURSES + "[\\s]*([\\d]+)[\\s]*";
-    private final String PREFERENCES_L = COURSE_VALID_DAY + "," + TIMES + "," + COURSES + "[\\s]*([\\d]+)[\\s]*";
-    private final String PAIR = NOTCOMPATABLE;
-    private final String PARTIALASSIGNMENT = UNWANTED;
-
-
+    private static List<String> zonesRead;
     public static void inputReader(String fileName) {
         String zone;
-        String[] readZones = new String[10];
-        boolean validZone;
-        
         FileReader fr = null;
         BufferedReader br = null;
         String line = "";
@@ -53,11 +24,36 @@ public class Parser {
                 // looks for name header along with an infinite amount of white space that
                 // follows
                 // there can be no white space before though
-                zone = line;
+                zone = line.trim();
                 switch(zone){
-                    case (:
+                    case "Name:":
+                        if (zonesRead.size() != 0)
+                            System.out.println("parsng error");
+                            System.exit(0);
+                        zonesRead.add(zone);
+                        readName(br);
+                        break;
+                    case "Course slots:":
+
+                        break;
+                    case "Lab slots:":
+                        break;
+                    case "Courses:":
+                        break;
+                    case "Labs:":
+                        break;
+                    case "Not compatible:":
+                        break;
+                    case "Unwanted:":
+                        break;
+                    case "Prefences:":
+                        break;
+                    case "Pair:":
+                        break;
+                    case "Partial assignment:":
+                        break;
                 }
-                if();
+
                 {
                     zone = line;
                     readName();
@@ -74,6 +70,18 @@ public class Parser {
                 e.printStackTrace();
             }
         }
+
+    private static void readName(BufferedReader br) {
+
+        while (true){
+            try {
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
     public static void main (String[]args){
         String fileName = args[0];
