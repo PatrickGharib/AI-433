@@ -7,8 +7,6 @@ import java.util.regex.Pattern;
 public class Parser {
 
 
-
-
     public static void inputReader(String fileName) {
         List<String> zonesRead = new ArrayList<String>();
         String zone;
@@ -29,12 +27,12 @@ public class Parser {
                 if (line.trim().matches("Name:") && !zonesRead.contains(line.trim()) && zonesRead.isEmpty()) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
-                   // readName(br);
+                    line = readName(br, line);
                 } //System.exit(0);
 
                 if (line.trim().matches("Course slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 1) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString()+zonesRead.size());
+                    System.out.println(zonesRead.toString() + zonesRead.size());
                 } // System.exit(0);
 
                 if (line.trim().matches("Lab slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 2) {
@@ -42,12 +40,12 @@ public class Parser {
                     System.out.println(zonesRead.toString());
                 }
 
-                if (line.trim().matches("Courses:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 3)  {
+                if (line.trim().matches("Courses:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 3) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
                 }
 
-                if (line.trim().matches("Labs:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 4)  {
+                if (line.trim().matches("Labs:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 4) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
                 }
@@ -56,22 +54,22 @@ public class Parser {
                     System.out.println(zonesRead.toString());
                 }
 
-                if (line.trim().matches("Unwanted:") && !zonesRead.contains(line.trim())&& zonesRead.size() == 6)  {
+                if (line.trim().matches("Unwanted:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 6) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
                 }
 
-                if (line.trim().matches("Preferences:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 7)  {
+                if (line.trim().matches("Preferences:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 7) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
                 }
 
-                if (line.trim().matches("Pair:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 8)  {
+                if (line.trim().matches("Pair:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 8) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
                 }
 
-                if (line.trim().matches("Partial assignments:") && !zonesRead.contains(line.trim())&& zonesRead.size() == 9)  {
+                if (line.trim().matches("Partial assignments:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 9) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
                 }
@@ -88,23 +86,31 @@ public class Parser {
             e.printStackTrace();
         }
     }
-//
-//    private static void readName(BufferedReader br) {
-//
-//        while (true) {
-//            try {
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//    }
 
-    public static void main(String[] args) {
-        //String fileName = args[0];
-        Scanner in = new Scanner(System.in);
-        String fileName = in.nextLine();
-        inputReader(fileName);
+    private static String readName(BufferedReader br, String line) {
+        try {
+            int namesFound = 0;
+            String lastLine = "";
+            String exitString = "Course slots:";
+            while (!(line = br.readLine()).matches(exitString)) {
+                if (line.matches("[\\s]*")) {lastLine = line; continue;}
+                if (line.matches("[\\s]*[\\S]+[\\s]*")) namesFound++;
+                else {System.out.println("Parsing error: Could not parse File in Name");System.exit(0);}
+            }
+            if (!lastLine.matches("[\\s]*") || namesFound != 1)
+                {System.out.println("Parsing error: Could not parse File in Name");System.exit(0); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return line;
     }
+
+//    public static void main(String[] args) {
+//        //String fileName = args[0];
+//        Scanner in = new Scanner(System.in);
+//        String fileName = in.nextLine();
+//        inputReader(fileName);
+//    }
 }
