@@ -4,16 +4,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-
 public class Parser {
 
-    private static List<String> zonesRead;
+
+
+
     public static void inputReader(String fileName) {
+        List<String> zonesRead = new ArrayList<String>();
         String zone;
         FileReader fr = null;
         BufferedReader br = null;
         String line = "";
-
+        System.out.println(fileName);
         try {
             fr = new FileReader(fileName);
             br = new BufferedReader(fr);
@@ -24,67 +26,85 @@ public class Parser {
                 // looks for name header along with an infinite amount of white space that
                 // follows
                 // there can be no white space before though
-                zone = line.trim();
-                switch(zone){
-                    case "Name:":
-                        if (zonesRead.size() != 0)
-                            System.out.println("parsng error");
-                            System.exit(0);
-                        zonesRead.add(zone);
-                        readName(br);
-                        break;
-                    case "Course slots:":
+                if (line.trim().matches("Name:") && !zonesRead.contains(line.trim()) && zonesRead.isEmpty()) {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
+                   // readName(br);
+                } //System.exit(0);
 
-                        break;
-                    case "Lab slots:":
-                        break;
-                    case "Courses:":
-                        break;
-                    case "Labs:":
-                        break;
-                    case "Not compatible:":
-                        break;
-                    case "Unwanted:":
-                        break;
-                    case "Prefences:":
-                        break;
-                    case "Pair:":
-                        break;
-                    case "Partial assignment:":
-                        break;
+                if (line.trim().matches("Course slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 1) {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString()+zonesRead.size());
+                } // System.exit(0);
+
+                if (line.trim().matches("Lab slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 2) {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
                 }
 
-                {
-                    zone = line;
-                    readName();
+                if (line.trim().matches("Courses:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 3)  {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
                 }
 
+                if (line.trim().matches("Labs:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 4)  {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
+                }
+                if (line.trim().matches("Not compatible:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 5) {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
+                }
+
+                if (line.trim().matches("Unwanted:") && !zonesRead.contains(line.trim())&& zonesRead.size() == 6)  {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
+                }
+
+                if (line.trim().matches("Preferences:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 7)  {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
+                }
+
+                if (line.trim().matches("Pair:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 8)  {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
+                }
+
+                if (line.trim().matches("Partial assignments:") && !zonesRead.contains(line.trim())&& zonesRead.size() == 9)  {
+                    zonesRead.add(line.trim());
+                    System.out.println(zonesRead.toString());
+                }
+
+
             }
-                br.close();
-            } catch(FileNotFoundException ex){
-                // SHOULD THIS BE ERROR WHILE PARSING
-                System.out.println("File not found");
-                System.exit(0);
-                return;
-            } catch(IOException e){
-                e.printStackTrace();
-            }
-        }
-
-    private static void readName(BufferedReader br) {
-
-        while (true){
-            try {
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            br.close();
+        } catch (FileNotFoundException ex) {
+            // SHOULD THIS BE ERROR WHILE PARSING
+            System.out.println("File not found");
+            System.exit(0);
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+//
+//    private static void readName(BufferedReader br) {
+//
+//        while (true) {
+//            try {
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//    }
 
-    public static void main (String[]args){
-        String fileName = args[0];
+    public static void main(String[] args) {
+        //String fileName = args[0];
+        Scanner in = new Scanner(System.in);
+        String fileName = in.nextLine();
         inputReader(fileName);
     }
 }
