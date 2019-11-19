@@ -1,3 +1,5 @@
+package DataClass;
+
 public class LabSlot {
 
     private String day;
@@ -25,6 +27,17 @@ public class LabSlot {
 
     public int getLabMin() {
         return labMin;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof LabSlot)
+        {
+            LabSlot them = (LabSlot) o;
+            return (getDay()+getStartTime()).equals(them.getDay() + them.getStartTime());
+        }
+        return false;
     }
 }
 

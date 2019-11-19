@@ -1,3 +1,4 @@
+package DataClass;
 
 public class Lab extends Course {
     private String tutLab;
@@ -18,6 +19,20 @@ public class Lab extends Course {
 
     public int getTutLabNum() {
         return tutLabNum;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Lab)
+        {
+            Lab them = (Lab) o;
+            if (!getTutLab().equals(them.getTutLab()) || getTutLabNum() != them.getTutLabNum())
+                return false;
+            return super.equals(o);
+        }
+
+        return false;
     }
 }
 
