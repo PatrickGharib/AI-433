@@ -1,3 +1,5 @@
+package DataClass;
+
 public class Course {
     private String courseName;
     private int courseNumber;
@@ -27,5 +29,19 @@ public class Course {
 
     public int getLecNum() {
         return lecNum;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Course)
+        {
+            Course them = (Course) o;
+            String checkMe = getCourseName() + getCourseNumber() + getLec() + getLecNum();
+            String checkThem = them.getCourseName() + them.getCourseNumber() + them.getLec() + them.getLecNum();
+            return checkMe.equals(checkThem);
+        }
+
+        return false;
     }
 }

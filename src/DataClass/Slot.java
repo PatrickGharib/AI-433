@@ -1,11 +1,13 @@
+package DataClass;
+
 public class Slot {
-    private boolean isLab;
     private String day;
     private String startTime;
     private int courseMax;
     private int courseMin;
-    public Slot(boolean isLab, String day, String startTime, int courseMax, int courseMin){
-        this.isLab = isLab;
+
+    public Slot(String day, String startTime, int courseMax, int courseMin)
+    {
         this.day = day;
         this.startTime = startTime;
         this.courseMax = courseMax;
@@ -26,5 +28,16 @@ public class Slot {
 
     public int getCourseMin() {
         return courseMin;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Slot)
+        {
+            Slot them = (Slot) o;
+            return (getDay()+getStartTime()).equals(them.getDay() + them.getStartTime());
+        }
+        return false;
     }
 }
