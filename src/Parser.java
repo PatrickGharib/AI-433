@@ -32,17 +32,21 @@ public class Parser {
 
                 if (line.trim().matches("Course slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 1) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString() + zonesRead.size());
+                    System.out.println(zonesRead.toString());
+                    line = readCourseSlot(br,line);
+
                 } // System.exit(0);
 
                 if (line.trim().matches("Lab slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 2) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
+                    line = readLabSlot(br, line);
                 }
 
                 if (line.trim().matches("Courses:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 3) {
                     zonesRead.add(line.trim());
                     System.out.println(zonesRead.toString());
+                    line = readCourse(br, line);
                 }
 
                 if (line.trim().matches("Labs:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 4) {
@@ -87,18 +91,98 @@ public class Parser {
         }
     }
 
+    private static String readCourseSlot(BufferedReader br, String line) {
+        String lastLine = line;
+        String exitString = "Lab slots:";
+        try {
+            while(!(line = br.readLine()).trim().matches(exitString)){
+                if (line.matches("[\\s]*")) {lastLine = line; continue;}
+                if (!line.matches(RegexStrings.COURSE_SLOTS)){
+                    System.out.println("Parsing error: Could not parse File in course slot");
+                    System.out.println(line);
+                    System.exit(0);
+                }
+                if (line.matches(RegexStrings.COURSE_SLOTS)){
+                    System.out.println(line);
+                }
+
+
+                lastLine = line;
+            }
+            if (!lastLine.matches("[\\s]*"))
+                {System.out.println("Parsing error: Could not parse File in course slot(no space)");System.exit(0); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return line;
+    }
+    private static String readLabSlot(BufferedReader br, String line) {
+        String lastLine = line;
+        String exitString = "Courses:";
+        try {
+            while(!(line = br.readLine()).trim().matches(exitString)){
+                if (line.matches("[\\s]*")) {lastLine = line; continue;}
+                if (!line.matches(RegexStrings.LAB_SLOTS)){
+                    System.out.println("Parsing error: Could not parse File in Lab slot");
+                    System.out.println(line);
+                    System.exit(0);
+                }
+                if (line.matches(RegexStrings.LAB_SLOTS)){
+                    System.out.println(line);
+                }
+
+
+                lastLine = line;
+            }
+            if (!lastLine.matches("[\\s]*"))
+                {System.out.println("Parsing error: Could not parse File in Lab slot(no space)");System.exit(0); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return line;
+    }
+    private static String readCourse(BufferedReader br, String line) {
+        String lastLine = line;
+        String exitString = "Labs:";
+        try {
+            while(!(line = br.readLine()).trim().matches(exitString)){
+                if (line.matches("[\\s]*")) {lastLine = line; continue;}
+                if (!line.matches(RegexStrings.COURSES)){
+                    System.out.println("Parsing error: Could not parse File in Courses");
+                    System.out.println(line);
+                    System.exit(0);
+                }
+                if (line.matches(RegexStrings.COURSES)){
+                    System.out.println(line);
+                }
+
+
+                lastLine = line;
+            }
+            if (!lastLine.matches("[\\s]*"))
+                {System.out.println("Parsing error: Could not parse File in Courses(no space)");System.exit(0); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return line;
+    }
+
     private static String readName(BufferedReader br, String line) {
         try {
             int namesFound = 0;
             String lastLine = "";
             String exitString = "Course slots:";
-            while (!(line = br.readLine()).matches(exitString)) {
+            while (!(line = br.readLine()).trim().matches(exitString)) {
                 if (line.matches("[\\s]*")) {lastLine = line; continue;}
                 if (line.matches("[\\s]*[\\S]+[\\s]*")) namesFound++;
-                else {System.out.println("Parsing error: Could not parse File in Name");System.exit(0);}
+                else {System.out.println("Parsing error: Could not parse File in Name");/*System.exit(0);*/}
+                lastLine = line;
             }
             if (!lastLine.matches("[\\s]*") || namesFound != 1)
-                {System.out.println("Parsing error: Could not parse File in Name");System.exit(0); }
+                {System.out.println("Parsing error: Could not parse File in Name(no space)");/*System.exit(0);*/ }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
@@ -107,10 +191,13 @@ public class Parser {
         return line;
     }
 
-//    public static void main(String[] args) {
-//        //String fileName = args[0];
-//        Scanner in = new Scanner(System.in);
-//        String fileName = in.nextLine();
-//        inputReader(fileName);
-//    }
+    public static void main(String[] args) {
+        //String fileName = args[0];
+        //Scanner in = new Scanner(System.in);String fileName = in.nextLine();
+        for (String x : args){
+
+            inputReader(x);
+            System.out.println("_______________________________");
+        }
+    }
 }
