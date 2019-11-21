@@ -3,17 +3,9 @@ package DataClass
 // makes the class struct-like.
 data class PSol(val assignments: List<Assignment>) {
 
-    // creates a copy of the pSol that has one item reassigned.
-    fun copyEdit(a: Assignment) : PSol {
-
-        val x = assignments.toMutableList()
-        x.replaceAll{
-            if (a.course == it.course){
-                a;
-            }else{
-                it;
-            }
-        }
-        return PSol(x);
-    }
+    // creates ocerloaded function so java coded can use the default parameters.
+    @JvmOverloads
+    // creates new copy of the pSol that has one item reassigned.
+    // .minus().plus() creates new copy with 1 element replaced.
+    fun copyEdit(new: Assignment, original: Assignment = Assignment(new.course, null)) : PSol = PSol(assignments.minus(original).plus(new))
 }

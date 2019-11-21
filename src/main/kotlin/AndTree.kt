@@ -4,11 +4,14 @@ abstract class AndTree<T>(root: T) {
 
     private val _leaves = mutableListOf(Node(root))
 
-    val leaves: List<Node> get() = _leaves
+    // read only view of _leaves (does not copy)
+    val leaves: kotlin.collections.List<Node> get() = _leaves
 
-    abstract fun childGen(pred: T) : List<T>
+    abstract fun childGen(pred: T) : kotlin.collections.List<T>
 
     inner class Node(val value: T,private val _children: MutableList<Node> = mutableListOf()){
+
+        // read-only view of _children (does not copy)
         val children: List<Node> get() = _children
 
         fun expand(){
