@@ -1,17 +1,17 @@
-#AI Project
-##Usage
+# AI Project
+## Usage
 Run ./gradlew \<task> from the commandline 
 
 Must have Java 8 or greater installed.
 
-##Tasks
+## Tasks
 ./gradlew build - builds the source code
 
 ./gradlew run - build and runs the source code
 
 ./gradlew distZip - build and zips a runnable distribution under build\distributions
 
-##Running Distributions
+## Running Distributions
 Unzip the distribution, then go into the bin folder and run the script appropriate for your platform.
 
 ## All-in-one/"Fat" Jars
