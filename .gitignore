@@ -86,3 +86,5 @@ fabric.properties
 .idea/modules.xml
 .idea/vcs.xml
 AI-433.iml
+
+.idea/
