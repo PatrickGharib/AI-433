@@ -26,6 +26,18 @@
 .idea/**/gradle.xml
 .idea/**/libraries
 
+# Gradle
+.gradle
+/build/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
