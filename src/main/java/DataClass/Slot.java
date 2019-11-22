@@ -1,5 +1,7 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class Slot {
     private String day;
     private String startTime;
@@ -39,5 +41,10 @@ public class Slot {
             return (getDay()+getStartTime()).equals(them.getDay() + them.getStartTime());
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(day, startTime, courseMax, courseMin);
     }
 }

@@ -1,5 +1,7 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class LabSlot {
 
     private String day;
@@ -38,6 +40,11 @@ public class LabSlot {
             return (getDay()+getStartTime()).equals(them.getDay() + them.getStartTime());
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(day, startTime, labMax, labMin);
     }
 }
 
