@@ -8,11 +8,11 @@ abstract class SearchProcess<T: AndTree<J>, J> {
 
     var candidate: J? = null
 
-    fun execute() : J{
+    fun execute() : J?{
         while (model.leaves.any{ it -> !it.solved }){
             fTrans(fLeaf(model.leaves))
         }
-        return candidate?: throw NoSuchElementException()
+        return candidate
     }
 
 
