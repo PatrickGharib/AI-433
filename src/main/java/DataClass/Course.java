@@ -51,4 +51,8 @@ public class Course {
 
         return false;
     }
+
+    public String getSection() {
+        return String.format("%s %d", courseName, courseNumber);
+    }
 }
