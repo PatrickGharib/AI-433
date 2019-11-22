@@ -5,9 +5,9 @@ abstract class AndTree<T>(root: T) {
     private val _leaves = mutableListOf(Node(root))
 
     // read only view of _leaves (does not copy)
-    val leaves: kotlin.collections.List<Node> get() = _leaves
+    val leaves: List<Node> get() = _leaves
 
-    abstract fun childGen(pred: T) : kotlin.collections.List<T>
+    abstract fun childGen(pred: T) : List<T>
 
     inner class Node(val value: T,private val _children: MutableList<Node> = mutableListOf()){
 
@@ -30,6 +30,7 @@ abstract class AndTree<T>(root: T) {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
 
+            // don't remove, not redundant
             other as AndTree<*>.Node
 
             if (value != other.value) return false
