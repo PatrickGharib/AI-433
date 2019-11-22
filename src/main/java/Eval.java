@@ -1,7 +1,6 @@
-import DataClass.Assignment;
-import DataClass.PSol;
-import DataClass.PreferredCoursePair;
-import DataClass.Slot;
+import DataClass.*;
+
+import java.util.Arrays;
 
 /* Assignment attributes:
 preference_value of each assignment in assign. (courses + Labs) x Slots -> Int
@@ -27,8 +26,8 @@ public class Eval {
     //Attributes
     private int pen_coursemin;              //for each course below coursemin
     private int pen_labsmin;                //for each lab below labmin
-    private int pen_notpaired;              //for each pair(a,b) for which assign(a) != assign(b)
     private int pen_section;                //for each pair of sections that is schedule into the same slot
+    private int pen_notpaired;              //for each pair(a,b) for which assign(a) != assign(b)
     private PreferredCoursePair[] pairs;
 
     //Constructors
@@ -50,23 +49,34 @@ public class Eval {
 
     //Functions
     public int eval(PSol sol, PreferredCoursePair[] pairs){
-
+        int evaluation = 0;
+        PreferredCoursePair[] disposable_pairs = Arrays.copyOf(pairs, pairs.length);
         for (Slot slot : sol.getLinked().keySet()) {
+
             if (slot == null) {
                 continue;
             }
-            //add up number of courses assigned to the same slot
-            //add up number of labs assigned to the same slot
-            //
-        }
-        return 0;
-    }
 
-    public int evalPartial(PSol sol){
-        for (Slot slot : sol.getLinked().keySet()){
+            int coursenum = 0, labnum = 0;
+            for (Course course : sol.getLinked().get(slot)){
+                //Count how many courses and labs are assigned
+                if (course instanceof Lab){
+                    labnum++;
+                } else{
+                    coursenum++;
+                }
+                //Check if it's a pair
+                //if (course.equals(disposable_pairs.get))
 
+            }
+            if (coursenum < slot.getCourseMin()){
+                evaluation += pen_coursemin;
+            }
+            //if (labnum < slot.getLabMin()){
+                evaluation += pen_labsmin;
+            //}
         }
-        return 0;
+        return evaluation;
     }
 
 }
