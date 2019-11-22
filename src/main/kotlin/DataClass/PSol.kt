@@ -9,6 +9,9 @@ data class PSol(val assignments: List<Assignment>) {
     // .minus().plus() creates new copy with 1 element replaced.
     fun copyEdit(new: Assignment, original: Assignment = Assignment(new.course, null)) : PSol = PSol(assignments.minus(original).plus(new))
 
+    // emits a map of slot -> courses
+    val linked = assignments.groupBy({it.slot}, {it.course})
 
-    var linked : HashMap<Slot?, List<Course>> = HashMap()
+    // returns true if any course is mapped to null.
+    val incomplete = linked.containsKey(null)
 }
