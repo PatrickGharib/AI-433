@@ -1,6 +1,6 @@
 package DataClass;
 
-public class LabSlot extends SlotAbs {
+public class LabSlot extends Slot {
 
     public LabSlot(String day, String startTime, int labMax, int labMin) {
         super(day, startTime, labMax, labMin);

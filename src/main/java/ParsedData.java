@@ -8,7 +8,7 @@ public class ParsedData
     //Your code will not start until the parser is completely finished, the below data is a total collection of the data given.
     //DataClass.Course is parent of DataClass.Lab. All the objects just return courses. If you want to know whether that 'course': C is a lab use (C instanceof DataClass.Lab) to check.
 
-    public static LinkedHashSet<Slot>                       COURSE_SLOTS        = new LinkedHashSet<Slot>();
+    public static LinkedHashSet<CourseSlot>                 COURSE_SLOTS        = new LinkedHashSet<CourseSlot>();
     public static LinkedHashSet<LabSlot>                    LAB_SLOT            = new LinkedHashSet<LabSlot>();
     public static LinkedHashSet<Course>                     COURSES             = new LinkedHashSet<Course>();
     public static LinkedHashSet<Lab>                        LABS                = new LinkedHashSet<Lab>();
