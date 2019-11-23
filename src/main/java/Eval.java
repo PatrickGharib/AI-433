@@ -47,7 +47,7 @@ public class Eval {
 
         int evaluation = 0;
 
-        for (SlotAbs slot : sol.slotSet()) {
+        for (Slot slot : sol.slotSet()) {
 
             if (slot == null) {
                 continue;
@@ -82,8 +82,8 @@ public class Eval {
 
         //Check if a pair has the same assignment
         for (PreferredCoursePair pair : pairs){
-            SlotAbs s1 = sol.courseLookup(pair.getCourse1());
-            SlotAbs s2 = sol.courseLookup(pair.getCourse2());
+            Slot s1 = sol.courseLookup(pair.getCourse1());
+            Slot s2 = sol.courseLookup(pair.getCourse2());
             if ( (s1 != null) && (s2 != null) && (!s1.equals(s2))) {
                 evaluation += pen_notpaired;
             }
