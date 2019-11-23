@@ -13,7 +13,7 @@ abstract class AndTree<T>(root: T) {
 
     abstract fun childGen(pred: T) : kotlin.collections.List<T>
 
-    open inner class Node(val value: T, private val _children: MutableList<Node> = mutableListOf()){
+    open inner class Node(val value: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0){
 
         var solved: Boolean = false
 
@@ -23,7 +23,7 @@ abstract class AndTree<T>(root: T) {
         fun expand(){
             if (_children.isEmpty() && !solved) {
                 childGen(value).forEach {
-                    val x = Node(it)
+                    val x = Node(it,depth = depth + 1)
                     _children.add(x)
                     _leaves.add(x)
                 }
@@ -45,6 +45,7 @@ abstract class AndTree<T>(root: T) {
 
             if (value != other.value) return false
             if (_children != other._children) return false
+            if (depth != other.depth) return false
 
             return true
         }
@@ -52,8 +53,10 @@ abstract class AndTree<T>(root: T) {
         override fun hashCode(): Int {
             var result = value?.hashCode() ?: 0
             result = 31 * result + _children.hashCode()
+            result = 31 * result + depth
             return result
         }
+
     }
 
 }
