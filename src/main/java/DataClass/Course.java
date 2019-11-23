@@ -8,12 +8,6 @@ public class Course {
     private String lec;
     private int lecNum;
 
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(courseName, courseNumber, lec, lecNum);
-    }
-
     public Course(String courseName, int courseNumber, String lec, int lecNum){
       this.courseName = courseName;
       this.courseNumber = courseNumber;
@@ -38,6 +32,10 @@ public class Course {
         return lecNum;
     }
 
+    public String getSection() {
+        return String.format("%s %d", courseName, courseNumber);
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -52,7 +50,8 @@ public class Course {
         return false;
     }
 
-    public String getSection() {
-        return String.format("%s %d", courseName, courseNumber);
+    @Override
+    public int hashCode() {
+        return Objects.hash(courseName, courseNumber, lec, lecNum);
     }
 }
