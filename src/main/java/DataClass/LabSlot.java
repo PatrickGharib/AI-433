@@ -1,50 +1,24 @@
 package DataClass;
 
-import java.util.Objects;
+public class LabSlot extends Slot {
 
-public class LabSlot {
-
-    private String day;
-    private String startTime;
-    private int labMax;
-    private int labMin;
-    public LabSlot(String day,String startTime,int courseMax,int courseMin){
-        this.day = day;
-        this.startTime = startTime;
-        this.labMax = courseMax;
-        this.labMin = courseMin;
+    public LabSlot(Day day, String startTime, int labMax, int labMin) {
+        super(day, startTime, labMax, labMin);
+        endCalc(this.startHour,this.startMin);
     }
 
-    public String getDay() {
-        return day;
+    public LabSlot(String day, String startTime, int labMax, int labMin) {
+        super(Day.valueOf(day), startTime, labMax, labMin);
+        endCalc(this.startHour,this.startMin);
     }
 
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public int getLabMax() {
-        return labMax;
-    }
-
-    public int getLabMin() {
-        return labMin;
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof LabSlot)
-        {
-            LabSlot them = (LabSlot) o;
-            return (getDay()+getStartTime()).equals(them.getDay() + them.getStartTime());
+    private void endCalc(int shour,int smin){
+        if(this.day.equals("FR")){
+            this.endHour = shour + 2;
+            this.endMin = smin;
         }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(day, startTime, labMax, labMin);
+        this.endHour = shour + 1;
+        this.endMin = smin;
     }
 }
 

@@ -2,49 +2,79 @@ package DataClass;
 
 import java.util.Objects;
 
-public class Slot {
-    private String day;
-    private String startTime;
-    private int courseMax;
-    private int courseMin;
-
-    public Slot(String day, String startTime, int courseMax, int courseMin)
+public abstract class Slot {
+    public enum Day
     {
-        this.day = day;
-        this.startTime = startTime;
-        this.courseMax = courseMax;
-        this.courseMin = courseMin;
+        MO,
+        TU,
+        FR
     }
 
-    public String getDay() {
+    //may change the "day" from a String to something more performant
+    protected Day day;
+    protected int startHour;
+    protected int startMin;
+    protected int endHour;
+    protected int endMin;
+
+    public int getMax() {
+        return max;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    protected int max;
+    protected int min;
+
+    public Day getDay() {
         return day;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public int getStartHour() {
+        return startHour;
     }
 
-    public int getCourseMax() {
-        return courseMax;
+    public int getEndHour() {
+        return endHour;
     }
 
-    public int getCourseMin() {
-        return courseMin;
+    public int getStartMin() {
+        return startMin;
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof Slot)
-        {
-            Slot them = (Slot) o;
-            return (getDay()+getStartTime()).equals(them.getDay() + them.getStartTime());
-        }
-        return false;
+    public int getEndMin() {
+        return endMin;
+    }
+
+    public Slot(Day day, String startTime, int max, int min) {
+        this.day = day;
+        timeParser(startTime);
+        this.max = max;
+        this.min = min;
+    }
+
+    private void timeParser(String startTime){
+        String[] splits = startTime.split(":");
+        this.startHour = Integer.parseInt(splits[0]);
+        this.startMin = Integer.parseInt(splits[1]);
+    }
+
+    //not used yet but may be useful
+    public Slot(Day day, int startHour, int startMin) {
+        this.day = day;
+        this.startHour = startHour;
+        this.startMin = startMin;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(day, startTime, courseMax, courseMin);
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

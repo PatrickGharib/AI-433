@@ -1,21 +1,35 @@
 package DataClass
 // Data class automatically creates == and copy constructors that evaluate the fields instead of the reference.
 // makes the class struct-like.
-data class PSol(val assignments: List<Assignment>) {
+data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) {
+    constructor(assignments: List<Assignment>) : this(ManyToOneMutableMap(assignments.map{ Pair<Course, Slot?>(it.course,it.courseSlot) }))
 
+    val value: Int = 0 // eval value of solution
 
-    // creates overloaded function so java coded can use the default parameters.
-    @JvmOverloads
-    // creates new copy of the pSol that has one item reassigned.
-    // .minus().plus() creates new copy with 1 element replaced.
-    fun copyEdit(new: Assignment, original: Assignment = Assignment(new.course, null)) : PSol = PSol(assignments.minus(original).plus(new))
+    // returns true if no keys are mapped to null.
+    val complete: Boolean = data.getKeys(null).isEmpty()
 
-    // emits a map of slot -> courses
-    val slots2courses = assignments.groupBy({it.slot}, {it.course})
+    // makes a new copy of psol with the provided assignment applied.
+    fun assign(course: Course, slot: Slot) : PSol{
+        val x = data.copy()
+        if (data[course] == null){
+            x.set(course,slot)
+            return PSol(x)
+        }else{
+            throw IllegalStateException("Course already assigned")
+        }
 
-    val courses2slots = assignments.associateBy({it.course}, {it.slot})
+    }
 
-    // returns true if any course is mapped to null.
-    val incomplete = slots2courses.containsKey(null)
+    fun courseSet() = data.keySet
+
+    fun slotSet() = data.valSet
+
+    fun courseLookup(c: Course): Slot?{
+        return data[c]
+    }
+    fun slotLookup(s: Slot?): Set<Course>{
+        return data.getKeys(s)
+    }
 
 }

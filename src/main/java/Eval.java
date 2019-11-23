@@ -12,7 +12,6 @@ import DataClass.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class Eval {
@@ -45,10 +44,8 @@ public class Eval {
     public int eval(PSol sol, PreferredCoursePair[] pairs){
 
         int evaluation = 0;
-        Map<Slot, List<Course>> slots = sol.getSlots2courses();
-        Map<Course, Slot> courses = sol.getCourses2slots();
 
-        for (Slot slot : slots.keySet()) {
+        for (Slot slot : sol.slotSet()) {
 
             if (slot == null) {
                 continue;
@@ -57,7 +54,7 @@ public class Eval {
             int coursenum = 0, labnum = 0;
             List<String> sections = new ArrayList<>();
 
-            for (Course course : slots.get(slot)){
+            for (Course course : sol.slotLookup(slot)){
                 //Count how many courses and labs are assigned
                 if (course instanceof Lab){
                     labnum++;
@@ -72,7 +69,8 @@ public class Eval {
                     }
                 }
             }
-            if (coursenum < slot.getCourseMin()){
+            //Note: you should if slot is a course or lab slot as to not assign a course to a lab slot or vice versa.
+            if (coursenum < slot.getMin()){
                 evaluation += pen_coursemin;
             }
             //if (labnum < slot.getLabMin()){
@@ -82,8 +80,8 @@ public class Eval {
 
         //Check if a pair has the same assignment
         for (PreferredCoursePair pair : pairs){
-            Slot s1 = courses.get(pair.getCourse1());
-            Slot s2 = courses.get(pair.getCourse2());
+            Slot s1 = sol.courseLookup(pair.getCourse1());
+            Slot s2 = sol.courseLookup(pair.getCourse2());
             if ( (s1 != null) && (s2 != null) && (!s1.equals(s2))) {
                 evaluation += pen_notpaired;
             }

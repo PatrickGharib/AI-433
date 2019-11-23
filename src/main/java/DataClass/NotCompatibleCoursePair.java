@@ -1,5 +1,7 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class NotCompatibleCoursePair
 {
     private Course course1;
@@ -27,5 +29,10 @@ public class NotCompatibleCoursePair
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCourse1(), getCourse2());
     }
 }

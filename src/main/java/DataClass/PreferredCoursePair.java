@@ -1,5 +1,7 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class PreferredCoursePair
 {
     private Course course1;
@@ -29,5 +31,10 @@ public class PreferredCoursePair
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(course1, course2);
     }
 }
