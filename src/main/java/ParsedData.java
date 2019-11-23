@@ -15,6 +15,6 @@ public class ParsedData
     public static LinkedHashSet<NotCompatibleCoursePair>    NOT_COMPATIBLE      = new LinkedHashSet<NotCompatibleCoursePair>();
     public static LinkedHashSet<UnwantedCourseTime>         UNWANTED            = new LinkedHashSet<UnwantedCourseTime>();
     public static LinkedHashSet<PreferredCourseTime>        PREFERENCES         = new LinkedHashSet<PreferredCourseTime>();
-    public static LinkedHashSet<PrefferedCoursePair>        PAIR                = new LinkedHashSet<PrefferedCoursePair>();
+    public static LinkedHashSet<PreferredCoursePair>        PAIR                = new LinkedHashSet<PreferredCoursePair>();
     public static LinkedHashSet<PreAssignedCourseTime>      PARTIAL_ASSIGNMENTS = new LinkedHashSet<PreAssignedCourseTime>();
 }

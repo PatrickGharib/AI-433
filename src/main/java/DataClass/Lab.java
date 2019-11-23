@@ -1,5 +1,7 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class Lab extends Course {
     private String tutLab;
     private int tutLabNum;
@@ -33,6 +35,11 @@ public class Lab extends Course {
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tutLab, tutLabNum);
     }
 }
 

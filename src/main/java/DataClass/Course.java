@@ -1,11 +1,18 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class Course {
     private String courseName;
     private int courseNumber;
     private String lec;
     private int lecNum;
 
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(courseName, courseNumber, lec, lecNum);
+    }
 
     public Course(String courseName, int courseNumber, String lec, int lecNum){
       this.courseName = courseName;
@@ -43,5 +50,9 @@ public class Course {
         }
 
         return false;
+    }
+
+    public String getSection() {
+        return String.format("%s %d", courseName, courseNumber);
     }
 }
