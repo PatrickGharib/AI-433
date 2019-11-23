@@ -10,6 +10,16 @@ public abstract class SlotAbs {
     protected int endHour;
     protected int endMin;
 
+    public int getMax() {
+        return max;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    protected int max;
+    protected int min;
 
     public String getDay() {
         return day;
@@ -31,9 +41,11 @@ public abstract class SlotAbs {
         return endMin;
     }
 
-    public SlotAbs(String day, String startTime) {
+    public SlotAbs(String day, String startTime, int max, int min) {
         this.day = day;
         timeParser(startTime);
+        this.max = max;
+        this.min = min;
     }
 
     private void timeParser(String startTime){
@@ -49,20 +61,5 @@ public abstract class SlotAbs {
         this.startMin = startMin;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SlotAbs slotAbs = (SlotAbs) o;
-        return startHour == slotAbs.startHour &&
-                startMin == slotAbs.startMin &&
-                endHour == slotAbs.endHour &&
-                endMin == slotAbs.endMin &&
-                day.equals(slotAbs.day);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(day, startHour, startMin, endHour, endMin);
-    }
+    //TODO: generate hash and equals for all slots
 }

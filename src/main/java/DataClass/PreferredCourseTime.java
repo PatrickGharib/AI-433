@@ -2,18 +2,18 @@ package DataClass;
 
 public class PreferredCourseTime
 {
-    private Slot slot;
+    private SlotAbs slot;
     private Course course;
     private int preferenceVal;
 
-    public PreferredCourseTime(Slot slot, Course course, int preferenceVal)
+    public PreferredCourseTime(SlotAbs slot, Course course, int preferenceVal)
     {
         this.slot = slot;
         this.course = course;
         this.preferenceVal =  preferenceVal;
     }
 
-    public Slot getSlot() { return slot; }
+    public SlotAbs getSlot() { return slot; }
 
     public Course getCourse() { return course; }
 

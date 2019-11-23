@@ -3,13 +3,9 @@ package DataClass;
 import java.util.Objects;
 
 public class Slot extends SlotAbs {
-    private int courseMax;
-    private int courseMin;
 
     public Slot(String day, String startTime, int courseMax, int courseMin) {
-        super(day, startTime);
-        this.courseMax = courseMax;
-        this.courseMin = courseMin;
+        super(day, startTime, courseMax, courseMin);
         endCalc(this.startHour,this.startMin);
     }
 
@@ -29,11 +25,11 @@ public class Slot extends SlotAbs {
     }
 
     public int getCourseMax() {
-        return courseMax;
+        return max;
     }
 
     public int getCourseMin() {
-        return courseMin;
+        return min;
     }
 
     @Override
@@ -42,12 +38,12 @@ public class Slot extends SlotAbs {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Slot slot = (Slot) o;
-        return courseMax == slot.courseMax &&
-                courseMin == slot.courseMin;
+        return max == slot.max &&
+                min == slot.min;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), courseMax, courseMin);
+        return Objects.hash(super.hashCode(), max, min);
     }
 }

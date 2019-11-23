@@ -1,11 +1,13 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class PreAssignedCourseTime
 {
     private Course course;
-    private Slot slot;
+    private SlotAbs slot;
 
-    public PreAssignedCourseTime(Course course, Slot slot)
+    public PreAssignedCourseTime(Course course, SlotAbs slot)
     {
         this.course = course;
         this.slot = slot;
@@ -13,7 +15,7 @@ public class PreAssignedCourseTime
 
     public Course getCourse() { return course; }
 
-    public Slot getSlot() { return slot; }
+    public SlotAbs getSlot() { return slot; }
 
     @Override
     public boolean equals(Object o)
@@ -25,5 +27,10 @@ public class PreAssignedCourseTime
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(course, slot);
     }
 }
