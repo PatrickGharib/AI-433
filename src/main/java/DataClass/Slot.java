@@ -3,8 +3,15 @@ package DataClass;
 import java.util.Objects;
 
 public abstract class Slot {
+    public enum Day
+    {
+        MO,
+        TU,
+        FR
+    }
+
     //may change the "day" from a String to something more performant
-    protected String day;
+    protected Day day;
     protected int startHour;
     protected int startMin;
     protected int endHour;
@@ -21,7 +28,7 @@ public abstract class Slot {
     protected int max;
     protected int min;
 
-    public String getDay() {
+    public Day getDay() {
         return day;
     }
 
@@ -41,7 +48,7 @@ public abstract class Slot {
         return endMin;
     }
 
-    public Slot(String day, String startTime, int max, int min) {
+    public Slot(Day day, String startTime, int max, int min) {
         this.day = day;
         timeParser(startTime);
         this.max = max;
@@ -55,7 +62,7 @@ public abstract class Slot {
     }
 
     //not used yet but may be useful
-    public Slot(String day, int startHour, int startMin) {
+    public Slot(Day day, int startHour, int startMin) {
         this.day = day;
         this.startHour = startHour;
         this.startMin = startMin;

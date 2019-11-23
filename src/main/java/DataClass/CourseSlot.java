@@ -2,8 +2,19 @@ package DataClass;
 
 public class CourseSlot extends Slot {
 
+    public CourseSlot(Day day, String startTime, int courseMax, int courseMin) {
+        super(validateName(day), startTime, courseMax, courseMin);
+        endCalc(this.startHour,this.startMin);
+    }
+
+    private static Day validateName(Day day)
+    {
+        if(day == Day.FR) throw new IllegalArgumentException("Courses may not be on a Friday");
+        return day;
+    }
+
     public CourseSlot(String day, String startTime, int courseMax, int courseMin) {
-        super(day, startTime, courseMax, courseMin);
+        super(validateName(Day.valueOf(day)), startTime, courseMax, courseMin);
         endCalc(this.startHour,this.startMin);
     }
 
