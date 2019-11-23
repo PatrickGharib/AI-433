@@ -13,7 +13,12 @@ public class LabSlot extends SlotAbs {
         endCalc(this.startHour,this.startMin);
     }
     private void endCalc(int shour,int smin){
-
+        if(this.day.equals("FR")){
+            this.endHour = shour + 2;
+            this.endMin = smin;
+        }
+        this.endHour = shour + 1;
+        this.endMin = smin;
     }
 
     public int getLabMax() {
@@ -24,20 +29,20 @@ public class LabSlot extends SlotAbs {
         return labMin;
     }
 
+
     @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof LabSlot)
-        {
-            LabSlot them = (LabSlot) o;
-            return (getDay()+getStartTime()).equals(them.getDay() + them.getStartTime());
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        LabSlot labSlot = (LabSlot) o;
+        return labMax == labSlot.labMax &&
+                labMin == labSlot.labMin;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(day, startTime, labMax, labMin);
+        return Objects.hash(super.hashCode(), labMax, labMin);
     }
 }
 

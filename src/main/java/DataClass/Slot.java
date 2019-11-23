@@ -36,5 +36,18 @@ public class Slot extends SlotAbs {
         return courseMin;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Slot slot = (Slot) o;
+        return courseMax == slot.courseMax &&
+                courseMin == slot.courseMin;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), courseMax, courseMin);
+    }
 }
