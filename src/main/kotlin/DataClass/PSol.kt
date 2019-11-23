@@ -21,6 +21,10 @@ data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) {
 
     }
 
+    fun courseSet() = data.keySet
+
+    fun slotSet() = data.valSet
+
     fun courseLookup(c: Course): Slot?{
         return data[c]
     }

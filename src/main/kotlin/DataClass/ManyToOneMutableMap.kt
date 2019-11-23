@@ -13,6 +13,8 @@ data class ManyToOneMutableMap<K, V>(
         return manyToOne[key]
     }
 
+    val keySet = manyToOne.keys
+    val valSet = oneToMany.keys
     fun set(key: K, value: V){
         oneToMany[manyToOne[key]]?.remove(key)
         manyToOne[key] = value
