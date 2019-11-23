@@ -13,6 +13,7 @@ import DataClass.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class Eval {
@@ -42,7 +43,7 @@ public class Eval {
     }
 
     //Functions
-    public int eval(PSol sol, PreferredCoursePair[] pairs){
+    public int eval(PSol sol, Set<PreferredCoursePair> pairs){
 
         int evaluation = 0;
 
