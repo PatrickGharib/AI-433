@@ -11,19 +11,19 @@ For each pair of sections that is scheduled into the same slot, we add a penalty
 import DataClass.*;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
 public class Eval {
 
     //Attributes
-    private int pen_coursemin;              //for each course below coursemin
-    private int pen_labsmin;                //for each lab below labmin
-    private int pen_section;                //for each pair of sections that is schedule into the same slot
-    private int pen_notpaired;              //for each pair(a,b) for which assign(a) != assign(b)
-    private PreferredCoursePair[] pairs;    //Preferred course pairs with same assign value
+    private int pen_coursemin;                          //for each course below coursemin
+    private int pen_labsmin;                            //for each lab below labmin
+    private int pen_section;                            //for each pair of sections that is schedule into the same slot
+    private int pen_notpaired;                          //for each pair(a,b) for which assign(a) != assign(b)
+    private Set<PreferredCoursePair> pairs;             //Preferred course pairs with same assign value
 
     //Constructors
     public Eval(){
@@ -31,10 +31,10 @@ public class Eval {
         pen_labsmin = 0;
         pen_notpaired = 0;
         pen_section = 0;
-        pairs = new PreferredCoursePair[0];
+        pairs = new LinkedHashSet<>();
     }
 
-    public Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section, PreferredCoursePair[] pairs){
+    public Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section, Set<PreferredCoursePair> pairs){
         this.pen_coursemin = pen_coursemin;
         this.pen_labsmin = pen_labsmin;
         this.pen_notpaired = pen_notpaired;
@@ -72,11 +72,14 @@ public class Eval {
                 }
             }
             //Note: you should if slot is a course or lab slot as to not assign a course to a lab slot or vice versa.
-            if (coursenum < slot.getMin()){
-                evaluation += pen_coursemin;
-            }
-            if (labnum < slot.getMin()){
-                evaluation += pen_labsmin;
+            if (slot instanceof CourseSlot) {
+                if (coursenum < slot.getMin()) {
+                    evaluation += pen_coursemin;
+                }
+            } else {
+                if (labnum < slot.getMin()) {
+                    evaluation += pen_labsmin;
+                }
             }
         }
 
