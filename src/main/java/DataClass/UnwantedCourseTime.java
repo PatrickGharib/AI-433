@@ -26,4 +26,10 @@ public class UnwantedCourseTime
 
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }

@@ -23,27 +23,4 @@ public class Slot extends SlotAbs {
         this.endHour = shour + 1;
         this.endMin = smin;
     }
-
-    public int getCourseMax() {
-        return max;
-    }
-
-    public int getCourseMin() {
-        return min;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Slot slot = (Slot) o;
-        return max == slot.max &&
-                min == slot.min;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), max, min);
-    }
 }

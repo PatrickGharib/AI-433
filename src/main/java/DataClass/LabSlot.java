@@ -14,7 +14,5 @@ public class LabSlot extends SlotAbs {
         this.endHour = shour + 1;
         this.endMin = smin;
     }
-
-    //TODO: generate hash and equals
 }
 
