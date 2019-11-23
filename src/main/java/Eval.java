@@ -12,6 +12,8 @@ import DataClass.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class Eval {
@@ -41,11 +43,11 @@ public class Eval {
     }
 
     //Functions
-    public int eval(PSol sol, PreferredCoursePair[] pairs){
+    public int eval(PSol sol, Set<PreferredCoursePair> pairs){
 
         int evaluation = 0;
 
-        for (Slot slot : sol.slotSet()) {
+        for (SlotAbs slot : sol.slotSet()) {
 
             if (slot == null) {
                 continue;
@@ -80,8 +82,8 @@ public class Eval {
 
         //Check if a pair has the same assignment
         for (PreferredCoursePair pair : pairs){
-            Slot s1 = sol.courseLookup(pair.getCourse1());
-            Slot s2 = sol.courseLookup(pair.getCourse2());
+            SlotAbs s1 = sol.courseLookup(pair.getCourse1());
+            SlotAbs s2 = sol.courseLookup(pair.getCourse2());
             if ( (s1 != null) && (s2 != null) && (!s1.equals(s2))) {
                 evaluation += pen_notpaired;
             }
