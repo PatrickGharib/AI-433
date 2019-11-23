@@ -73,9 +73,9 @@ public class Eval {
             if (coursenum < slot.getMin()){
                 evaluation += pen_coursemin;
             }
-            //if (labnum < slot.getLabMin()){
+            if (labnum < slot.getMin()){
                 evaluation += pen_labsmin;
-            //}
+            }
         }
 
         //Check if a pair has the same assignment
