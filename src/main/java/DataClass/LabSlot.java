@@ -3,7 +3,6 @@ package DataClass;
 import java.util.Objects;
 
 public class LabSlot extends SlotAbs {
-
     private int labMax;
     private int labMin;
 
@@ -11,6 +10,10 @@ public class LabSlot extends SlotAbs {
         super(day, startTime);
         this.labMax = labMax;
         this.labMin = labMin;
+        endCalc(this.startHour,this.startMin);
+    }
+    private void endCalc(int shour,int smin){
+
     }
 
     public int getLabMax() {

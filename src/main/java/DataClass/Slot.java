@@ -10,8 +10,23 @@ public class Slot extends SlotAbs {
         super(day, startTime);
         this.courseMax = courseMax;
         this.courseMin = courseMin;
+        endCalc(this.startHour,this.startMin);
     }
 
+    private void endCalc(int shour,int smin){
+        if(this.day.equals("TU")){
+            if(smin == 30){
+                this.endHour = shour + 2;
+                this.endMin = 0;
+                return;
+            }
+            this.endHour = shour + 1;
+            this.endMin = 30;
+            return;
+        }
+        this.endHour = shour + 1;
+        this.endMin = smin;
+    }
 
     public int getCourseMax() {
         return courseMax;
@@ -21,19 +36,5 @@ public class Slot extends SlotAbs {
         return courseMin;
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof Slot)
-        {
-            Slot them = (Slot) o;
-            return (getDay()+getStartTime()).equals(them.getDay() + them.getStartTime());
-        }
-        return false;
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(day, startTime, courseMax, courseMin);
-    }
 }
