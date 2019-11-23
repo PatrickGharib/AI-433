@@ -2,25 +2,15 @@ package DataClass;
 
 import java.util.Objects;
 
-public class LabSlot {
+public class LabSlot extends SlotAbs {
 
-    private String day;
-    private String startTime;
     private int labMax;
     private int labMin;
-    public LabSlot(String day,String startTime,int courseMax,int courseMin){
-        this.day = day;
-        this.startTime = startTime;
-        this.labMax = courseMax;
-        this.labMin = courseMin;
-    }
 
-    public String getDay() {
-        return day;
-    }
-
-    public String getStartTime() {
-        return startTime;
+    public LabSlot(String day, String startTime, int labMax, int labMin) {
+        super(day, startTime);
+        this.labMax = labMax;
+        this.labMin = labMin;
     }
 
     public int getLabMax() {

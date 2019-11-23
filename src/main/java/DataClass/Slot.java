@@ -2,27 +2,16 @@ package DataClass;
 
 import java.util.Objects;
 
-public class Slot {
-    private String day;
-    private String startTime;
+public class Slot extends SlotAbs {
     private int courseMax;
     private int courseMin;
 
-    public Slot(String day, String startTime, int courseMax, int courseMin)
-    {
-        this.day = day;
-        this.startTime = startTime;
+    public Slot(String day, String startTime, int courseMax, int courseMin) {
+        super(day, startTime);
         this.courseMax = courseMax;
         this.courseMin = courseMin;
     }
 
-    public String getDay() {
-        return day;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
 
     public int getCourseMax() {
         return courseMax;
