@@ -9,6 +9,7 @@ data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) {
     // returns true if no keys are mapped to null.
     val complete: Boolean = data.getKeys(null).isEmpty()
 
+    // makes a new copy of psol with the provided assignment applied.
     fun assign(course: Course, slot: Slot) : PSol{
         val x = data.copy()
         if (data[course] == null){
@@ -18,6 +19,13 @@ data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) {
             throw IllegalStateException("Course already assigned")
         }
 
+    }
+
+    fun courseLookup(c: Course): Slot?{
+        return data[c]
+    }
+    fun slotLookup(s: Slot?): Set<Course>{
+        return data.getKeys(s)
     }
 
 }
