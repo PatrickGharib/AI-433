@@ -4,5 +4,20 @@ package DataClass
 data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) {
     constructor(assignments: List<Assignment>) : this(ManyToOneMutableMap(assignments.map{ Pair<Course,Slot?>(it.course,it.slot) }))
 
+    val value: Int = 0 // eval value of solution
+
+    // returns true if no keys are mapped to null.
+    val complete: Boolean = data.getKeys(null).isEmpty()
+
+    fun assign(course: Course, slot: Slot) : PSol{
+        val x = data.copy()
+        if (data[course] == null){
+            x.set(course,slot)
+            return PSol(x)
+        }else{
+            throw IllegalStateException("Course already assigned")
+        }
+
+    }
 
 }

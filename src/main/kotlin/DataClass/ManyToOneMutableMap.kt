@@ -2,13 +2,14 @@ package DataClass
 
 
 
-class ManyToOneMutableMap<K, V>(){
-    private val manyToOne: MutableMap<K, V> = mutableMapOf()
+data class ManyToOneMutableMap<K, V>(
+    private val manyToOne: MutableMap<K, V> = mutableMapOf(),
     private val oneToMany: MutableMap<V, MutableSet<K>> = mutableMapOf()
+    ){
     constructor(l: List<Pair<K,V>>) : this() {
         l.forEach { set(it.first,it.second) }
     }
-    fun get(key: K): V?{
+    operator fun get(key: K): V?{
         return manyToOne[key]
     }
 
