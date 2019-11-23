@@ -27,10 +27,10 @@ public class Eval {
 
     //Constructors
     public Eval(){
-        pen_coursemin = 0;
-        pen_labsmin = 0;
-        pen_notpaired = 0;
-        pen_section = 0;
+        pen_coursemin = 1;
+        pen_labsmin = 1;
+        pen_notpaired = 1;
+        pen_section = 1;
         pairs = new LinkedHashSet<>();
     }
 
@@ -43,11 +43,11 @@ public class Eval {
     }
 
     //Functions
-    public int eval(PSol sol, Set<PreferredCoursePair> pairs){
+    public int eval(PSol sol){
 
         int evaluation = 0;
-
-        for (Slot slot : sol.slotSet()) {
+         Set<Slot> slots = sol.slotSet();
+        for (Slot slot : slots) {
 
             if (slot == null) {
                 continue;
@@ -71,7 +71,7 @@ public class Eval {
                     }
                 }
             }
-            //Note: you should if slot is a course or lab slot as to not assign a course to a lab slot or vice versa.
+            //Check CourseMin and LabsMin
             if (slot instanceof CourseSlot) {
                 if (coursenum < slot.getMin()) {
                     evaluation += pen_coursemin;
