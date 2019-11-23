@@ -1,7 +1,7 @@
 package DataClass
 
-data class Assignment(val course: Course, val slot: Slot?) {
-    fun toPair() : Pair<Course, Slot?> {
-        return Pair(course,slot)
+data class Assignment(val course: Course, val courseSlot: CourseSlot?) {
+    fun toPair() : Pair<Course, CourseSlot?> {
+        return Pair(course,courseSlot)
     }
 }

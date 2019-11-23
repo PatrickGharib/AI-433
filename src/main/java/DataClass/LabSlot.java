@@ -1,11 +1,17 @@
 package DataClass;
 
-public class LabSlot extends SlotAbs {
+public class LabSlot extends Slot {
 
-    public LabSlot(String day, String startTime, int labMax, int labMin) {
+    public LabSlot(Day day, String startTime, int labMax, int labMin) {
         super(day, startTime, labMax, labMin);
         endCalc(this.startHour,this.startMin);
     }
+
+    public LabSlot(String day, String startTime, int labMax, int labMin) {
+        super(Day.valueOf(day), startTime, labMax, labMin);
+        endCalc(this.startHour,this.startMin);
+    }
+
     private void endCalc(int shour,int smin){
         if(this.day.equals("FR")){
             this.endHour = shour + 2;

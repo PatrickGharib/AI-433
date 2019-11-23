@@ -3,9 +3,9 @@ package DataClass;
 public class UnwantedCourseTime
 {
     private Course course;
-    private SlotAbs slot;
+    private Slot slot;
 
-    public UnwantedCourseTime(Course course, SlotAbs slot)
+    public UnwantedCourseTime(Course course, Slot slot)
     {
         this.course = course;
         this.slot = slot;
@@ -13,7 +13,7 @@ public class UnwantedCourseTime
 
     public Course getCourse() { return course; }
 
-    public SlotAbs getSlot() { return slot; }
+    public Slot getSlot() { return slot; }
 
     @Override
     public boolean equals(Object o)
