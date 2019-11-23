@@ -1,11 +1,12 @@
-import DataClass.Assignment
-import javafx.util.Pair
+package DataClass
+
+
 
 class ManyToOneMutableMap<K, V>(){
     private val manyToOne: MutableMap<K, V> = mutableMapOf()
     private val oneToMany: MutableMap<V, MutableSet<K>> = mutableMapOf()
     constructor(l: List<Pair<K,V>>) : this() {
-        l.forEach { set(it.key,it.value) }
+        l.forEach { set(it.first,it.second) }
     }
     fun get(key: K): V?{
         return manyToOne[key]
