@@ -6,6 +6,8 @@ data class PSol(private val data: ManyToOneMutableMap<Course, SlotAbs?>) {
 
     val value: Int = 0 // eval value of solution
 
+
+
     // returns true if no keys are mapped to null.
     val complete: Boolean = data.getKeys(null).isEmpty()
 
