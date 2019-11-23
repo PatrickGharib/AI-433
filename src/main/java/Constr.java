@@ -1,5 +1,8 @@
-import DataClass.Assignment;
-import DataClass.PSol;
+import DataClass.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /* Hard constraints:
 Not more than coursemax(s) courses can be assigned to slot s.
@@ -25,12 +28,26 @@ public class Constr {
     //Attributes
 
     //Constructors
-    public Constr(){
-
-    }
+    public Constr(){}
 
     //Functions
-    public boolean constr(PSol pr){
+    public boolean constr(PSol sol){
+
+        Map<Slot, List<Course>> slots = sol.getSlots2courses();
+        Map<Course, Slot> courses = sol.getCourses2slots();
+
+        for (Slot slot : slots.keySet()) {
+
+            if (slot == null) {
+                continue;
+            }
+
+            int coursenum = 0, labnum = 0;
+            List<String> sections = new ArrayList<>();
+
+            for (Course course : slots.get(slot)) {
+            }
+        }
 
         return true;
     }
