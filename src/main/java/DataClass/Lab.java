@@ -1,15 +1,18 @@
 package DataClass;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
 public class Lab extends Course {
     private String tutLab;
     private int tutLabNum;
+    private LinkedHashSet<Course> sections;
 
-    public Lab(String courseName, int courseNumber, String type, int lecNum, String tutLab, int tutLabNum) {
+    public Lab(String courseName, int courseNumber, String type, int lecNum, String tutLab, int tutLabNum, LinkedHashSet<Course> sections) {
         super(courseName, courseNumber, type, lecNum);
         this.tutLab = tutLab;
         this.tutLabNum = tutLabNum;
+        this.sections = sections;
     }
    public Lab(String courseName, int courseNumber, String type, int lecNum) {
         super(courseName, courseNumber, type, lecNum);
@@ -23,23 +26,24 @@ public class Lab extends Course {
         return tutLabNum;
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof Lab)
-        {
-            Lab them = (Lab) o;
-            if (!getTutLab().equals(them.getTutLab()) || getTutLabNum() != them.getTutLabNum())
-                return false;
-            return super.equals(o);
-        }
+    public LinkedHashSet<Course> getSections() {
+        return sections;
+    }
 
-        return false;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Lab lab = (Lab) o;
+        return getTutLabNum() == lab.getTutLabNum() &&
+                getTutLab().equals(lab.getTutLab());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), tutLab, tutLabNum);
+        return Objects.hash(super.hashCode(), getTutLab(), getTutLabNum());
     }
 }
 
