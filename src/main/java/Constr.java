@@ -1,13 +1,13 @@
 import DataClass.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /* Hard constraints:
 Not more than coursemax(s) courses can be assigned to slot s.
 Not more than labmax(s) labs can be assigned to slot s.
-assign(ci) has to be unequal to assign(lik) for all k and i.
+
+* assign(ci) has to be unequal to assign(lik) for all k and i.
+
 The input for your system will contain a list of not-compatible(a,b) statements, with a,b in Courses + Labs. For each of those, assign(a) has to be unequal to assign(b).
 The input for your system can contain a partial assignment partassign: Courses + Labs -> Slots + {$}. The assignment assign your system produces has to fulfill the condition:
 assign(a) = partassign(a) for all a in Courses + Labs with partassign(a) not equal to $.
@@ -33,19 +33,50 @@ public class Constr {
     //Functions
     public boolean constr(PSol sol){
 
-        Map<Slot, List<Course>> slots = sol.getSlots2courses();
-        Map<Course, Slot> courses = sol.getCourses2slots();
+        //Check if solution is complete
+        if(! sol.getComplete())
+            return false;
+        else
+            constrPartial(sol);
 
-        for (Slot slot : slots.keySet()) {
+        return true;
+    }
+
+    //Functions
+    public boolean constrPartial(PSol sol){
+
+        Set<Slot> slots = sol.slotSet();
+
+        for (Slot slot : slots) {
 
             if (slot == null) {
                 continue;
             }
 
+            //Count how many courses and labs are assigned
             int coursenum = 0, labnum = 0;
-            List<String> sections = new ArrayList<>();
+            for (Course course : sol.slotLookup(slot)){
+                if (course instanceof Lab){
+                    labnum++;
 
-            for (Course course : slots.get(slot)) {
+                    //Check if lab overlaps with its lecture
+                    if (slot.overlaps(sol.courseLookup(((Lab) course).getCourse()))) {
+                        return false;
+                    }
+                } else{
+                    coursenum++;
+                }
+            }
+
+            //Check CourseMin and LabsMin
+            if (slot instanceof CourseSlot) {
+                if (coursenum > slot.getMax()) {
+                    return false;
+                }
+            } else {
+                if (labnum > slot.getMax()) {
+                    return false;
+                }
             }
         }
 

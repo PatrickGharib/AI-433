@@ -129,4 +129,9 @@ public abstract class Slot {
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
+
+    public boolean overlaps(Slot s){
+        
+        return false;
+    }
 }

@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Lab extends Course {
     private String tutLab;
     private int tutLabNum;
+    private Course course;              //Associated course TODO
 
     public Lab(String courseName, int courseNumber, String type, int lecNum, String tutLab, int tutLabNum) {
         super(courseName, courseNumber, type, lecNum);
@@ -22,6 +23,8 @@ public class Lab extends Course {
     public int getTutLabNum() {
         return tutLabNum;
     }
+
+    public Course getCourse(){ return course; }
 
     @Override
     public boolean equals(Object o)
@@ -41,5 +44,6 @@ public class Lab extends Course {
     public int hashCode() {
         return Objects.hash(super.hashCode(), tutLab, tutLabNum);
     }
+
 }
 
