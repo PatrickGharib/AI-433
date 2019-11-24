@@ -1,11 +1,17 @@
 
 
+import DataClass.CourseSlot;
+
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ *
+ */
 public class Parser {
 
 
@@ -100,6 +106,15 @@ public class Parser {
         }
     }
 
+
+    /**
+     * @param br
+     * @param line
+     * @return line
+     * this reads the name section and throws errors if the name is not a single word or if there is no name
+     * this one does nothing special
+     * returns the last line before the exit string
+     */
     private static String readName(BufferedReader br, String line) {
         try {
             int namesFound = 0;
@@ -112,12 +127,12 @@ public class Parser {
                 }
                 if (line.matches("[\\s]*[\\S]+[\\s]*")) namesFound++;
                 else {
-                    System.out.println("Parsing error: Could not parse File in Name");/*System.exit(0);*/
+                    System.out.println("Parsing error: Could not parse File in Name");
                 }
                 lastLine = line;
             }
             if (!lastLine.matches("[\\s]*") || namesFound != 1) {
-                System.out.println("Parsing error: Could not parse File in Name(no space)");/*System.exit(0);*/
+                System.out.println("Parsing error: Could not parse File in Name(no space)");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -125,9 +140,29 @@ public class Parser {
         return line;
     }
 
+
+    /**
+     * @param br
+     * @param line
+     * @return the last line read
+     * reads the course slot. prints an error if the system finds an invalid format designated by the
+     * regex found in RegexStrings
+     *
+     * Creates course slot objects if format is correct
+     * MATCHER LEGEND
+     * -----------------
+     * group(2) is the Day
+     * group(3) is the 24 hour time format
+     * group(4) is hours
+     * group(5) is minutes(up to 59min) : this gets converted to float and added to hours.
+     * group(6) is coursemax
+     * group(7) is coursemin
+     */
     private static String readCourseSlot(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Lab slots:";
+        float minuteConversion= 60f;
+        Pattern pattern = Pattern.compile(RegexStrings.COURSE_SLOTS);
         try {
             while (!(line = br.readLine()).trim().matches(exitString)) {
                 if (line.matches("[\\s]*")) {
@@ -140,7 +175,16 @@ public class Parser {
                     System.exit(0);
                 }
                 if (line.matches(RegexStrings.COURSE_SLOTS)) {
-                    System.out.println(line);
+
+                    Matcher matcher = pattern.matcher(line);
+                    matcher.matches();
+
+                    //convert minutes to float(minutes/60)
+                    float minToDecimal = Float.parseFloat(matcher.group(4))+(Float.parseFloat(matcher.group(5))/minuteConversion);
+
+                    //make new course slot and add to courseSlot hashset
+                    CourseSlot newCourseSlot = new CourseSlot(matcher.group(2),minToDecimal,Integer.parseInt(matcher.group(6)),Integer.parseInt(matcher.group(7)));
+                    ParsedData.COURSE_SLOTS.add(newCourseSlot);
                 }
 
 
