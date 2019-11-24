@@ -1,3 +1,6 @@
+import DataClass.FibQueue
+import DataClass.HeapArrayQueue
+import DataClass.PriorityQueue
 import java.lang.Exception
 
 abstract class AndTree<T>(root: T) {
@@ -6,12 +9,16 @@ abstract class AndTree<T>(root: T) {
     // private final MutableList<Node> _leaves = mutableListOf(new Node(root))
     private val _leaves = mutableListOf(Node(root))
 
+    private val queue: PriorityQueue<T> = HeapArrayQueue(4)
+
 
 
     // read only view of _leaves (does not copy)
     val leaves: List<Node> get() = _leaves
 
     abstract fun childGen(pred: T) : List<T>
+
+    open fun best(): T? = queue.get()
 
     open inner class Node(val value: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0){
 
