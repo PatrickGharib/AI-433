@@ -1,9 +1,11 @@
 package DataClass;
 
+import java.util.Arrays;
+
 public class CourseSlot extends Slot {
 
     public CourseSlot(Day day, float startTime, int courseMax, int courseMin) {
-        super(validateName(day), startTime, courseMax, courseMin);
+        super(validateName(day), startTime, courseMax, courseMin, Arrays.asList(17f,18f,19f,20f));
         endCalc(getStartTime());
     }
 

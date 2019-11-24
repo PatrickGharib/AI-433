@@ -1,6 +1,6 @@
 package DataClass;
 
-import java.util.Objects;
+import java.util.*;
 
 public abstract class Slot {
     public enum Day
@@ -14,11 +14,16 @@ public abstract class Slot {
     protected float startTime;
     protected float endTime;
 
-    public Slot(Day day, float startTime, int max, int min) {
+    protected List<Float> validTimes = Arrays.asList(8f,9f,10f,11f,12f,13f,14f,15f,16f);
+
+    public Slot(Day day, float startTime, int max, int min, List<Float> validTimes) {
         this.day = day;
         this.startTime = startTime;
         this.max = max;
         this.min = min;
+
+        this.validTimes.addAll(validTimes);
+        if (!validTimes.contains(startTime)) throw new IllegalArgumentException("The provided start time is invalid.");
     }
 
     public int getMax() {
