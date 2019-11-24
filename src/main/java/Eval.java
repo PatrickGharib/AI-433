@@ -34,6 +34,10 @@ public class Eval {
         pairs = new LinkedHashSet<>();
     }
 
+    public Eval(Set<PreferredCoursePair> pairs){
+        this.pairs = pairs;
+    }
+
     public Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section, Set<PreferredCoursePair> pairs){
         this.pen_coursemin = pen_coursemin;
         this.pen_labsmin = pen_labsmin;
