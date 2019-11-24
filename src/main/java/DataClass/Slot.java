@@ -72,32 +72,10 @@ public abstract class Slot {
     {
         //TODO: Day check.
 
-
-        if(getDay() != otherSlot.getDay()) return false;
+        X2 >= Y1 and Y2 >= X1
         boolean after = false;
 
-        if(getStartHour() >= otherSlot.getStartHour())
-        {
-            if(getStartHour() == otherSlot.getStartHour())
-            {
-                if(getStartMin() >= otherSlot.getStartMin())
-                {
-                    after=true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                after=true;
-            }
-        }
-        else
-        {
-            return false;
-        }
+
 
         boolean before = false;
 
@@ -119,9 +97,41 @@ public abstract class Slot {
                 before = true;
             }
         }
+        else
+        {
+            return false;
+        }
 
         return after && before;
     }
+
+    private boolean hourMinuteGreaterThan(int hour1, int minute1, int hour2, int minute2)
+    {
+        if(hour1 > hour2)
+        {
+            if(getStartHour() == otherSlot.getStartHour())
+            {
+                if(getStartMin() >= otherSlot.getStartMin())
+                {
+                    after=true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                after=true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+    private boolean hourMinuteLessThan(){}
+    private boolean hourMinuteEqual(){}
 
     @Override
     public int hashCode() {
