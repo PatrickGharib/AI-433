@@ -70,6 +70,9 @@ public abstract class Slot {
 
     public boolean intersect(Slot otherSlot)
     {
+        //TODO: Day check.
+
+
         if(getDay() != otherSlot.getDay()) return false;
         boolean after = false;
 
