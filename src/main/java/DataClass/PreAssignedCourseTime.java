@@ -1,5 +1,7 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class PreAssignedCourseTime
 {
     private Course course;
@@ -25,5 +27,10 @@ public class PreAssignedCourseTime
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(course, slot);
     }
 }

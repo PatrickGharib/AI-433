@@ -13,6 +13,9 @@
 # Generated files
 .idea/**/contentModel.xml
 
+# idea files
+.idea/
+
 # Sensitive or high-churn files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
@@ -25,6 +28,18 @@
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+
+# Gradle
+.gradle
+/build/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
@@ -74,3 +89,5 @@ fabric.properties
 .idea/modules.xml
 .idea/vcs.xml
 AI-433.iml
+
+aiRepo.iml

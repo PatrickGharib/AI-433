@@ -1,11 +1,13 @@
 package DataClass;
 
-public class PrefferedCoursePair
+import java.util.Objects;
+
+public class PreferredCoursePair
 {
     private Course course1;
     private Course course2;
 
-    public PrefferedCoursePair(Course course1, Course course2)
+    public PreferredCoursePair(Course course1, Course course2)
     {
         this.course1 = course1;
         this.course2 = course2;
@@ -29,5 +31,10 @@ public class PrefferedCoursePair
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(course1, course2);
     }
 }
