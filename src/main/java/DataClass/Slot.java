@@ -80,6 +80,6 @@ public abstract class Slot {
 
     public boolean overlaps(Slot s){
         
-        return true;
+        return false;
     }
 }

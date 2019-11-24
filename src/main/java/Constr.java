@@ -1,14 +1,13 @@
 import DataClass.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /* Hard constraints:
 Not more than coursemax(s) courses can be assigned to slot s.
 Not more than labmax(s) labs can be assigned to slot s.
 
-assign(ci) has to be unequal to assign(lik) for all k and i.
+* assign(ci) has to be unequal to assign(lik) for all k and i.
+
 The input for your system will contain a list of not-compatible(a,b) statements, with a,b in Courses + Labs. For each of those, assign(a) has to be unequal to assign(b).
 The input for your system can contain a partial assignment partassign: Courses + Labs -> Slots + {$}. The assignment assign your system produces has to fulfill the condition:
 assign(a) = partassign(a) for all a in Courses + Labs with partassign(a) not equal to $.
@@ -60,6 +59,10 @@ public class Constr {
                 if (course instanceof Lab){
                     labnum++;
 
+                    //Check if lab overlaps with its lecture
+                    if (slot.overlaps(sol.courseLookup(((Lab) course).getCourse()))) {
+                        return false;
+                    }
                 } else{
                     coursenum++;
                 }
