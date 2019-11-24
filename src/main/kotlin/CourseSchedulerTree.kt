@@ -5,7 +5,7 @@ class CourseSchedulerTree(root: PSol) : AndTree<PSol>(root)  {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun best(): Node? {
-        return leaves.minBy { Eval().eval(it.value, ParsedData.PAIR) }
+    override fun best(): PSol? {
+        return leaves.minBy { Eval().eval(it.value, ParsedData.PAIR) }?.value
     }
 }
