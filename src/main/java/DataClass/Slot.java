@@ -46,6 +46,27 @@ public abstract class Slot {
 
     public boolean overlaps(Slot s)
     {
+        if(this instanceof LabSlot)
+        {
+            if(s instanceof LabSlot)
+                if(!getDay().equals(s.getDay())) return false;
+            else
+            {
+                if((day.equals(Day.MO)||day.equals(Day.FR)) && !s.getDay().equals(Day.MO)) return false;
+                if(day.equals(Day.TU) && !s.getDay().equals(Day.TU)) return false;
+            }
+        }
+        else
+        {
+            if(s instanceof LabSlot)
+            {
+                if((s.getDay().equals(Day.MO)||s.getDay().equals(Day.FR)) && day.equals(Day.MO)) return false;
+                if(s.getDay().equals(Day.TU) && !getDay().equals(Day.TU)) return false;
+            }
+            else
+                if(day != s.getDay()) return false;
+        }
+
         return getEndTime() >= s.getStartTime() && s.getEndTime() >= getStartTime();
     }
 
