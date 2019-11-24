@@ -7,17 +7,18 @@ import java.util.Set;
 /* Hard constraints:
 Not more than coursemax(s) courses can be assigned to slot s.
 Not more than labmax(s) labs can be assigned to slot s.
-
-* assign(ci) has to be unequal to assign(lik) for all k and i.
-
 For each of not-compatible(a,b) statements, assign(a) has to be unequal to assign(b).
 For each of unwanted(a,s) statements, assign(a) has to be unequal to s.
 Evening classes (LEC 9+) have to be scheduled into evening slots (18:00+).
 All courses (course sections) on the 500-level have to be scheduled into different time slots.
 
-
+//waiting on Hannah TODO
+* assign(ci) has to be unequal to assign(lik) for all k and i.
+//need to discuss with Ben TODO
 No courses can be scheduled at tuesdays 11:00-12:30.
-There are two special "courses" CPSC 813 and CPSC 913 that have to be scheduled tuesdays/thursdays 18:00-19:00 and CPSC 813 is not allowed to overlap with any labs/tutorials of CPSC 313 or with any course section of CPSC 313 (and transitively with any other courses that are not allowed to overlap with CPSC 313) and CPSC 913 is not allowed to overlap with any labs/tutorials of CPSC 413 or with any course section of CPSC 413 (and transitively with any other courses that are not allowed to overlap with CPSC 413). These two "courses" are my "tricky" way to deal with the fact of quizzes for CPSC 313 and CPSC 413.
+There are two special "courses" CPSC 813 and CPSC 913 that have to be scheduled tuesdays/thursdays 18:00-19:00
+ and CPSC 813 is not allowed to overlap with any labs/tutorials of CPSC 313 or with any course section of CPSC 313.
+ and CPSC 913 is not allowed to overlap with any labs/tutorials of CPSC 413 or with any course section of CPSC 413.
 */
 
 
@@ -68,10 +69,10 @@ public class Constr {
                 if (course instanceof Lab) {
                     labnum++;
 
-                    //Check if lab overlaps with its lecture
-                    if (slot.overlaps(sol.courseLookup(((Lab) course).getCourse()))) {
-                        return false;
-                    }
+                    //Check if lab overlaps with its lecture TODO
+                    //if (slot.overlaps(sol.courseLookup(((Lab) course).getCourse()))) {
+                        //return false;
+                    //}
                 } else {
                     coursenum++;
 
