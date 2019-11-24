@@ -1,45 +1,68 @@
-import DataClass.*;
+import DataClass.Course;
+import DataClass.PSol;
+import DataClass.Slot;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 
 public class PSolStringBuilder {
-    private PSol sol;
+
+    private List <Pair<Course,Slot>> convert = new ArrayList<>();
 
     public PSolStringBuilder(PSol sol) {
-        this.sol = sol;
+        for (Course c : sol.courseSet()){
+            this.convert.add(new Pair<>(c, sol.courseLookup(c)));
+        }
+        this.convert = sort(convert);
     }
 
-    public PSol getSol() {
-        return sol;
+    private List <Pair<Course,Slot>> sort (List <Pair<Course,Slot>> unsorted){
+        return unsorted;
     }
 
+    //this method prints the output
+    public List<String> ToString(int evalValue) {
 
+        List<String> result = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        result.add(sb.toString());
+        sb.append(evalBuilder(evalValue));
+        for (Pair p : this.convert){
+            result.add(courseSlotBuilder(p).toString());
+        }
+        return result;
+    }
+
+    //this method change the eval value to a string
     private StringBuilder evalBuilder(int evalValue){
         StringBuilder sb = new StringBuilder();
         sb.append("eval-value = " );
         sb.append(evalValue);
         sb.append("\n");
-        sb.append("courses");
+        sb.append("courses: \n");
         return sb;
     }
 
-    private StringBuilder courseSlotBuilder(Course course){
+    //this method calls course and slot builder to create a single line of the output (course to slot pairing)
+    private StringBuilder courseSlotBuilder(Pair<Course,Slot> pair){
         StringBuilder sb = new StringBuilder();
-        Slot slot = this.sol.courseLookup(course);          //now we have the course and it's slot
-
+        sb.append(courseToString(pair.getKey()));
+        sb.append("            ");
+        sb.append(slotToString(pair.getValue()));
+        return sb;
     }
 
-    //if instance of lab add the other lab stuffs
+    //if instance of lab add the other lab stuffs TODO
     private StringBuilder courseToString(Course course){
         StringBuilder sb = new StringBuilder();
 
     }
 
+    //converts a time slot to a string
     private StringBuilder slotToString(Slot slot){
         StringBuilder sb = new StringBuilder();
-        sb.append(slot.getDay().name());
+        sb.append(slot.getDay().name());            //changes the enum back to a string
         sb.append(", ");
         sb.append((int)(slot.getStartTime()));
         sb.append(":");
@@ -52,12 +75,14 @@ public class PSolStringBuilder {
         return sb;
     }
 
-    private void printer(ArrayList<String> lines){
+    //call this after changing the psol into a ist of strings using the method toString
+    private void printer(List<String> lines){
         System.out.println("Finished Calculating: Printing...");
-        System.out.println(evalBuilder(10));
         for(String each:lines){
             System.out.println(each);
         }
 
     }
+
+
 }
