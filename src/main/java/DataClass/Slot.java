@@ -10,12 +10,16 @@ public abstract class Slot {
         FR
     }
 
-    //may change the "day" from a String to something more performant
     protected Day day;
-    protected int startHour;
-    protected int startMin;
-    protected int endHour;
-    protected int endMin;
+    protected float startTime;
+    protected float endTime;
+
+    public Slot(Day day, float startTime, int max, int min) {
+        this.day = day;
+        this.startTime = startTime;
+        this.max = max;
+        this.min = min;
+    }
 
     public int getMax() {
         return max;
@@ -32,92 +36,17 @@ public abstract class Slot {
         return day;
     }
 
-    public int getStartHour() {
-        return startHour;
+    public float getStartTime() {
+        return startTime;
     }
 
-    public int getEndHour() {
-        return endHour;
+    public float getEndTime() {
+        return endTime;
     }
 
-    public int getStartMin() {
-        return startMin;
-    }
-
-    public int getEndMin() {
-        return endMin;
-    }
-
-    public Slot(Day day, String startTime, int max, int min) {
-        this.day = day;
-        timeParser(startTime);
-        this.max = max;
-        this.min = min;
-    }
-
-    private void timeParser(String startTime){
-        String[] splits = startTime.split(":");
-        this.startHour = Integer.parseInt(splits[0]);
-        this.startMin = Integer.parseInt(splits[1]);
-    }
-
-    //not used yet but may be useful
-    public Slot(Day day, int startHour, int startMin) {
-        this.day = day;
-        this.startHour = startHour;
-        this.startMin = startMin;
-    }
-
-    public boolean intersect(Slot otherSlot)
+    public boolean overlaps(Slot s)
     {
-        if(getDay() != otherSlot.getDay()) return false;
-        boolean after = false;
-
-        if(getStartHour() >= otherSlot.getStartHour())
-        {
-            if(getStartHour() == otherSlot.getStartHour())
-            {
-                if(getStartMin() >= otherSlot.getStartMin())
-                {
-                    after=true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                after=true;
-            }
-        }
-        else
-        {
-            return false;
-        }
-
-        boolean before = false;
-
-        if(getStartHour() <= otherSlot.getEndHour())
-        {
-            if(getStartHour() == otherSlot.getStartHour())
-            {
-                if(getStartMin() <= otherSlot.getStartMin())
-                {
-                    before = true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                before = true;
-            }
-        }
-
-        return after && before;
+        return getEndTime() >= s.getStartTime() && s.getEndTime() >= getStartTime();
     }
 
     @Override
@@ -130,8 +59,4 @@ public abstract class Slot {
         return super.equals(obj);
     }
 
-    public boolean overlaps(Slot s){
-        
-        return false;
-    }
 }
