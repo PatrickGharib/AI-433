@@ -2,9 +2,13 @@ package DataClass;
 
 public class CourseSlot extends Slot {
 
-    public CourseSlot(Day day, String startTime, int courseMax, int courseMin) {
+    public CourseSlot(Day day, float startTime, int courseMax, int courseMin) {
         super(validateName(day), startTime, courseMax, courseMin);
-        endCalc(this.startHour,this.startMin);
+        endCalc(getStartTime());
+    }
+
+    public CourseSlot(String day, float startTime, int courseMax, int courseMin) {
+        this(validateName(Day.valueOf(day)), startTime, courseMax, courseMin);
     }
 
     private static Day validateName(Day day)
@@ -13,23 +17,15 @@ public class CourseSlot extends Slot {
         return day;
     }
 
-    public CourseSlot(String day, String startTime, int courseMax, int courseMin) {
-        super(validateName(Day.valueOf(day)), startTime, courseMax, courseMin);
-        endCalc(this.startHour,this.startMin);
-    }
-
-    private void endCalc(int shour,int smin){
-        if(this.day.equals("TU")){
-            if(smin == 30){
-                this.endHour = shour + 2;
-                this.endMin = 0;
+    private void endCalc(float startTime){
+        if(this.day.equals(Day.valueOf("TU"))){
+            if(startTime % 0.5f == 0f){
+                this.endTime = startTime + 2f;
                 return;
             }
-            this.endHour = shour + 1;
-            this.endMin = 30;
+            this.endTime = startTime + 1.5f;
             return;
         }
-        this.endHour = shour + 1;
-        this.endMin = smin;
+        this.endTime = startTime + 1f;
     }
 }
