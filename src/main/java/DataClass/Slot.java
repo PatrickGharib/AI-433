@@ -68,6 +68,58 @@ public abstract class Slot {
         this.startMin = startMin;
     }
 
+    public boolean intersect(Slot otherSlot)
+    {
+        if(getDay() != otherSlot.getDay()) return false;
+        boolean after = false;
+
+        if(getStartHour() >= otherSlot.getStartHour())
+        {
+            if(getStartHour() == otherSlot.getStartHour())
+            {
+                if(getStartMin() >= otherSlot.getStartMin())
+                {
+                    after=true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                after=true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+        boolean before = false;
+
+        if(getStartHour() <= otherSlot.getEndHour())
+        {
+            if(getStartHour() == otherSlot.getStartHour())
+            {
+                if(getStartMin() <= otherSlot.getStartMin())
+                {
+                    before = true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                before = true;
+            }
+        }
+
+        return after && before;
+    }
+
     @Override
     public int hashCode() {
         return super.hashCode();
