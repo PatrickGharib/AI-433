@@ -13,7 +13,7 @@ public class LabSlot extends Slot {
 
     private void endCalc(float startTime)
     {
-        if(day.equals(Day.valueOf("FR")))
+        if(day.equals(Day.FR))
             endTime = startTime + 2;
         else
             endTime = startTime + 1;

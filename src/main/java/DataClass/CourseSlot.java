@@ -18,7 +18,7 @@ public class CourseSlot extends Slot {
     }
 
     private void endCalc(float startTime){
-        if(this.day.equals(Day.valueOf("TU"))){
+        if(this.day.equals(Day.TU)){
             if(startTime % 0.5f == 0f){
                 this.endTime = startTime + 2f;
                 return;
