@@ -1,6 +1,5 @@
+import DataClass.*;
 
-
-import DataClass.CourseSlot;
 
 import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.*;
@@ -34,32 +33,27 @@ public class Parser {
                 // there can be no white space before though
                 if (line.trim().matches("Name:") && !zonesRead.contains(line.trim()) && zonesRead.isEmpty()) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
                     line = readName(br, line);
-                } //System.exit(0);
+                }
 
                 if (line.trim().matches("Course slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 1) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
                     line = readCourseSlot(br, line);
 
-                } // System.exit(0);
+                }
 
                 if (line.trim().matches("Lab slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 2) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
                     line = readLabSlot(br, line);
                 }
 
                 if (line.trim().matches("Courses:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 3) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
                     line = readCourse(br, line);
                 }
 
                 if (line.trim().matches("Labs:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 4) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
                     line = readLab(br, line);
                 }
                 if (line.trim().matches("Not compatible:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 5) {
@@ -140,7 +134,6 @@ public class Parser {
         return line;
     }
 
-
     /**
      * @param br
      * @param line
@@ -201,9 +194,28 @@ public class Parser {
         return line;
     }
 
+    /**
+     * @param br
+     * @param line
+     * @return the last line read
+     * reads the lab slot. prints an error if the system finds an invalid format designated by the
+     * regex found in RegexStrings
+     *
+     * Creates lab slot objects if format is correct
+     * MATCHER LEGEND
+     * -----------------
+     * group(2) is the Day
+     * group(3) is the 24 hour time format
+     * group(4) is hours
+     * group(5) is minutes(up to 59min) : this gets converted to float and added to hours.
+     * group(6) is labmax
+     * group(7) is labmin
+     */
     private static String readLabSlot(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Courses:";
+        float minuteConversion= 60f;
+        Pattern pattern = Pattern.compile(RegexStrings.LAB_SLOTS);
         try {
             while (!(line = br.readLine()).trim().matches(exitString)) {
                 if (line.matches("[\\s]*")) {
@@ -213,10 +225,19 @@ public class Parser {
                 if (!line.matches(RegexStrings.LAB_SLOTS)) {
                     System.out.println("Parsing error: Could not parse File in Lab slot");
                     System.out.println(line);
-                    System.exit(0);
+
                 }
                 if (line.matches(RegexStrings.LAB_SLOTS)) {
-                    System.out.println(line);
+
+                    Matcher matcher = pattern.matcher(line);
+                    matcher.matches();
+
+                    //convert minutes to float(minutes/60)
+                    float minToDecimal = Float.parseFloat(matcher.group(4))+(Float.parseFloat(matcher.group(5))/minuteConversion);
+
+                    //make new course slot and add to courseSlot hashset
+                    LabSlot newLabSlot = new LabSlot(matcher.group(2),minToDecimal,Integer.parseInt(matcher.group(6)),Integer.parseInt(matcher.group(7)));
+                    ParsedData.LAB_SLOT.add(newLabSlot);
                 }
 
 
@@ -233,9 +254,25 @@ public class Parser {
         return line;
     }
 
+    /**
+     * @param br
+     * @param line
+     * @return the last line read
+     * reads the course. prints an error if the system finds an invalid format designated by the
+     * regex found in RegexStrings
+     * <p>
+     * Creates course objects if format is correct
+     * MATCHER LEGEND
+     * -----------------
+     * group(2) is Course name
+     * group(3) is Course #
+     * group(4) is "LEC"
+     * group(5) section #
+     */
     private static String readCourse(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Labs:";
+        Pattern pattern = Pattern.compile(RegexStrings.COURSES);
         try {
             while (!(line = br.readLine()).trim().matches(exitString)) {
                 if (line.matches("[\\s]*")) {
@@ -248,9 +285,13 @@ public class Parser {
                     System.exit(0);
                 }
                 if (line.matches(RegexStrings.COURSES)) {
-                    System.out.println(line);
-                }
+                    Matcher matcher = pattern.matcher(line);
+                    matcher.matches();
 
+                    //make new course slot and add to courseSlot hashset
+                    Course newCourse = new Course(matcher.group(2),Integer.parseInt(matcher.group(3)),matcher.group(4),Integer.parseInt(matcher.group(5)));
+                    ParsedData.COURSES.add(newCourse);
+                }
 
                 lastLine = line;
             }
@@ -265,6 +306,31 @@ public class Parser {
         return line;
     }
 
+    /**
+     * @param br
+     * @param line
+     * @return the last line read
+     * reads the course. prints an error if the system finds an invalid format designated by the
+     * regex found in RegexStrings
+     * <p>
+     * Creates course objects if format is correct
+     * MATCHER LEGEND(LAB)
+     * -----------------
+     * group(2) is Course name
+     * group(3) is Course #
+     * group(4) is "LEC"
+     * group(5) section #
+     * group(6) "lab|tut"
+     * group(7) lab section #
+     *
+     * MATCHER LEGEND(TUT)
+     * -----------------
+     * group(3) is Course Name
+     * group(4) is Course #
+     * group(5) "TUT"
+     * group(6) is tutorial section
+     */
+    //TODO need to make sure the objects are being created properly, talk to hannah about this
     private static String readLab(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Not compatible:";
@@ -280,10 +346,37 @@ public class Parser {
                     System.exit(0);
                 }
                 if (line.matches(RegexStrings.LABS)) {
-                    System.out.println(line);
+                    LinkedHashSet<Course> sections = new LinkedHashSet<Course>();
+
+                    Pattern pattern = Pattern.compile(RegexStrings.LABS);
+                    Matcher matcher = pattern.matcher(line);
+                    matcher.matches();
+
+                    int courseNumber = Integer.parseInt(matcher.group(3));
+                    String courseName = matcher.group(2);
+
+                    for(Course c : ParsedData.COURSES){
+                        if (courseNumber == c.getCourseNumber()){
+                            if(courseName == (c.getCourseName())){
+                                sections.add(c);
+                            }
+                        }
+                    }
+
+                    //make new course slot and add to courseSlot hashset
+                    Lab newLab = new Lab(courseName,courseNumber,matcher.group(4),Integer.parseInt(matcher.group(5)),matcher.group(6),Integer.parseInt(matcher.group(7)),sections);
+                    ParsedData.LABS.add(newLab);
                 }
+
+                //TODO check with hannah if i need to also check sections here
                 if (line.matches(RegexStrings.TUT)) {
-                    System.out.println(line);
+                    Pattern pattern = Pattern.compile(RegexStrings.TUT);
+                    Matcher matcher = pattern.matcher(line);
+                    matcher.matches();
+
+                    //make new course slot and add to courseSlot hashset
+                    Lab newLab = new Lab(matcher.group(3),Integer.parseInt(matcher.group(4)),matcher.group(5),Integer.parseInt(matcher.group(6)));
+                    ParsedData.LABS.add(newLab);
                 }
 
 
@@ -466,16 +559,6 @@ public class Parser {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     public static void main(String[] args) {
         //String fileName = args[0];
