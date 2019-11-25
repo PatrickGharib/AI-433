@@ -1,4 +1,5 @@
 import DataClass.Course;
+import DataClass.Lab;
 import DataClass.PSol;
 import DataClass.Slot;
 import javafx.util.Pair;
@@ -17,6 +18,7 @@ public class PSolStringBuilder {
         this.convert = sort(convert);
     }
 
+    //todo implement the sorting
     private List <Pair<Course,Slot>> sort (List <Pair<Course,Slot>> unsorted){
         return unsorted;
     }
@@ -53,10 +55,18 @@ public class PSolStringBuilder {
         return sb;
     }
 
-    //if instance of lab add the other lab stuffs TODO
+    //if instance of lab add the other lab stuffs
     private StringBuilder courseToString(Course course){
         StringBuilder sb = new StringBuilder();
-
+        sb.append(course.getCourseName() + " ");
+        sb.append(course.getCourseNumber() + " ");
+        sb.append(course.getLec() + " ");               //TODO ask about why we need lec
+        sb.append(course.getLecNum());
+        if (course instanceof Lab){
+            sb.append(" " + ((Lab) course).getTutLab() + " ");
+            sb.append(((Lab) course).getTutLabNum());
+        }
+        return sb;
     }
 
     //converts a time slot to a string
