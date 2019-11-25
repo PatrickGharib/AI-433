@@ -354,14 +354,15 @@ public class Parser {
 
                     int courseNumber = Integer.parseInt(matcher.group(3));
                     String courseName = matcher.group(2);
-
+                    int sectionSize = sections.size();
                     for(Course c : ParsedData.COURSES){
-                        if (courseNumber == c.getCourseNumber()){
-                            if(courseName == (c.getCourseName())){
+                        if (courseNumber == c.getCourseNumber()) {
+                            if (courseName == (c.getCourseName())) {
                                 sections.add(c);
                             }
                         }
                     }
+                   //TODO we have to talk about how to deal with duplicates. i need help with that maybe
 
                     //make new course slot and add to courseSlot hashset
                     Lab newLab = new Lab(courseName,courseNumber,matcher.group(4),Integer.parseInt(matcher.group(5)),matcher.group(6),Integer.parseInt(matcher.group(7)),sections);
