@@ -21,7 +21,7 @@ public class RegexStrings {
     public static final String LAB_SLOTS = ("([\\s]*(MO|TU|FR)[\\s]*,[\\s]*(([0|1]?[\\d]|[2][0-3]):([0-5][\\d]))[\\s]*,[\\s]*([\\d]+)[\\s]*,[\\s]*([\\d]+)[\\s]*)");
     public static final String COURSES = ("([\\s]*(CPSC|SENG)[\\s]*([\\d]{3})[\\s]*(LEC)[\\s]*([\\d]{2})[\\s]*)");
     public static final String LABS = ("([\\s]*(CPSC|SENG)[\\s]*([\\d]{3})[\\s]*(LEC)[\\s]*([\\d]{2})[\\s]*(TUT|LAB)[\\s]*([\\d]{2})[\\s]*)");
-    public static final String TUT = "(([\\s]*(CPSC|SENG)[\\s]*([\\d]{3})[\\s]*(TUT)[\\s]*([\\d]{2}))[\\s]*)";
+    public static final String TUT = "(([\\s]*(CPSC|SENG)[\\s]*([\\d]{3})[\\s]*(TUT|LAB)[\\s]*([\\d]{2}))[\\s]*)";
 
     public static final String NOTCOMPATABLE_FORMAT = "("+LABS + "|" + TUT + "|" + COURSES +")" + "," + "(" + LABS + "|" + TUT + "|" + COURSES + ")";
     public static final String UNWANTED = "("+LABS +"|"+TUT+ "|" + COURSES +")" + "," + "("+ LAB_VALID_DAY +"|"+ COURSE_VALID_DAY +")"+  "," + TIMES;
