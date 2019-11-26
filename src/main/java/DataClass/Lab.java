@@ -1,22 +1,38 @@
 package DataClass;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+
+import IO.*;
 
 public class Lab extends Course {
     private String tutLab;
     private int tutLabNum;
-    private LinkedHashSet<Course> sections;
+    private LinkedHashSet<Section> sections;
 
-    public Lab(String courseName, int courseNumber, String type, int lecNum, String tutLab, int tutLabNum, LinkedHashSet<Course> sections) {
-        super(courseName, courseNumber, type, lecNum);
+    //Lab belongs to specific course section
+    public Lab(String courseName, int courseNumber, String tutLab, int tutLabNum, int lecNum) {
+        super(courseName, courseNumber);
         this.tutLab = tutLab;
         this.tutLabNum = tutLabNum;
-        this.sections = sections;
+        this.sections = new LinkedHashSet<>(Collections.singletonList(new Section(courseName, courseNumber, lecNum)));
     }
-   public Lab(String courseName, int courseNumber, String type, int lecNum) {
-        super(courseName, courseNumber, type, lecNum);
-    }
+
+    //Lab belongs to all course sections
+   public Lab(String courseName, int courseNumber, String tutLab, int tutLabNum)
+   {
+       super(courseName, courseNumber);
+       this.tutLab = tutLab;
+       this.tutLabNum = tutLabNum;
+       LinkedHashSet<Section> temp = new LinkedHashSet<Section>();
+       for (Section section : ParsedData.COURSES)
+       {
+           if(section.getCourseName().equals(courseName) && section.getCourseNumber() == courseNumber)
+                temp.add(section);
+       }
+       this.sections = temp;
+   }
 
     public String getTutLab() {
         return tutLab;
@@ -26,7 +42,7 @@ public class Lab extends Course {
         return tutLabNum;
     }
 
-    public LinkedHashSet<Course> getSections() {
+    public LinkedHashSet<Section> getSections() {
         return sections;
     }
 

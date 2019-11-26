@@ -3,16 +3,12 @@ package DataClass;
 import java.util.Objects;
 
 public class Course {
-    private String courseName;
-    private int courseNumber;
-    private String lec;
-    private int lecNum;
+    protected String courseName;
+    protected int courseNumber;
 
-    public Course(String courseName, int courseNumber, String lec, int lecNum){
+    public Course(String courseName, int courseNumber){
       this.courseName = courseName;
       this.courseNumber = courseNumber;
-      this.lec = lec;
-      this.lecNum = lecNum;
     }
 
 
@@ -24,34 +20,18 @@ public class Course {
         return courseNumber;
     }
 
-    public String getLec() {
-        return lec;
-    }
-
-    public int getLecNum() {
-        return lecNum;
-    }
-
-    public String getSection() {
-        return String.format("%s %d", courseName, courseNumber);
-    }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof Course)
-        {
-            Course them = (Course) o;
-            String checkMe = getCourseName() + getCourseNumber() + getLec() + getLecNum();
-            String checkThem = them.getCourseName() + them.getCourseNumber() + them.getLec() + them.getLecNum();
-            return checkMe.equals(checkThem);
-        }
-
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course section = (Course) o;
+        return getCourseNumber() == section.getCourseNumber() &&
+                getCourseName().equals(section.getCourseName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(courseName, courseNumber, lec, lecNum);
+        return Objects.hash(getCourseName(), getCourseNumber());
     }
 }

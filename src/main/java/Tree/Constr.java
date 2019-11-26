@@ -1,3 +1,5 @@
+package Tree;
+
 import DataClass.*;
 
 import java.util.ArrayList;
@@ -77,8 +79,8 @@ public class Constr {
                     coursenum++;
 
                     //Check evening courses
-                    if(course.getLecNum() >= 9) {
-                        if (slot.getStartHour() < 18) {
+                    if(((Section)course).getLecNum() >= 9) {
+                        if (((int)slot.getStartTime()) < 18) {
                             return false;
                         }
                     }

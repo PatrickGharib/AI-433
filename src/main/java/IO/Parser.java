@@ -1,3 +1,5 @@
+package IO;
+
 import DataClass.*;
 
 
@@ -12,7 +14,6 @@ import java.util.regex.Pattern;
  *
  */
 public class Parser {
-
 
     public static void inputReader(String fileName) {
         List<String> zonesRead = new ArrayList<String>();
@@ -128,7 +129,7 @@ public class Parser {
      * @param line
      * @return the last line read
      * reads the course slot. prints an error if the system finds an invalid format designated by the
-     * regex found in RegexStrings
+     * regex found in IO.RegexStrings
      * <p>
      * Creates course slot objects if format is correct
      * MATCHER LEGEND
@@ -185,7 +186,7 @@ public class Parser {
      * @param line
      * @return the last line read
      * reads the lab slot. prints an error if the system finds an invalid format designated by the
-     * regex found in RegexStrings
+     * regex found in IO.RegexStrings
      * <p>
      * Creates lab slot objects if format is correct
      * MATCHER LEGEND
@@ -242,7 +243,7 @@ public class Parser {
      * @param line
      * @return the last line read
      * reads the course. prints an error if the system finds an invalid format designated by the
-     * regex found in RegexStrings
+     * regex found in IO.RegexStrings
      * <p>
      * Creates course objects if format is correct
      * MATCHER LEGEND
@@ -271,7 +272,8 @@ public class Parser {
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
                     //make new course slot and add to courseSlot hashset
-                    Course newCourse = new Course(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(4), Integer.parseInt(matcher.group(5)));
+                    //Ignoring group(4): "LEC" as it does not contain any additional information.
+                    Section newCourse = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
                     ParsedData.COURSES.add(newCourse);
                 }
 
@@ -292,7 +294,7 @@ public class Parser {
      * @param line
      * @return the last line read
      * reads the course. prints an error if the system finds an invalid format designated by the
-     * regex found in RegexStrings
+     * regex found in IO.RegexStrings
      * <p>
      * Creates course objects if format is correct
      * MATCHER LEGEND(LAB)
@@ -301,14 +303,14 @@ public class Parser {
      * group(3) is Course #
      * group(4) is "LEC"
      * group(5) section #
-     * group(6) "lab|tut"
+     * group(6) "LAB|TUT"
      * group(7) lab section #
      * <p>
      * MATCHER LEGEND(TUT)
      * -----------------
      * group(3) is Course Name
      * group(4) is Course #
-     * group(5) "TUT"
+     * group(5) "LAB|TUT"
      * group(6) is tutorial section
      */
     //TODO need to make sure the objects are being created properly, talk to hannah about this
@@ -327,8 +329,6 @@ public class Parser {
                     System.exit(0);
                 }
                 if (line.matches(RegexStrings.LABS)) {
-                    LinkedHashSet<Course> sections = new LinkedHashSet<Course>();
-
                     Pattern pattern = Pattern.compile(RegexStrings.LABS);
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
@@ -336,17 +336,10 @@ public class Parser {
                     int labNumber = Integer.parseInt(matcher.group(3));
                     String labName = matcher.group(2);
 
-                    for (Course c : ParsedData.COURSES) {
-                        if (labNumber == c.getCourseNumber()) {
-                            if (labName == (c.getCourseName())) {
-                                sections.add(c);
-                            }
-                        }
-                    }
                     //TODO we have to talk about how to deal with duplicates. i need help with that maybe
 
-                    //make new course slot and add to courseSlot hashset
-                    Lab newLab = new Lab(labName, labNumber, matcher.group(4), Integer.parseInt(matcher.group(5)), matcher.group(6), Integer.parseInt(matcher.group(7)), sections);
+                    //make new Lab and add to lab set
+                    Lab newLab = new Lab(labName, labNumber, matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
                     ParsedData.LABS.add(newLab);
                 }
 
@@ -356,7 +349,7 @@ public class Parser {
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
 
-                    //make new course slot and add to courseSlot hashset
+                    //make new lab and add to lab set
                     Lab newLab = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(6)));
                     ParsedData.LABS.add(newLab);
                 }
@@ -492,7 +485,7 @@ public class Parser {
                 }
                 lastLine = line;
             }
-            //System.out.println(RegexStrings.PREFERENCES);
+            //System.out.println(IO.RegexStrings.PREFERENCES);
             if (!lastLine.matches("[\\s]*")) {
                 System.out.println("Parsing error: Could not parse File in Preferences(no space)");
                 System.exit(0);
