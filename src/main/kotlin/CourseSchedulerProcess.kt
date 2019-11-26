@@ -8,7 +8,9 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
     override fun execute(): PSol? {
         val start = System.currentTimeMillis()
         while ((model.peekBest()?.data?.value ?: 1000000) < (candidate?.value ?: 1000000) && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(15)){
+
             fTrans(fLeaf(model.leaves))
+
         }
         return candidate
     }
