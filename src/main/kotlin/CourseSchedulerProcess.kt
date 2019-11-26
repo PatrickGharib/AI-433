@@ -7,7 +7,7 @@ import kotlin.time.measureTime
 class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSol>() {
     override fun execute(): PSol? {
         val start = System.currentTimeMillis()
-        // ?: means return left, unelss its null then return right instead
+        // ?: means return left, unelss its null then return right instead ( "?:" is known as the Elvis operator in kotlin (turn your screen))
         // putting ? in method clal chains says if this thing is null, thats fine, evaluate to null.
         // together this makes this happen:
         // return model.peekBest()?.data?.value ?: 1000000
