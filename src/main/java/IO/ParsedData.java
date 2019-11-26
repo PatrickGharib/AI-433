@@ -1,3 +1,5 @@
+package IO;
+
 import DataClass.*;
 import java.util.LinkedHashSet;
 
@@ -10,7 +12,7 @@ public class ParsedData
 
     public static LinkedHashSet<CourseSlot>                 COURSE_SLOTS        = new LinkedHashSet<CourseSlot>();
     public static LinkedHashSet<LabSlot>                    LAB_SLOT            = new LinkedHashSet<LabSlot>();
-    public static LinkedHashSet<Course>                     COURSES             = new LinkedHashSet<Course>();
+    public static LinkedHashSet<Section>                    COURSES             = new LinkedHashSet<Section>();
     public static LinkedHashSet<Lab>                        LABS                = new LinkedHashSet<Lab>();
     public static LinkedHashSet<NotCompatibleCoursePair>    NOT_COMPATIBLE      = new LinkedHashSet<NotCompatibleCoursePair>();
     public static LinkedHashSet<UnwantedCourseTime>         UNWANTED            = new LinkedHashSet<UnwantedCourseTime>();

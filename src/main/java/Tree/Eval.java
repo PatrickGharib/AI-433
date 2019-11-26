@@ -1,11 +1,11 @@
-/*
+package Tree;/*
 @author Zahra Ghavasieh
 
 Soft Constraints:
-For each course below coursemin we will get pen_coursemin and for each lab pen_labsmin added to the Eval-value of an assignment.
-For each assignment in assign, add up the preference-values for a course/lab that refer to a different slot as the penalty that is added to the Eval-value of assign
-For every pair(a,b) statement, for which assign(a) is not equal to assign(b), you have to add pen_notpaired to the Eval-value of assign.
-For each pair of sections that is scheduled into the same slot, we add a penalty pen_section to the Eval-value of an assignment assign.
+For each course below coursemin we will get pen_coursemin and for each lab pen_labsmin added to the Tree.Eval-value of an assignment.
+For each assignment in assign, add up the preference-values for a course/lab that refer to a different slot as the penalty that is added to the Tree.Eval-value of assign
+For every pair(a,b) statement, for which assign(a) is not equal to assign(b), you have to add pen_notpaired to the Tree.Eval-value of assign.
+For each pair of sections that is scheduled into the same slot, we add a penalty pen_section to the Tree.Eval-value of an assignment assign.
 */
 
 import DataClass.*;
@@ -67,7 +67,7 @@ public class Eval {
                 } else{
                     coursenum++;
                     //Check if same section appears in slot
-                    String section = course.getSection();
+                    String section = ((Section)course).getSection();
                     if (sections.contains(section)){
                         evaluation += pen_section;
                     } else{

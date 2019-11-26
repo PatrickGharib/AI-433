@@ -1,4 +1,7 @@
 import DataClass.PSol
+import IO.ParsedData
+import Tree.Constr
+import Tree.Eval
 
 class CourseSchedulerTree(root: PSol) : AndTree<PSol>(root)  {
     override fun childGen(pred: PSol): List<PSol> {
@@ -17,6 +20,6 @@ class CourseSchedulerTree(root: PSol) : AndTree<PSol>(root)  {
     }
 
     override fun best(): PSol? {
-        return leaves.minBy { Eval( 1,1,1,1,ParsedData.PAIR).eval(it.value) }?.value
+        return leaves.minBy { Eval(1, 1, 1, 1, ParsedData.PAIR).eval(it.value) }?.value
     }
 }
