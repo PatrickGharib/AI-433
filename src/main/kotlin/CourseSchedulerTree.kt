@@ -19,7 +19,7 @@ class CourseSchedulerTree(root: PSol) : AndTree<PSol>(root)  {
         return x
     }
 
-    override fun best(): PSol? {
-        return leaves.minBy { Eval(1, 1, 1, 1, ParsedData.PAIR).eval(it.value) }?.value
+    override fun best(): Node? {
+        return leaves.minBy { Eval(1, 1, 1, 1, ParsedData.PAIR).eval(it.data) }
     }
 }
