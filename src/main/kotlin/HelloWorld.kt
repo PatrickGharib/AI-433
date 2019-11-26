@@ -3,7 +3,6 @@ import DataClass.CourseSlot
 import DataClass.PSol
 import IO.ParsedData
 import IO.Parser
-import java.nio.file.Path
 import java.nio.file.Paths
 
 fun main() {

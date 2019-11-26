@@ -11,7 +11,9 @@ class CourseSchedulerTree(root: PSol) : AndTree<PSol>(root)  {
             pred.slotSet().forEach {
                 if (it == null) return@forEach
                 val p = pred.assign(c,it)
-                if (Constr().constr(p)){
+
+                //TODO not sure if Cosntr() is correct
+                if (Constr().constrPartial(p)){
                     x.add(p)
                 }
             }
