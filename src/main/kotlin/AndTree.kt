@@ -1,4 +1,3 @@
-import DataClass.FibQueue
 import DataClass.HeapArrayQueue
 import DataClass.PriorityQueue
 import java.lang.Exception
@@ -9,7 +8,7 @@ abstract class AndTree<T>(root: T) {
     // private final MutableList<Node> _leaves = mutableListOf(new Node(root))
     private val _leaves = mutableListOf(Node(root))
 
-    private val queue: PriorityQueue<T> = HeapArrayQueue(4)
+    private val queue: PriorityQueue<Node> = HeapArrayQueue(4)
 
 
 
@@ -18,9 +17,11 @@ abstract class AndTree<T>(root: T) {
 
     abstract fun childGen(pred: T) : List<T>
 
-    open fun best(): T? = queue.get()
+    fun peekBest(): Node? = queue.get()
 
-    open inner class Node(val value: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0){
+    open fun best(): Node? = queue.pop()
+
+    open inner class Node(val data: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0){
 
         var solved: Boolean = false
 
@@ -29,7 +30,7 @@ abstract class AndTree<T>(root: T) {
 
         fun expand(){
             if (_children.isEmpty() && !solved) {
-                childGen(value).forEach {
+                childGen(data).forEach {
                     val x = Node(it,depth = depth + 1)
                     _children.add(x)
                     _leaves.add(x)
@@ -51,7 +52,7 @@ abstract class AndTree<T>(root: T) {
             // don't remove, not redundant
             other as AndTree<*>.Node
 
-            if (value != other.value) return false
+            if (data != other.data) return false
             if (_children != other._children) return false
             if (depth != other.depth) return false
 
@@ -59,7 +60,7 @@ abstract class AndTree<T>(root: T) {
         }
 
         override fun hashCode(): Int {
-            var result = value?.hashCode() ?: 0
+            var result = data?.hashCode() ?: 0
             result = 31 * result + _children.hashCode()
             result = 31 * result + depth
             return result
