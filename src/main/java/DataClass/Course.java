@@ -2,7 +2,7 @@ package DataClass;
 
 import java.util.Objects;
 
-public class Course {
+public abstract class Course {
     protected String courseName;
     protected int courseNumber;
 
