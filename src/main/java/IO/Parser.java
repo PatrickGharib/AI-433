@@ -161,6 +161,7 @@ public class Parser {
 
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
+                    System.out.println(line);
 
                     //convert minutes to float(minutes/60)
                     float minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / minuteConversion);
@@ -221,6 +222,7 @@ public class Parser {
 
                     //convert minutes to float(minutes/60)
                     float minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / minuteConversion);
+                    System.out.println(line);
 
                     //make new course slot and add to courseSlot hashset
                     LabSlot newLabSlot = new LabSlot(matcher.group(2), minToDecimal, Integer.parseInt(matcher.group(6)), Integer.parseInt(matcher.group(7)));
@@ -271,6 +273,8 @@ public class Parser {
                 if (line.matches(RegexStrings.COURSES)) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
+                    System.out.println(line);
+
                     //make new course slot and add to courseSlot hashset
                     //Ignoring group(4): "LEC" as it does not contain any additional information.
                     Section newCourse = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
@@ -332,6 +336,7 @@ public class Parser {
                     Pattern pattern = Pattern.compile(RegexStrings.LABS);
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
+                    System.out.println(line);
 
                     int labNumber = Integer.parseInt(matcher.group(3));
                     String labName = matcher.group(2);
@@ -382,17 +387,18 @@ public class Parser {
                 if (line.matches(RegexStrings.NOTCOMPATABLE_FORMAT)) {
                     Matcher matcher = Pattern.compile(RegexStrings.NOTCOMPATABLE_FORMAT).matcher(line);
                     matcher.matches();
+                    System.out.println(line);
                     String[] splitUnwanted = line.split(",");
                     Course itemOne = checkPairs(splitUnwanted[0], matcher);
                     Course itemTwo = checkPairs(splitUnwanted[1], matcher);
-                    }
+                }
                 lastLine = line;
-
+            }
                 if (!lastLine.matches("[\\s]*")) {
                     System.out.println("Parsing error: Could not parse File in Not Compatible (no space)");
                     System.exit(0);
                 }
-            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -434,6 +440,8 @@ public class Parser {
                 if (line.matches(RegexStrings.UNWANTED)) {
                     Matcher matcher = Pattern.compile(RegexStrings.UNWANTED).matcher(line);
                     matcher.matches();
+                    System.out.println(line);
+
                     if (line.matches(".*(TUT|LAB).*")) {
                         if (line.matches(RegexStrings.UNWANTED_L)){
 
@@ -472,6 +480,8 @@ public class Parser {
                 if (line.matches(RegexStrings.PREFERENCES)) {
                     Matcher matcher = Pattern.compile(RegexStrings.PREFERENCES).matcher(line);
                     matcher.matches();
+                    System.out.println(line);
+
                     if (line.matches(".*(TUT|LAB).*")) {
                         if (line.matches(RegexStrings.PREFERENCES_L)) {
                             //TODO create lab object and possibly a time object
@@ -512,6 +522,8 @@ public class Parser {
                 if (line.matches(RegexStrings.PAIR)) {
                     Matcher matcher = Pattern.compile(RegexStrings.PAIR).matcher(line);
                     matcher.matches();
+                    System.out.println(line);
+
                     String[] splitPair = line.split(",");
                     Course item1 = checkPairs(splitPair[0], matcher);
                     Course item2 = checkPairs(splitPair[1], matcher);
@@ -542,6 +554,8 @@ public class Parser {
                 }
                 if (line.matches(RegexStrings.UNWANTED)) {
                     Matcher matcher = Pattern.compile(RegexStrings.UNWANTED).matcher(line);
+                    System.out.println(line);
+
                     if (line.matches(".*(TUT|LAB).*")) {
                         if (line.matches(RegexStrings.UNWANTED_L)) System.out.println(line + " LAB");
                         else if (line.matches(RegexStrings.UNWANTED_T)) System.out.println(line + " TUT");
@@ -557,10 +571,11 @@ public class Parser {
     public static void main(String[] args) {
         //String fileName = args[0];
         //Scanner in = new Scanner(System.in);String fileName = in.nextLine();
-        for (String x : args) {
-
-            inputReader(x);
-            System.out.println("_______________________________");
-        }
+//        for (String x : args) {
+//
+//            inputReader(x);
+//            System.out.println("_______________________________");
+//        }
+        inputReader("poop.txt");
     }
 }
