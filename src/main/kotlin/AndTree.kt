@@ -17,7 +17,9 @@ abstract class AndTree<T>(root: T) {
 
     abstract fun childGen(pred: T) : List<T>
 
-    open fun best(): Node? = queue.get()
+    fun peekBest(): Node? = queue.get()
+
+    open fun best(): Node? = queue.pop()
 
     open inner class Node(val data: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0){
 

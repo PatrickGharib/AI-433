@@ -1,7 +1,17 @@
 import DataClass.PSol
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.timer
+import kotlin.time.TimedValue
+import kotlin.time.measureTime
 
 class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSol>() {
-
+    override fun execute(): PSol? {
+        val start = System.currentTimeMillis()
+        while ((model.peekBest()?.data?.value ?: 1000000) < (candidate?.value ?: 1000000) && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(15)){
+            fTrans(fLeaf(model.leaves))
+        }
+        return candidate
+    }
 
 
     override fun fLeaf(leaves: List<AndTree<PSol>.Node>): AndTree<PSol>.Node? {
