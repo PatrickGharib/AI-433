@@ -13,9 +13,8 @@ For each of not-compatible(a,b) statements, assign(a) has to be unequal to assig
 For each of unwanted(a,s) statements, assign(a) has to be unequal to s.
 Evening classes (LEC 9+) have to be scheduled into evening slots (18:00+).
 All courses (course sections) on the 500-level have to be scheduled into different time slots.
+Assign(ci) needs to be unequal to assign(lik) for all k and i.
 
-//waiting on Hannah TODO
-* assign(ci) has to be unequal to assign(lik) for all k and i.
 //need to discuss with Ben TODO
 No courses can be scheduled at tuesdays 11:00-12:30.
 There are two special "courses" CPSC 813 and CPSC 913 that have to be scheduled tuesdays/thursdays 18:00-19:00
@@ -71,18 +70,18 @@ public class Constr {
                 if (course instanceof Lab) {
                     labnum++;
 
-                    //Check if lab overlaps with its lecture TODO
-                    //if (slot.overlaps(sol.courseLookup(((Lab) course).getCourse()))) {
-                        //return false;
-                    //}
+                    //Check if lab overlaps with its lecture
+                    for (Section sec : ((Lab) course).getSections()){
+                        if (slot.overlaps(sol.courseLookup(sec)))
+                            return false;
+                    }
                 } else {
                     coursenum++;
 
                     //Check evening courses
                     if(((Section)course).getLecNum() >= 9) {
-                        if (((int)slot.getStartTime()) < 18) {
+                        if ((int)slot.getStartTime() < 18)
                             return false;
-                        }
                     }
 
                     //Count 500-level courses

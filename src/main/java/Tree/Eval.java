@@ -1,4 +1,14 @@
-package Tree;/*
+package Tree;
+
+import DataClass.*;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import DataClass.PreferredCoursePair;
+
+/*
 @author Zahra Ghavasieh
 
 Soft Constraints:
@@ -8,12 +18,6 @@ For every pair(a,b) statement, for which assign(a) is not equal to assign(b), yo
 For each pair of sections that is scheduled into the same slot, we add a penalty pen_section to the Tree.Eval-value of an assignment assign.
 */
 
-import DataClass.*;
-
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 
 public class Eval {
