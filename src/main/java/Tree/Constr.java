@@ -2,9 +2,7 @@ package Tree;
 
 import DataClass.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /* Hard constraints:
 Not more than coursemax(s) courses can be assigned to slot s.
@@ -13,14 +11,13 @@ For each of not-compatible(a,b) statements, assign(a) has to be unequal to assig
 For each of unwanted(a,s) statements, assign(a) has to be unequal to s.
 Evening classes (LEC 9+) have to be scheduled into evening slots (18:00+).
 All courses (course sections) on the 500-level have to be scheduled into different time slots.
-
-//waiting on Hannah TODO
-* assign(ci) has to be unequal to assign(lik) for all k and i.
-//need to discuss with Ben TODO
-No courses can be scheduled at tuesdays 11:00-12:30.
+Assign(ci) needs to be unequal to assign(lik) for all k and i.
 There are two special "courses" CPSC 813 and CPSC 913 that have to be scheduled tuesdays/thursdays 18:00-19:00
  and CPSC 813 is not allowed to overlap with any labs/tutorials of CPSC 313 or with any course section of CPSC 313.
  and CPSC 913 is not allowed to overlap with any labs/tutorials of CPSC 413 or with any course section of CPSC 413.
+
+//Constraint checked in constructors:
+No courses can be scheduled at tuesdays 11:00-12:30.
 */
 
 
@@ -53,10 +50,14 @@ public class Constr {
         return true;
     }
 
-    //Functions
     public boolean constrPartial(PSol sol){
 
         Set<Slot> slots = sol.slotSet();
+        //Special Courses conditions
+        Course c813 = null, c913 = null;
+        ArrayList<Course> noOverlap813 = new ArrayList<>();
+        ArrayList<Course> noOverlap913 = new ArrayList<>();
+
 
         for (Slot slot : slots) {
 
@@ -71,18 +72,18 @@ public class Constr {
                 if (course instanceof Lab) {
                     labnum++;
 
-                    //Check if lab overlaps with its lecture TODO
-                    //if (slot.overlaps(sol.courseLookup(((Lab) course).getCourse()))) {
-                        //return false;
-                    //}
+                    //Check if lab overlaps with its lecture
+                    for (Section sec : ((Lab) course).getSections()){
+                        if (slot.overlaps(sol.courseLookup(sec)))
+                            return false;
+                    }
                 } else {
                     coursenum++;
 
                     //Check evening courses
                     if(((Section)course).getLecNum() >= 9) {
-                        if (((int)slot.getStartTime()) < 18) {
+                        if ((int)slot.getStartTime() < 18)
                             return false;
-                        }
                     }
 
                     //Count 500-level courses
@@ -93,7 +94,24 @@ public class Constr {
                         courses500.add(course);
                     }
                 }
-            }
+
+                //Special "course" CPSC 813 has to be scheduled tuesdays/thursdays 18:00-19:00
+                if ((course.getCourseNumber() == 813) && (course.getCourseName().equals("CPSC"))){
+                    if (! (slot.getDay().equals(Slot.Day.TU) && slot.getStartTime() == 18))
+                        return false;
+                    c813 = course;
+                }
+                //Special "course" CPSC 913 has to be scheduled tuesdays/thursdays 18:00-19:00
+                if ((course.getCourseNumber() == 913) && (course.getCourseName().equals("CPSC"))){
+                    if (! (slot.getDay().equals(Slot.Day.TU) && slot.getStartTime() == 18))
+                        return false;
+                    c913 = course;
+                }
+                if ((course.getCourseNumber() == 313) && (course.getCourseName().equals("CPSC")))
+                    noOverlap813.add(course);
+                if ((course.getCourseNumber() == 413) && (course.getCourseName().equals("CPSC")))
+                    noOverlap913.add(course);
+            } //for each course in slot
 
             //Check CourseMin and LabsMin
             if (slot instanceof CourseSlot) {
@@ -105,7 +123,7 @@ public class Constr {
                     return false;
                 }
             }
-        }
+        } //for each slot in sol
 
         //Check if a notCompatible pair has the same assignment
         for (NotCompatibleCoursePair pair : notCompatibles) {
@@ -125,8 +143,23 @@ public class Constr {
             }
         }
 
-        return true;
-    }
+        //Check if special courses overlap with unwanted overlaps
+        //CPSC 813 is not allowed to overlap with any labs/tutorials of CPSC 313 or with any course section of CPSC 313.
+        if (c813 != null){
+            for (Course c : noOverlap913){
+                if (sol.courseLookup(c).overlaps(sol.courseLookup(c813)))
+                    return false;
+            }
+        }
+        //CPSC 913 is not allowed to overlap with any labs/tutorials of CPSC 413 or with any course section of CPSC 413.
+        if (c913 != null){
+            for (Course c : noOverlap913){
+                if (sol.courseLookup(c).overlaps(sol.courseLookup(c913)))
+                    return false;
+            }
+        }
 
+        return true;
+    } //End of constrPartial
 
 }
