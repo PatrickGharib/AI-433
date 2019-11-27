@@ -1,7 +1,4 @@
-import DataClass.Course;
-import DataClass.Lab;
-import DataClass.PSol;
-import DataClass.Slot;
+import DataClass.*;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -25,7 +22,6 @@ public class PSolStringBuilder {
 
     //this method prints the output
     public List<String> ToString(int evalValue) {
-
         List<String> result = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         result.add(sb.toString());
@@ -33,6 +29,7 @@ public class PSolStringBuilder {
         for (Pair p : this.convert){
             result.add(courseSlotBuilder(p).toString());
         }
+        printer(result);
         return result;
     }
 
@@ -60,10 +57,21 @@ public class PSolStringBuilder {
         StringBuilder sb = new StringBuilder();
         sb.append(course.getCourseName() + " ");
         sb.append(course.getCourseNumber() + " ");
-        sb.append(course.getLec() + " ");               //TODO ask about why we need lec
-        sb.append(course.getLecNum());
-        if (course instanceof Lab){
-            sb.append(" " + ((Lab) course).getTutLab() + " ");
+        //in the case that it is a course
+        if (course instanceof Section){
+            sb.append("LEC" + " ");
+            sb.append(((Section)course).getLecNum());
+        }
+        //case that the lab is assigned a particular lecture
+        else if (course instanceof Lab && ((Lab) course).getSections().size() == 1){
+            sb.append("LEC");
+            sb.append(((Lab) course).getSections().toArray()[0]);
+            sb.append(((Lab) course).getTutLab() + " ");
+            sb.append(((Lab) course).getTutLabNum());
+        }
+        //case that lab is open to all lecture sections
+        else {
+            sb.append(((Lab) course).getTutLab() + " ");
             sb.append(((Lab) course).getTutLabNum());
         }
         return sb;
@@ -91,8 +99,5 @@ public class PSolStringBuilder {
         for(String each:lines){
             System.out.println(each);
         }
-
     }
-
-
 }
