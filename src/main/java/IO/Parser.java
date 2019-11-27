@@ -56,28 +56,28 @@ public class Parser {
                 }
                 if (line.trim().matches("Not compatible:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 5) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
+                   // System.out.println(zonesRead.toString());
                     line = readNotCompatible(br, line);
                 }
                 if (line.trim().matches("Unwanted:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 6) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
+                    //System.out.println(zonesRead.toString());
                     line = readUnwanted(br, line);
 
                 }
                 if (line.trim().matches("Preferences:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 7) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
+                   // System.out.println(zonesRead.toString());
                     line = readPreferences(br, line);
                 }
                 if (line.trim().matches("Pair:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 8) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
+                    //System.out.println(zonesRead.toString());
                     line = readPair(br, line);
                 }
                 if (line.trim().matches("Partial assignments:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 9) {
                     zonesRead.add(line.trim());
-                    System.out.println(zonesRead.toString());
+                   // System.out.println(zonesRead.toString());
                     readPartialAssignment(br, line);
                 }
             }
@@ -157,13 +157,12 @@ public class Parser {
                 if (!line.matches(RegexStrings.COURSE_SLOTS)) {
                     System.out.println("Parsing error: Could not parse File in course slot");
                     System.out.println(line);
-                    System.exit(0);
+                    //System.exit(0);
                 }
                 if (line.matches(RegexStrings.COURSE_SLOTS)) {
 
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
-                    System.out.println(line);
 
                     //convert minutes to float(minutes/60)
                     float minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / minuteConversion);
@@ -176,7 +175,7 @@ public class Parser {
             }
             if (!lastLine.matches("[\\s]*")) {
                 System.out.println("Parsing error: Could not parse File in course slot(no space)");
-                System.exit(0);
+                //System.exit(0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -225,7 +224,6 @@ public class Parser {
 
                     //convert minutes to float(minutes/60)
                     float minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / minuteConversion);
-                    System.out.println(line);
 
                     //make new course slot and add to courseSlot hashset
                     LabSlot newLabSlot = new LabSlot(matcher.group(2), minToDecimal, Integer.parseInt(matcher.group(6)), Integer.parseInt(matcher.group(7)));
@@ -235,7 +233,7 @@ public class Parser {
             }
             if (!lastLine.matches("[\\s]*")) {
                 System.out.println("Parsing error: Could not parse File in Lab slot(no space)");
-                System.exit(0);
+                //System.exit(0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -272,12 +270,11 @@ public class Parser {
                 if (!line.matches(RegexStrings.COURSES)) {
                     System.out.println("Parsing error: Could not parse File in Courses");
                     System.out.println(line);
-                    System.exit(0);
+                    //System.exit(0);
                 }
                 if (line.matches(RegexStrings.COURSES)) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
-                    System.out.println(line);
 
                     //make new course slot and add to courseSlot hashset
                     //Ignoring group(4): "LEC" as it does not contain any additional information.
@@ -289,7 +286,7 @@ public class Parser {
             }
             if (!lastLine.matches("[\\s]*")) {
                 System.out.println("Parsing error: Could not parse File in Courses(no space)");
-                System.exit(0);
+               // System.exit(0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -380,7 +377,6 @@ public class Parser {
                     System.out.println(line);
                 }
                 if (line.matches(RegexStrings.NOTCOMPATABLE_FORMAT)) {
-                    System.out.println(line);
                     String[] splitUnwanted = line.split(",");
 
                     Course itemOne = getPairs(splitUnwanted[0]);
@@ -511,7 +507,6 @@ public class Parser {
                     System.out.println(line);
                 }
                 if (line.matches(RegexStrings.PREFERENCES)) {
-                    System.out.println(line);
 
                     if (line.matches(".*(TUT|LAB).*")) {
                         if (line.matches(RegexStrings.PREFERENCES_L)) {
@@ -619,8 +614,6 @@ public class Parser {
                 if (line.matches(RegexStrings.PAIR)) {
                     Matcher matcher = Pattern.compile(RegexStrings.PAIR).matcher(line);
                     matcher.matches();
-                    System.out.println(line);
-
                     String[] splitPair = line.split(",");
                     Course itemOne = getPairs(splitPair[0]);
                     Course itemTwo = getPairs(splitPair[1]);
@@ -632,7 +625,7 @@ public class Parser {
             }
             if (!lastLine.matches("[\\s]*")) {
                 System.out.println("Parsing error: Could not parse File in Pair(no space)");
-                System.exit(0);
+                //System.exit(0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -656,8 +649,6 @@ public class Parser {
                     System.out.println(line);
                 }
                 if (line.matches(RegexStrings.UNWANTED)) {
-
-                    System.out.println(line);
 
                     if (line.matches(".*(TUT|LAB).*")) {
                         if (line.matches(RegexStrings.LAB_DAY_TIME)) {
