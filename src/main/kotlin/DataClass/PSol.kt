@@ -9,8 +9,6 @@ data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) {
 
     val value: Int = Eval().eval(this) // eval value of solution
 
-
-
     // returns true if no keys are mapped to null.
     val complete: Boolean = data.getKeys(null).isEmpty()
 
@@ -33,6 +31,7 @@ data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) {
     fun courseLookup(c: Course): Slot?{
         return data[c]
     }
+
     fun slotLookup(s: Slot?): Set<Course>{
         return data.getKeys(s)
     }
