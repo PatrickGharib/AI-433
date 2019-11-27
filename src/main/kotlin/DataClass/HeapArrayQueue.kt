@@ -4,6 +4,7 @@ import java.util.Comparator
 
 class HeapArrayQueue<T>(size: Int, val comparator: Comparator<T>? = null) : PriorityQueue<T>() {
 
+
     var size: Int = 0
         private set
 
@@ -13,6 +14,7 @@ class HeapArrayQueue<T>(size: Int, val comparator: Comparator<T>? = null) : Prio
         if (size +1 == data.size){
             resize()
         }
+
         data[++size] = item
         lift(size)
     }

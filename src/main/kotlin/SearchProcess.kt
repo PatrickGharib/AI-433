@@ -1,6 +1,6 @@
 import DataClass.PSol
 
-abstract class SearchProcess<T: AndTree<J>, J> {
+abstract class SearchProcess<T: AndTree<J>, J : Comparable<J>> {
 
     abstract val model: T
 

@@ -20,7 +20,7 @@ public abstract class Slot {
         this.max = max;
         this.min = min;
 
-        if (!validTimes.contains(startTime)) throw new IllegalArgumentException("The provided start time is invalid.");
+        if (!validTimes.contains(startTime)) throw new IllegalArgumentException("The provided start time is invalid." + startTime);
     }
 
     public int getMax() {
