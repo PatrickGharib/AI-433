@@ -317,7 +317,6 @@ public class Parser {
      * group(5) "LAB|TUT"
      * group(6) is tutorial section
      */
-    //TODO need to make sure the objects are being created properly, talk to hannah about this
     private static String readLab(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Not compatible:";
@@ -336,25 +335,16 @@ public class Parser {
                     Pattern pattern = Pattern.compile(RegexStrings.LABS);
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
-                    System.out.println(line);
-
                     int labNumber = Integer.parseInt(matcher.group(3));
                     String labName = matcher.group(2);
-
-                    //TODO we have to talk about how to deal with duplicates. i need help with that maybe
-
-                    //make new Lab and add to lab set
+                    //TODO check for dups
                     Lab newLab = new Lab(labName, labNumber, matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
                     ParsedData.LABS.add(newLab);
                 }
-
-                //TODO check with hannah if i need to also check sections here
                 if (line.matches(RegexStrings.TUT)) {
                     Pattern pattern = Pattern.compile(RegexStrings.TUT);
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
-
-                    //make new lab and add to lab set
                     Lab newLab = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(6)));
                     ParsedData.LABS.add(newLab);
                 }
@@ -385,12 +375,14 @@ public class Parser {
                     System.out.println(line);
                 }
                 if (line.matches(RegexStrings.NOTCOMPATABLE_FORMAT)) {
-                    Matcher matcher = Pattern.compile(RegexStrings.NOTCOMPATABLE_FORMAT).matcher(line);
-                    matcher.matches();
                     System.out.println(line);
                     String[] splitUnwanted = line.split(",");
-                    Course itemOne = checkPairs(splitUnwanted[0], matcher);
-                    Course itemTwo = checkPairs(splitUnwanted[1], matcher);
+
+                    Course itemOne = checkPairs(splitUnwanted[0]);
+                    Course itemTwo = checkPairs(splitUnwanted[1]);
+
+                    NotCompatibleCoursePair notCompatibleCoursePair = new NotCompatibleCoursePair(itemOne,itemTwo);
+                    ParsedData.NOT_COMPATIBLE.add(notCompatibleCoursePair);
                 }
                 lastLine = line;
             }
@@ -406,20 +398,24 @@ public class Parser {
         return line;
     }
 
-    //TODO waiting on hannah Object Updates
-    private static Course checkPairs(String notCompItem, Matcher matcher) {
+
+    private static Course checkPairs(String notCompItem) {
         Course item = null;
         if (notCompItem.matches(".*(TUT|LAB).*")) {
             if (notCompItem.matches(RegexStrings.LABS)) {
-                //make new course slot and add to courseSlot hashset
-                //make sure that this
-                item = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(6)));
+                Matcher matcher = Pattern.compile(RegexStrings.LABS).matcher(notCompItem);
+                matcher.matches();
+                item = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(7), Integer.parseInt(matcher.group(8)), Integer.parseInt(matcher.group(6)));
             } else if (notCompItem.matches(RegexStrings.TUT)) {
-                //TODO fill in tutorial constructor when hannah is done
-               // item = new Lab();
+                Matcher matcher = Pattern.compile(RegexStrings.TUT).matcher(notCompItem);
+                matcher.matches();
+                item = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(8)));
             }
-            //TODO fill in course constructor when hannah is done
-        } else{} //item = new Course();
+        } else{
+            Matcher matcher = Pattern.compile(RegexStrings.COURSES).matcher(notCompItem);
+            matcher.matches();
+            item = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
+        }
         return item;
     }
 
