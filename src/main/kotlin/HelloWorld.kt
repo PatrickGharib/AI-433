@@ -8,8 +8,11 @@ import java.nio.file.Paths
 fun main() {
     Parser.inputReader("deptinst1.txt")
     println(Paths.get("").toAbsolutePath())
-    println(CourseSchedulerProcess(constructPSol()).execute()?.value)
+    val x = CourseSchedulerProcess(constructPSol()).execute()
+    println(x?.value)
     println("done")
+    println(x?.value?.let { PSolStringBuilder(x).ToString(it) })
+
 }
 
 fun constructPSol() : PSol{
