@@ -440,11 +440,10 @@ public class Parser {
                         if (line.matches(RegexStrings.LAB_DAY_TIME)){
                             matcher = Pattern.compile(RegexStrings.LAB_DAY_TIME).matcher(line);
                             matcher.matches();
-                            float minToDecimal = Float.parseFloat(matcher.group(11)) + (Float.parseFloat(matcher.group(15)) / 60);
-                            course =  new Lab(matcher.group(3),Integer.parseInt(matcher.group(4)),matcher.group(5),Integer.parseInt(matcher.group(6)));
-
+                            float minToDecimal = Float.parseFloat(matcher.group(12)) + (Float.parseFloat(matcher.group(16)) / 60);
+                            course =  new Lab(matcher.group(2),Integer.parseInt(matcher.group(3)),matcher.group(6),Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
                             //TODO talk to hannah about slot and how i can't actually make one with the information i have
-                            slot = new LabSlot(matcher.group(7), minToDecimal);
+                            slot = new LabSlot(matcher.group(8), minToDecimal);
                             ParsedData.UNWANTED.add(unwantedCourse = new UnwantedCourseTime(course,slot));
                         }
                         else if (line.matches(RegexStrings.TUT_DAY_TIME)){
@@ -452,10 +451,9 @@ public class Parser {
                             matcher.matches();
                             float minToDecimal = Float.parseFloat(matcher.group(11)) + (Float.parseFloat(matcher.group(15)) / 60);
                             course =  new Lab(matcher.group(3),Integer.parseInt(matcher.group(4)),matcher.group(5),Integer.parseInt(matcher.group(6)));
-
                             //TODO talk to hannah about slot and how i can't actually make one with the information i have
                             slot = new LabSlot(matcher.group(7), minToDecimal);
-                            ParsedData.UNWANTED.add(unwantedCourse = new UnwantedCourseTime(course,slot));
+                            ParsedData.UNWANTED.add(new UnwantedCourseTime(course,slot));
                         }
                     } else{
                         matcher = Pattern.compile(RegexStrings.CRS_DAY_TIME).matcher(line);
@@ -466,11 +464,9 @@ public class Parser {
                         }
                         float minToDecimal = Float.parseFloat(matcher.group(10)) + (Float.parseFloat(matcher.group(14)) / 60);
                         course =  new Section(matcher.group(2),Integer.parseInt(matcher.group(3)),Integer.parseInt(matcher.group(5)));
-
                         //TODO talk to hannah about slot and how i can't actually make one with the information i have
                         slot = new LabSlot(matcher.group(6), minToDecimal);
-
-                        ParsedData.UNWANTED.add(unwantedCourse = new UnwantedCourseTime(course,slot));
+                        ParsedData.UNWANTED.add(new UnwantedCourseTime(course,slot));
 
                     }
                 }
@@ -487,6 +483,11 @@ public class Parser {
     }
 
     private static String readPreferences(BufferedReader br, String line) {
+        Matcher matcher;
+        Course course;
+        Slot slot;
+        PreferredCourseTime prefCourse;
+
         String lastLine = line;
         String exitString = "Pair:";
         try {
@@ -501,19 +502,35 @@ public class Parser {
                     System.out.println(line);
                 }
                 if (line.matches(RegexStrings.PREFERENCES)) {
-                    Matcher matcher = Pattern.compile(RegexStrings.PREFERENCES).matcher(line);
-                    matcher.matches();
                     System.out.println(line);
 
                     if (line.matches(".*(TUT|LAB).*")) {
                         if (line.matches(RegexStrings.PREFERENCES_L)) {
-                            //TODO create lab object and possibly a time object
+                            matcher = Pattern.compile(RegexStrings.PREFERENCES_L).matcher(line);
+                            matcher.matches();
+                            float minToDecimal = Float.parseFloat(matcher.group(5)) + (Float.parseFloat(matcher.group(9)) / 60);
+                            course =  new Lab(matcher.group(11),Integer.parseInt(matcher.group(12)),matcher.group(15),Integer.parseInt(matcher.group(16)), Integer.parseInt(matcher.group(14)));
+                            //TODO talk to hannah about slot and how i can't actually make one with the information i have
+                            slot = new LabSlot(matcher.group(8), minToDecimal);
+                            ParsedData.PREFERENCES.add(new PreferredCourseTime(slot,course,Integer.parseInt(matcher.group(7))));
                         }
                         else if (line.matches(RegexStrings.PREFERENCES_T)) {
-
+                            matcher = Pattern.compile(RegexStrings.PREFERENCES_T).matcher(line);
+                            matcher.matches();
+                            float minToDecimal = Float.parseFloat(matcher.group(5)) + (Float.parseFloat(matcher.group(9)) / 60);
+                            course =  new Lab(matcher.group(12),Integer.parseInt(matcher.group(13)),matcher.group(14),Integer.parseInt(matcher.group(15)));
+                            //TODO talk to hannah about slot and how i can't actually make one with the information i have
+                            slot = new LabSlot(matcher.group(1), minToDecimal);
+                            ParsedData.PREFERENCES.add(new PreferredCourseTime(slot,course,Integer.parseInt(matcher.group(16))));
                         }
-                    } else if (line.matches(RegexStrings.PREFERENCES_C)) {
-
+                    } else{
+                        matcher = Pattern.compile(RegexStrings.PREFERENCES_C).matcher(line);
+                        matcher.matches();
+                        float minToDecimal = Float.parseFloat(matcher.group(5)) + (Float.parseFloat(matcher.group(9)) / 60);
+                        course =  new Section(matcher.group(11),Integer.parseInt(matcher.group(12)),Integer.parseInt(matcher.group(14)));
+                        //TODO talk to hannah about slot and how i can't actually make one with the information i have
+                        slot = new LabSlot(matcher.group(1), minToDecimal);
+                        ParsedData.PREFERENCES.add(new PreferredCourseTime(slot,course,Integer.parseInt(matcher.group(15))));
                     }
                 }
                 lastLine = line;
