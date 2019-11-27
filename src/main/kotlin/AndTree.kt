@@ -2,14 +2,16 @@ import DataClass.HeapArrayQueue
 import DataClass.PriorityQueue
 import java.lang.Exception
 
-abstract class AndTree<T>(root: T) {
+abstract class AndTree<T: Comparable<T>>(root: T ) {
 
     // equivalent to:
     // private final MutableList<Node> _leaves = mutableListOf(new Node(root))
     private val _leaves = mutableListOf(Node(root))
 
     private val queue: PriorityQueue<Node> = HeapArrayQueue(4)
-
+    init {
+        queue.insert(Node(root))
+    }
 
 
     // read only view of _leaves (does not copy)
@@ -21,7 +23,10 @@ abstract class AndTree<T>(root: T) {
 
     open fun best(): Node? = queue.pop()
 
-    open inner class Node(val data: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0){
+    open inner class Node(val data: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0) : Comparable<Node>{
+        override fun compareTo(other: Node): Int {
+            return if (depth > other.depth) 1 else this.data.compareTo(other.data)
+        }
 
         var solved: Boolean = false
 
@@ -34,9 +39,10 @@ abstract class AndTree<T>(root: T) {
                     val x = Node(it,depth = depth + 1)
                     _children.add(x)
                     _leaves.add(x)
+                    queue.insert(x)
                 }
                 if(_children.isEmpty()){
-                    solved = true
+
                 }else{
                     _leaves.remove(this)
                 }
@@ -60,7 +66,7 @@ abstract class AndTree<T>(root: T) {
         }
 
         override fun hashCode(): Int {
-            var result = data?.hashCode() ?: 0
+            var result = data.hashCode() ?: 0
             result = 31 * result + _children.hashCode()
             result = 31 * result + depth
             return result

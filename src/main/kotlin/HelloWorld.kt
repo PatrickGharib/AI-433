@@ -7,8 +7,9 @@ import java.nio.file.Paths
 
 fun main() {
     Parser.inputReader("deptinst1.txt")
-    print(Paths.get("").toAbsolutePath())
-    CourseSchedulerProcess(constructPSol()).execute()
+    println(Paths.get("").toAbsolutePath())
+    println(CourseSchedulerProcess(constructPSol()).execute()?.value)
+    println("done")
 }
 
 fun constructPSol() : PSol{
@@ -16,11 +17,20 @@ fun constructPSol() : PSol{
     ParsedData.PARTIAL_ASSIGNMENTS.forEach {
         x.add(Assignment(it.course, it.slot as CourseSlot?))
     }
+
     val exclude = ParsedData.PARTIAL_ASSIGNMENTS.map { it.course }
     ParsedData.COURSES.forEach {
         if (it in exclude){
             return@forEach
         }else {
+            x.add(Assignment(it, null))
+        }
+    }
+
+    ParsedData.LABS.forEach {
+        if (it in exclude){
+            return@forEach
+        }else{
             x.add(Assignment(it, null))
         }
     }
