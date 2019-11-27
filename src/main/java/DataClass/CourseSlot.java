@@ -8,7 +8,7 @@ public class CourseSlot extends Slot {
     public CourseSlot(Day day, float startTime, int courseMax, int courseMin) {
         super(validateName(day), startTime, courseMax, courseMin,
                 day.equals(Day.MO)||day.equals(Day.FR) ? Arrays.asList(8f,9f,10f,11f,12f,13f,14f,15f,16f,17f,18f,19f,20f) :
-                day.equals(Day.TU) ? Arrays.asList(8f, 9.5f, 12.5f, 14f, 15.5f, 17f, 18.5f) :
+                day.equals(Day.TU) ? Arrays.asList(8f, 9.5f, 11f, 12.5f, 14f, 15.5f, 17f, 18.5f) :
                         Collections.emptyList());
         endCalc();
     }

@@ -6,8 +6,7 @@ public class LabSlot extends Slot {
 
     public LabSlot(Day day, float startTime, int labMax, int labMin) {
         super(day, startTime, labMax, labMin,
-                day.equals(Day.MO) ? Arrays.asList(8f,9f,10f,11f,12f,13f,14f,15f,16f,17f,18f,19f,20f) :
-                day.equals(Day.TU) ? Arrays.asList(8f,9f,10f,13f,14f,15f,16f,17f,18f,19f,20f) :
+                day.equals(Day.MO) || day.equals(Day.TU) ? Arrays.asList(8f,9f,10f,11f,12f,13f,14f,15f,16f,17f,18f,19f,20f) :
                 day.equals(Day.FR) ? Arrays.asList(8f,10f,12f,14f,16f,18f) :
                         Collections.emptyList());
         endCalc();

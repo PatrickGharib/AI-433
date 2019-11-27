@@ -12,12 +12,10 @@ For each of unwanted(a,s) statements, assign(a) has to be unequal to s.
 Evening classes (LEC 9+) have to be scheduled into evening slots (18:00+).
 All courses (course sections) on the 500-level have to be scheduled into different time slots.
 Assign(ci) needs to be unequal to assign(lik) for all k and i.
+No courses can be scheduled at tuesdays 11:00-12:30.
 There are two special "courses" CPSC 813 and CPSC 913 that have to be scheduled tuesdays/thursdays 18:00-19:00
  and CPSC 813 is not allowed to overlap with any labs/tutorials of CPSC 313 or with any course section of CPSC 313.
  and CPSC 913 is not allowed to overlap with any labs/tutorials of CPSC 413 or with any course section of CPSC 413.
-
-//Constraint checked in constructors:
-No courses can be scheduled at tuesdays 11:00-12:30.
 */
 
 
@@ -92,6 +90,14 @@ public class Constr {
                             if (course.equals(c)) return false;
                         }
                         courses500.add(course);
+                    }
+                }
+
+                //No courses(assuming course sections) can be scheduled at tuesdays 11:00-12:30.
+                if (slot.getDay().equals(Slot.Day.TU)) {
+                    if ((slot.getStartTime() == 11) || slot.getStartTime() == 12) {
+                        if (coursenum > 0)
+                            return false;
                     }
                 }
 
