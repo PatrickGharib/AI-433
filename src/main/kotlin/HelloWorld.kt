@@ -26,5 +26,13 @@ fun constructPSol() : PSol{
             x.add(Assignment(it, null))
         }
     }
+
+    ParsedData.LABS.forEach {
+        if (it in exclude){
+            return@forEach
+        }else{
+            x.add(Assignment(it, null))
+        }
+    }
     return PSol(x)
 }

@@ -1,4 +1,5 @@
 import DataClass.PSol
+import IO.ParsedData
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timer
 import kotlin.time.TimedValue
@@ -45,7 +46,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
         if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 100000)) {
             candidate = node.data
-            println("New Candidate!")
+            //println("New Candidate!")
         }
 
         node.children.forEach {
@@ -53,9 +54,9 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
             if (it.solved && it.data.complete && (it.data.value < (candidate?.value ?: 100000))) {
                 candidate = it.data
             }
-            println("Examined child!")
+            //println("Examined child!")
         }
-        println(candidate?.value.toString()+ "||" + model.leaves.count())
+        println(candidate?.value.toString()+ "||" + model.leaves.count() + "||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
     }
 
     private fun Solved(it: AndTree<PSol>.Node): Boolean {
