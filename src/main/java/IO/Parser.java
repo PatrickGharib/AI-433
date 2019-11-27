@@ -3,7 +3,6 @@ package IO;
 import DataClass.*;
 
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -90,8 +89,7 @@ public class Parser {
             e.printStackTrace();
         }
     }
-
-
+    //TODO need to check for duplicates
     /**
      * @param br
      * @param line
@@ -378,8 +376,8 @@ public class Parser {
                     System.out.println(line);
                     String[] splitUnwanted = line.split(",");
 
-                    Course itemOne = checkPairs(splitUnwanted[0]);
-                    Course itemTwo = checkPairs(splitUnwanted[1]);
+                    Course itemOne = getPairs(splitUnwanted[0]);
+                    Course itemTwo = getPairs(splitUnwanted[1]);
 
                     NotCompatibleCoursePair notCompatibleCoursePair = new NotCompatibleCoursePair(itemOne,itemTwo);
                     ParsedData.NOT_COMPATIBLE.add(notCompatibleCoursePair);
@@ -398,8 +396,7 @@ public class Parser {
         return line;
     }
 
-
-    private static Course checkPairs(String notCompItem) {
+    private static Course getPairs(String notCompItem) {
         Course item = null;
         if (notCompItem.matches(".*(TUT|LAB).*")) {
             if (notCompItem.matches(RegexStrings.LABS)) {
@@ -420,6 +417,10 @@ public class Parser {
     }
 
     private static String readUnwanted(BufferedReader br, String line) {
+        Matcher matcher;
+        Course course;
+        Slot slot;
+        UnwantedCourseTime unwantedCourse;
         String lastLine = line;
         String exitString = "Preferences:";
         try {
@@ -434,18 +435,44 @@ public class Parser {
                     System.out.println(line);
                 }
                 if (line.matches(RegexStrings.UNWANTED)) {
-                    Matcher matcher = Pattern.compile(RegexStrings.UNWANTED).matcher(line);
-                    matcher.matches();
-                    System.out.println(line);
-
                     if (line.matches(".*(TUT|LAB).*")) {
-                        if (line.matches(RegexStrings.UNWANTED_L)){
 
-                        }
-                        else if (line.matches(RegexStrings.UNWANTED_T)){
+                        if (line.matches(RegexStrings.LAB_DAY_TIME)){
+                            matcher = Pattern.compile(RegexStrings.LAB_DAY_TIME).matcher(line);
+                            matcher.matches();
+                            float minToDecimal = Float.parseFloat(matcher.group(11)) + (Float.parseFloat(matcher.group(15)) / 60);
+                            course =  new Lab(matcher.group(3),Integer.parseInt(matcher.group(4)),matcher.group(5),Integer.parseInt(matcher.group(6)));
 
+                            //TODO talk to hannah about slot and how i can't actually make one with the information i have
+                            slot = new LabSlot(matcher.group(7), minToDecimal);
+                            ParsedData.UNWANTED.add(unwantedCourse = new UnwantedCourseTime(course,slot));
                         }
-                    } else System.out.println(line + " COURSE");
+                        else if (line.matches(RegexStrings.TUT_DAY_TIME)){
+                            matcher = Pattern.compile(RegexStrings.TUT_DAY_TIME).matcher(line);
+                            matcher.matches();
+                            float minToDecimal = Float.parseFloat(matcher.group(11)) + (Float.parseFloat(matcher.group(15)) / 60);
+                            course =  new Lab(matcher.group(3),Integer.parseInt(matcher.group(4)),matcher.group(5),Integer.parseInt(matcher.group(6)));
+
+                            //TODO talk to hannah about slot and how i can't actually make one with the information i have
+                            slot = new LabSlot(matcher.group(7), minToDecimal);
+                            ParsedData.UNWANTED.add(unwantedCourse = new UnwantedCourseTime(course,slot));
+                        }
+                    } else{
+                        matcher = Pattern.compile(RegexStrings.CRS_DAY_TIME).matcher(line);
+                        matcher.matches();
+                        if (!matcher.group(6).matches(RegexStrings.COURSE_VALID_DAY)){
+                            System.out.println("Invalid Day");
+                            continue;
+                        }
+                        float minToDecimal = Float.parseFloat(matcher.group(10)) + (Float.parseFloat(matcher.group(14)) / 60);
+                        course =  new Section(matcher.group(2),Integer.parseInt(matcher.group(3)),Integer.parseInt(matcher.group(5)));
+
+                        //TODO talk to hannah about slot and how i can't actually make one with the information i have
+                        slot = new LabSlot(matcher.group(6), minToDecimal);
+
+                        ParsedData.UNWANTED.add(unwantedCourse = new UnwantedCourseTime(course,slot));
+
+                    }
                 }
                 lastLine = line;
             }
@@ -521,8 +548,11 @@ public class Parser {
                     System.out.println(line);
 
                     String[] splitPair = line.split(",");
-                    Course item1 = checkPairs(splitPair[0], matcher);
-                    Course item2 = checkPairs(splitPair[1], matcher);
+                    Course itemOne = getPairs(splitPair[0]);
+                    Course itemTwo = getPairs(splitPair[1]);
+
+                    PreferredCoursePair coursePair = new PreferredCoursePair(itemOne,itemTwo);
+                    ParsedData.PAIR.add(coursePair);
                 }
                 lastLine = line;
             }
@@ -553,8 +583,8 @@ public class Parser {
                     System.out.println(line);
 
                     if (line.matches(".*(TUT|LAB).*")) {
-                        if (line.matches(RegexStrings.UNWANTED_L)) System.out.println(line + " LAB");
-                        else if (line.matches(RegexStrings.UNWANTED_T)) System.out.println(line + " TUT");
+                        if (line.matches(RegexStrings.LAB_DAY_TIME)) System.out.println(line + " LAB");
+                        else if (line.matches(RegexStrings.TUT_DAY_TIME)) System.out.println(line + " TUT");
                     } else System.out.println(line + " COURSE");
                 }
                 lastLine = line;

@@ -25,9 +25,9 @@ public class RegexStrings {
 
     public static final String NOTCOMPATABLE_FORMAT = "("+LABS + "|" + TUT + "|" + COURSES +")" + "," + "(" + LABS + "|" + TUT + "|" + COURSES + ")";
     public static final String UNWANTED = "("+LABS +"|"+TUT+ "|" + COURSES +")" + "," + "("+ LAB_VALID_DAY +"|"+ COURSE_VALID_DAY +")"+  "," + TIMES;
-    public static final String UNWANTED_C = COURSES + "," + COURSE_VALID_DAY +  "," + TIMES;
-    public static final String UNWANTED_L = LABS + "," + LAB_VALID_DAY  + "," + TIMES;
-    public static final String UNWANTED_T = TUT + "," + LAB_VALID_DAY  + "," + TIMES;
+    public static final String CRS_DAY_TIME = COURSES + "," + COURSE_VALID_DAY +  "," + TIMES;
+    public static final String LAB_DAY_TIME = LABS + "," + LAB_VALID_DAY  + "," + TIMES;
+    public static final String TUT_DAY_TIME = TUT + "," + LAB_VALID_DAY  + "," + TIMES;
 
     public static final String PREFERENCES =  LAB_VALID_DAY + "," + TIMES + "," + "("+LABS + "|" + TUT + "|" + COURSES +")" +","+ "([\\s]*([\\d]+)[\\s]*)*";
     public static final String PREFERENCES_C = COURSE_VALID_DAY + "," + TIMES + "," + COURSES +","+ "([\\s]*([\\d]+)[\\s]*)";
@@ -35,6 +35,7 @@ public class RegexStrings {
     public static final String PREFERENCES_T = LAB_VALID_DAY + "," + TIMES + "," + TUT + ","+ "([\\s]*([\\d]+)[\\s]*)";
     public static final String PAIR = NOTCOMPATABLE_FORMAT;
     public static final String PARTIALASSIGNMENT = UNWANTED;
+
 
 //    public static void main(String args[]){
 //        String line = ("CPSC 433 LEC 01 TUT 01, CPSC 433 LEC 02 LAB 02");
