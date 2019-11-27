@@ -33,8 +33,9 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
     override fun fTrans(node: AndTree<PSol>.Node?) {
         node!!.expand()
-        if (node.children.isEmpty()){
+        if (node.children.isEmpty()) {
             node.solved = true
+            println("solved!")
         }
 
         // candidate?.value ?: 100000 explanation:
@@ -42,15 +43,19 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
         // then ?: says if the left is null then return the right, in this case 100000.
         // so if candidate is null it goes: (candidate?.value) ?: 100000 -> (null) ?: 100000 -> 100000
 
-        if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 100000)){
+        if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 100000)) {
             candidate = node.data
+            println("New Candidate!")
         }
+
         node.children.forEach {
             it.solved = Solved(it)
-            if (it.solved && it.data.complete && (it.data.value < (candidate?.value ?: 100000))){
+            if (it.solved && it.data.complete && (it.data.value < (candidate?.value ?: 100000))) {
                 candidate = it.data
             }
+            println("Examined child!")
         }
+        println(candidate?.value.toString()+ "||" + model.leaves.count())
     }
 
     private fun Solved(it: AndTree<PSol>.Node): Boolean {

@@ -3,8 +3,10 @@ package DataClass
 
 
 data class ManyToOneMutableMap<K, V>(
-    private val manyToOne: MutableMap<K, V> = mutableMapOf(),
-    private val oneToMany: MutableMap<V, MutableSet<K>> = mutableMapOf()
+        private val manyToOne: MutableMap<K, V> = mutableMapOf(),
+        private val oneToMany: MutableMap<V, MutableSet<K>> = mutableMapOf(),
+        val keySet: MutableSet<K> = manyToOne.keys,
+        val valSet: MutableSet<V> = oneToMany.keys
     ){
     constructor(l: List<Pair<K,V>>) : this() {
         l.forEach { set(it.first,it.second) }
@@ -13,8 +15,10 @@ data class ManyToOneMutableMap<K, V>(
         return manyToOne[key]
     }
 
-    val keySet = manyToOne.keys
-    val valSet = oneToMany.keys
+    fun deepCopy(): ManyToOneMutableMap<K,V>{
+        return ManyToOneMutableMap(manyToOne.toMutableMap(), oneToMany.toMutableMap())
+    }
+
     fun set(key: K, value: V){
         oneToMany[manyToOne[key]]?.remove(key)
         manyToOne[key] = value
