@@ -2,10 +2,8 @@ package Tree;
 
 import DataClass.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 import DataClass.PreferredCoursePair;
 
 /*
@@ -30,36 +28,47 @@ public class Eval {
     private int pen_labsmin;                            //for each lab below labmin
     private int pen_section;                            //for each pair of sections that is schedule into the same slot
     private int pen_notpaired;                          //for each pair(a,b) for which assign(a) != assign(b)
-    private Set<PreferredCoursePair> coursePairs;       //Preferred course pairs with same assign value
-    private Set<PreferredCourseTime> prefAssigns;       //Preferred course assignments TODO
+    private Set<PreferredCoursePair> coursePairs;                   //Preferred course pairs with same assign value
+    private HashMap<Course, HashMap<Slot, Integer>> prefAssigns;    //Preferred course assignments
 
     //Private Constructor
-    public Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section, Set<PreferredCoursePair> pairs){
+    public Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section,
+                Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
+
         this.pen_coursemin = pen_coursemin;
         this.pen_labsmin = pen_labsmin;
         this.pen_notpaired = pen_notpaired;
         this.pen_section = pen_section;
         this.coursePairs = pairs;
+
+        HashMap<Slot, Integer> prefs = new HashMap<>();
+        HashMap<Course, HashMap<Slot, Integer>> prefCourses = new HashMap<>();
+        for (PreferredCourseTime pref : prefAssigns){
+            prefs.put(pref.getSlot(), pref.getPreferenceVal());
+            prefCourses.put(pref.getCourse(), prefs);
+        }
+        this.prefAssigns = prefCourses;
     }
 
     //Instantiation with no given attributes
     public static Eval getInstance(){
         if (eval_instance == null)
-            eval_instance = new Eval(1, 1, 1, 1, new LinkedHashSet<>());
+            eval_instance = new Eval(1, 1, 1, 1, new LinkedHashSet<>(), new HashSet<>());
         return eval_instance;
     }
 
     //Instantiation with default penalties
-    public static Eval getInstance(Set<PreferredCoursePair> pairs){
+    public static Eval getInstance(Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
         if (eval_instance == null)
-            eval_instance = new Eval(1, 1, 1, 1, pairs);
+            eval_instance = new Eval(1, 1, 1, 1, pairs, prefAssigns);
         return eval_instance;
     }
 
     //Instantiation with custom penalties
-    public static Eval getInstance(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section, Set<PreferredCoursePair> pairs){
+    public static Eval getInstance(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section,
+                                   Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
         if (eval_instance == null)
-            eval_instance = new Eval(pen_coursemin, pen_labsmin, pen_notpaired, pen_section, pairs);
+            eval_instance = new Eval(pen_coursemin, pen_labsmin, pen_notpaired, pen_section, pairs, prefAssigns);
         return eval_instance;
     }
 
@@ -91,7 +100,10 @@ public class Eval {
                         sections.add(section);
                     }
                 }
-            }
+                //Add up preference values
+                evaluation += prefAssigns.get(course).get(slot);
+            } //For each course in slot
+
             //Check CourseMin and LabsMin
             if (slot instanceof CourseSlot) {
                 if (coursenum < slot.getMin()) {
@@ -102,7 +114,7 @@ public class Eval {
                     evaluation += pen_labsmin;
                 }
             }
-        }
+        } //For each slot in sol
 
         //Check if a pair has the same assignment
         for (PreferredCoursePair pair : coursePairs){

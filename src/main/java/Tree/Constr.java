@@ -28,7 +28,7 @@ public class Constr {
     private Set<NotCompatibleCoursePair> notCompatibles;
     private Set<UnwantedCourseTime> unwanted;
 
-    //Constructors
+    //Constructor
     public Constr(Set<NotCompatibleCoursePair> pairs, Set<UnwantedCourseTime> unwanted){
         notCompatibles = pairs;
         this.unwanted = unwanted;
