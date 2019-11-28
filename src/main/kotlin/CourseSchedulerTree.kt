@@ -1,4 +1,6 @@
+import DataClass.Lab
 import DataClass.PSol
+import DataClass.Section
 import IO.ParsedData
 import Tree.Constr
 import Tree.Eval
@@ -11,20 +13,30 @@ class CourseSchedulerTree(root: PSol) : AndTree<PSol>(root) {
     override fun childGen(pred: PSol): List<PSol> {
         val c = pred.slotLookup(null).firstOrNull()
         val x = mutableListOf<PSol>()
-        if (c != null) {
-            ((ParsedData.COURSE_SLOTS) + (ParsedData.LAB_SLOT)).forEach {
-                if (it != null && it !in pred.slotSet()) {
+        if (c is Lab) ParsedData.LAB_SLOT.forEach {
+            if (it != null) {
 
-                    val p = pred.assign(c, it)
-                    //TODO not sure if Cosntr() is correct
-                    if (Constr().constrPartial(p)) {
-                        x.add(p)
+                val p = pred.assign(c, it)
+                //TODO not sure if Cosntr() is correct
+                if (Constr().constrPartial(p) && p.courseLookup(c) != null) {
+                    x.add(p)
 
 
-                    }
                 }
             }
         }
-            return x
+        if (c is Section) ParsedData.COURSE_SLOTS.forEach {
+            if (it != null) {
+
+                val p = pred.assign(c, it)
+                //TODO not sure if Cosntr() is correct
+                if (Constr().constrPartial(p) && p.courseLookup(c) != null) {
+                    x.add(p)
+                }
+            }
+        }
+
+
+        return x
     }
 }

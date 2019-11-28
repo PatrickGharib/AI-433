@@ -20,5 +20,15 @@ public class LabSlot extends Slot {
     {
         endTime = day.equals(Day.FR) ? startTime + 2f : startTime + 1f;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof LabSlot;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
 

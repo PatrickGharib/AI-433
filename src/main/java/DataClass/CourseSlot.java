@@ -27,4 +27,14 @@ public class CourseSlot extends Slot {
     {
         endTime = day.equals(Day.TU) ? startTime + 1.5f : startTime + 1f;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof CourseSlot;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
