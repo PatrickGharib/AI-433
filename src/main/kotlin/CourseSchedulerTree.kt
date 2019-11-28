@@ -18,7 +18,7 @@ class CourseSchedulerTree(root: PSol) : AndTree<PSol>(root) {
 
                 val p = pred.assign(c, it)
                 //TODO not sure if Cosntr() is correct
-                if (Constr().constrPartial(p) && p.courseLookup(c) != null) {
+                if (Constr.getInstance().constrPartial(p) && p.courseLookup(c) != null) {
                     x.add(p)
 
 
@@ -30,7 +30,7 @@ class CourseSchedulerTree(root: PSol) : AndTree<PSol>(root) {
 
                 val p = pred.assign(c, it)
                 //TODO not sure if Cosntr() is correct
-                if (Constr().constrPartial(p) && p.courseLookup(c) != null) {
+                if (Constr.getInstance().constrPartial(p) && p.courseLookup(c) != null) {
                     x.add(p)
                 }
             }
