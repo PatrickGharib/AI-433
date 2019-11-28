@@ -1,9 +1,7 @@
 package Tree;
 
 import DataClass.*;
-
 import java.util.*;
-
 import DataClass.PreferredCoursePair;
 
 /*
@@ -101,7 +99,9 @@ public class Eval {
                     }
                 }
                 //Add up preference values
-                evaluation += prefAssigns.get(course).get(slot);
+                Integer prefVal = prefAssigns.get(course).get(slot);
+                if (prefVal != null)
+                    evaluation += prefVal;
             } //For each course in slot
 
             //Check CourseMin and LabsMin
