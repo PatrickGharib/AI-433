@@ -3,6 +3,23 @@ package DataClass;
 import java.util.*;
 
 public abstract class Slot {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Slot)) return false;
+        Slot slot = (Slot) o;
+        return Float.compare(slot.startTime, startTime) == 0 &&
+                Float.compare(slot.endTime, endTime) == 0 &&
+                max == slot.max &&
+                min == slot.min &&
+                day == slot.day;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(day, startTime, endTime, max, min);
+    }
+
     public enum Day
     {
         MO,
@@ -48,6 +65,7 @@ public abstract class Slot {
 
     public boolean overlaps(Slot s)
     {
+        if (s == null) return false;
         if(this instanceof LabSlot)
         {
             if(s instanceof LabSlot)
@@ -72,14 +90,6 @@ public abstract class Slot {
         return getEndTime() >= s.getStartTime() && s.getEndTime() >= getStartTime();
     }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
 
 }

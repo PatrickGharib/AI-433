@@ -32,6 +32,6 @@ public abstract class Course {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCourseName(), getCourseNumber());
+        return 87 * Objects.hash(getCourseName(), getCourseNumber());
     }
 }

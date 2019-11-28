@@ -34,8 +34,9 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
     override fun fTrans(node: AndTree<PSol>.Node?) {
         node!!.expand()
+        println(node.depth.toString() +"||"+node?.data.value.toString()+ "||" + model.leaves.count() + "||" + node.data.courseSet().filter {node.data.courseLookup(it) != null }.count() +"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
         if (node.children.isEmpty()) {
-            node.solved = true
+            //node.solved = true
             println("solved!")
         }
 
@@ -44,24 +45,22 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
         // then ?: says if the left is null then return the right, in this case 100000.
         // so if candidate is null it goes: (candidate?.value) ?: 100000 -> (null) ?: 100000 -> 100000
 
-        if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 100000)) {
+        if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 1000000000)) {
             candidate = node.data
+            println(candidate?.value.toString()+ "||" + model.leaves.count() + "||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
             //println("New Candidate!")
         }
 
         node.children.forEach {
-            it.solved = Solved(it)
-            if (it.solved && it.data.complete && (it.data.value < (candidate?.value ?: 100000))) {
+            it.solved = it.data.complete
+            if (it.solved  && (it.data.value < (candidate?.value ?: 1000000000))) {
                 candidate = it.data
+                println(candidate?.value.toString()+ "||" + model.leaves.count() + "||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.filter { candidate?.courseLookup(it) != null }?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
+
             }
             //println("Examined child!")
         }
-        println(candidate?.value.toString()+ "||" + model.leaves.count() + "||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
-    }
-
-    private fun Solved(it: AndTree<PSol>.Node): Boolean {
-        //only need to determine if solution is complete
-        return it.data.complete
+        //println(candidate?.value.toString()+ "||" + model.leaves.count() + "||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
     }
 
     override val model: CourseSchedulerTree = CourseSchedulerTree(root)

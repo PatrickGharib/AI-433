@@ -1,6 +1,9 @@
 import DataClass.HeapArrayQueue
-import DataClass.PriorityQueue
+
 import java.lang.Exception
+
+import java.util.PriorityQueue
+
 
 abstract class AndTree<T: Comparable<T>>(root: T ) {
 
@@ -8,9 +11,9 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
     // private final MutableList<Node> _leaves = mutableListOf(new Node(root))
     private val _leaves = mutableListOf(Node(root))
 
-    private val queue: PriorityQueue<Node> = HeapArrayQueue(4)
+    private val queue: PriorityQueue<Node> = PriorityQueue<Node>(4)
     init {
-        queue.insert(Node(root))
+        queue.add(Node(root))
     }
 
 
@@ -19,13 +22,18 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
 
     abstract fun childGen(pred: T) : List<T>
 
-    fun peekBest(): Node? = queue.get()
+    fun peekBest(): Node? = queue.peek()
 
-    open fun best(): Node? = queue.pop()
+    open fun best(): Node? = queue.remove()
 
     open inner class Node(val data: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0) : Comparable<Node>{
+
         override fun compareTo(other: Node): Int {
-            return if (depth > other.depth) 1 else this.data.compareTo(other.data)
+            return when {
+                depth < other.depth -> 1
+                depth > other.depth -> -1
+                else -> this.data.compareTo(other.data)
+            }
         }
 
         var solved: Boolean = false
@@ -39,7 +47,7 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
                     val x = Node(it,depth = depth + 1)
                     _children.add(x)
                     _leaves.add(x)
-                    queue.insert(x)
+                    queue.add(x)
                 }
                 if(_children.isEmpty()){
 
