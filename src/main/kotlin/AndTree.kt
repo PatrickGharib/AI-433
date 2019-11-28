@@ -42,7 +42,7 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
         val children: List<Node> get() = _children
 
         fun expand(){
-            if (_children.isEmpty() && !solved) {
+            if (_children.isEmpty()) {
                 childGen(data).forEach {
                     val x = Node(it,depth = depth + 1)
                     _children.add(x)

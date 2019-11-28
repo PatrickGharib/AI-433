@@ -19,8 +19,13 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
         // }else{
         //      return x.data.value
         // }
-        while ((model.peekBest()?.data?.value ?: 1000000) < (candidate?.value ?: 1000000) && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(15)){
+        while (model.peekBest() != null && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(15)){
 
+            while(model.peekBest()?.data?.value ?:1000001 >= candidate?.value ?: 1000000)   {
+                model.best()
+                println("Skip, found better already")
+            }
+            if (model.peekBest() == null) break
             fTrans(fLeaf(model.leaves))
 
         }

@@ -12,7 +12,7 @@ data class ManyToOneMutableMap<K, V>(
     }
 
     val keySet: MutableSet<K> get() = manyToOne.keys
-    val valSet: MutableSet<V?> get() = oneToMany.keys()
+    val valSet: MutableSet<V?> get() = manyToOne.values.toMutableSet()
 
     fun get(key: K): V?{
         return manyToOne[key]
