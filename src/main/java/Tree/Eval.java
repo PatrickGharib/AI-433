@@ -99,9 +99,11 @@ public class Eval {
                     }
                 }
                 //Add up preference values
-                Integer prefVal = prefAssigns.get(course).get(slot);
-                if (prefVal != null)
-                    evaluation += prefVal;
+                if (prefAssigns.get(course) != null) {
+                    Integer prefVal = prefAssigns.get(course).get(slot);
+                    if (prefVal != null)
+                        evaluation += prefVal;
+                }
             } //For each course in slot
 
             //Check CourseMin and LabsMin
