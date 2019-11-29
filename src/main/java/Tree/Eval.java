@@ -30,8 +30,8 @@ public class Eval {
     private HashMap<Course, HashMap<Slot, Integer>> prefAssigns;    //Preferred course assignments
 
     //Private Constructor
-    public Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section,
-                Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
+    private Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section,
+                 Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
 
         this.pen_coursemin = pen_coursemin;
         this.pen_labsmin = pen_labsmin;
