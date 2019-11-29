@@ -21,19 +21,31 @@ There are two special "courses" CPSC 813 and CPSC 913 that have to be scheduled 
 
 public class Constr {
 
+    //Singleton Attribute
+    private static Constr constr_instance = null;
+
     //Attributes
     private Set<NotCompatibleCoursePair> notCompatibles;
     private Set<UnwantedCourseTime> unwanted;
 
-    //Constructors
-    public Constr(){
-        notCompatibles = new LinkedHashSet<>();
-        unwanted = new LinkedHashSet<>();
-    }
-
+    //Constructor
     public Constr(Set<NotCompatibleCoursePair> pairs, Set<UnwantedCourseTime> unwanted){
         notCompatibles = pairs;
         this.unwanted = unwanted;
+    }
+
+    //Instantiation with no given attributes
+    public static Constr getInstance(){
+        if (constr_instance == null)
+            constr_instance = new Constr(new LinkedHashSet<>(), new LinkedHashSet<>());
+        return constr_instance;
+    }
+
+    //Instantiation with no given attributes
+    public static Constr getInstance(Set<NotCompatibleCoursePair> pairs, Set<UnwantedCourseTime> unwanted){
+        if (constr_instance == null)
+            constr_instance = new Constr(pairs, unwanted);
+        return constr_instance;
     }
 
     //Functions
