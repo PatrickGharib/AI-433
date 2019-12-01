@@ -23,6 +23,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
             while(model.peekBest()?.data?.value ?:1000001 >= candidate?.value ?: 1000000)   {
                 model.best()
+                if (model.best() == null) break
                 //println("Skip, found better already")
             }
             if (model.peekBest() == null) break

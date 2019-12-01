@@ -24,7 +24,7 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
 
     fun peekBest(): Node? = queue.peek()
 
-    open fun best(): Node? = queue.remove()
+    open fun best(): Node? = queue.poll()
 
     open inner class Node(val data: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0) : Comparable<Node>{
 
