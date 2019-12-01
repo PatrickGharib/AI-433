@@ -668,7 +668,7 @@ public class Parser {
                             matcher = Pattern.compile(RegexStrings.TUT_DAY_TIME).matcher(line);
                             matcher.matches();
 
-                            minToDecimal = Float.parseFloat(matcher.group(11)) + (Float.parseFloat(matcher.group(15)) / 60);
+                            minToDecimal = Float.parseFloat(matcher.group(11)) + (Float.parseFloat(matcher.group(14)) / 60);
                             course = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(6)));
 
                             slot = checkSlot("lab", matcher.group(7), minToDecimal);
