@@ -17,11 +17,6 @@ public class PSolStringBuilder {
         this.convert.sort(new PSolComparator());
     }
 
-//    //todo implement the sorting
-//    private List <Pair<Course,Slot>> sort (List <Pair<Course,Slot>> unsorted){
-//        return unsorted;
-//    }
-
     //this method prints the output
     public List<String> ToString(int evalValue) {
         List<String> result = new ArrayList<>();
