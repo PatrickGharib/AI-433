@@ -23,7 +23,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
             while(model.peekBest()?.data?.value ?:1000001 >= candidate?.value ?: 1000000)   {
                 model.best()
-                println("Skip, found better already")
+                //println("Skip, found better already")
             }
             if (model.peekBest() == null) break
             fTrans(fLeaf(model.leaves))
@@ -39,7 +39,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
     override fun fTrans(node: AndTree<PSol>.Node?) {
         node!!.expand()
-        println(node.depth.toString() +"||"+node?.data.value.toString()+ "||" + model.leaves.count() + "||" + node.data.courseSet().filter {node.data.courseLookup(it) != null }.count() +"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
+        //println(node.depth.toString() +"||"+node?.data.value.toString()+ "||" + model.leaves.count() + "||" + node.data.courseSet().filter {node.data.courseLookup(it) != null }.count() +"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
         if (node.children.isEmpty()) {
             //node.solved = true
             println("solved!")

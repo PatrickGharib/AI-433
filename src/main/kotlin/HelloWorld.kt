@@ -6,9 +6,12 @@ import IO.Parser
 import java.nio.file.Paths
 
 fun main() {
-    Parser.inputReader("deptinst1.txt")
+    //Parser.inputReader("deptinst1.txt")
+    Parser.inputReader("testsmall.txt")
     println(Paths.get("").toAbsolutePath())
-    val x = CourseSchedulerProcess(constructPSol()).execute()
+    val y = constructPSol();
+    //println(PSolStringBuilder(y).ToString(y.value))
+    val x = CourseSchedulerProcess(y).execute()
     println(x?.value)
     println("done")
     println(x?.value?.let { PSolStringBuilder(x).ToString(it) })
