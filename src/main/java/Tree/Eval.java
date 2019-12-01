@@ -28,6 +28,7 @@ public class Eval {
     private int pen_notpaired;                          //for each pair(a,b) for which assign(a) != assign(b)
     private Set<PreferredCoursePair> coursePairs;                   //Preferred course pairs with same assign value
     private HashMap<Course, HashMap<Slot, Integer>> prefAssigns;    //Preferred course assignments
+    private int pen_prefAssign = 0;
 
     //Private Constructor
     private Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section,
@@ -39,13 +40,19 @@ public class Eval {
         this.pen_section = pen_section;
         this.coursePairs = pairs;
 
+        int temp;
         HashMap<Slot, Integer> prefs = new HashMap<>();
-        HashMap<Course, HashMap<Slot, Integer>> prefCourses = new HashMap<>();
+        this.prefAssigns = new HashMap<>();
         for (PreferredCourseTime pref : prefAssigns){
+            //Update hashmap
+            temp = pref.getPreferenceVal();
             prefs.put(pref.getSlot(), pref.getPreferenceVal());
-            prefCourses.put(pref.getCourse(), prefs);
+            this.prefAssigns.put(pref.getCourse(), prefs);
+            //Update penalty
+            if (pen_prefAssign < temp)
+                pen_prefAssign = temp;
         }
-        this.prefAssigns = prefCourses;
+        this.pen_prefAssign++;
     }
 
     //Instantiation with no given attributes
@@ -103,7 +110,8 @@ public class Eval {
                     Integer prefVal = prefAssigns.get(course).get(slot);
                     if (prefVal != null)
                         evaluation += prefVal;
-                }
+                } else
+                    evaluation += pen_prefAssign;
             } //For each course in slot
 
             //Check CourseMin and LabsMin
