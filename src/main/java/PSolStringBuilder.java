@@ -12,13 +12,15 @@ public class PSolStringBuilder {
         for (Course c : sol.courseSet()){
             this.convert.add(new Pair<>(c, sol.courseLookup(c)));
         }
-        this.convert = sort(convert);
+//        this.convert = sort(convert);
+
+        this.convert.sort(new PSolComparator());
     }
 
-    //todo implement the sorting
-    private List <Pair<Course,Slot>> sort (List <Pair<Course,Slot>> unsorted){
-        return unsorted;
-    }
+//    //todo implement the sorting
+//    private List <Pair<Course,Slot>> sort (List <Pair<Course,Slot>> unsorted){
+//        return unsorted;
+//    }
 
     //this method prints the output
     public List<String> ToString(int evalValue) {
@@ -64,9 +66,10 @@ public class PSolStringBuilder {
         }
         //case that the lab is assigned a particular lecture
         else if (course instanceof Lab && ((Lab) course).getSections().size() == 1){
-            sb.append("LEC");
-            sb.append(((Lab) course).getSections().toArray()[0]);
-            sb.append(((Lab) course).getTutLab() + " ");
+            sb.append("LEC ");
+            Section y = (Section)(((Lab) course).getSections().toArray()[0]);
+            sb.append(y.getLecNum());
+            sb.append(" " + ((Lab) course).getTutLab() + " ");
             sb.append(((Lab) course).getTutLabNum());
         }
         //case that lab is open to all lecture sections
