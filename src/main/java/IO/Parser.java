@@ -654,7 +654,8 @@ public class Parser {
                         if (line.matches(RegexStrings.LAB_DAY_TIME)) {
                             matcher = Pattern.compile(RegexStrings.LAB_DAY_TIME).matcher(line);
                             matcher.matches();
-
+                            System.out.println(line);
+                            System.out.println(matcher.group(12)+matcher.group(16))
                             minToDecimal = Float.parseFloat(matcher.group(12)) + (Float.parseFloat(matcher.group(16)) / 60);
                             course = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
 
