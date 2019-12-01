@@ -110,8 +110,9 @@ public class Eval {
                     Integer prefVal = prefAssigns.get(course).get(slot);
                     if (prefVal != null)
                         evaluation += prefVal;
-                } else
-                    evaluation += pen_prefAssign;
+                    else
+                        evaluation += pen_prefAssign;
+                }
             } //For each course in slot
 
             //Check CourseMin and LabsMin
