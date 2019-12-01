@@ -6,8 +6,8 @@ import IO.Parser
 import java.nio.file.Paths
 
 fun main() {
-    //Parser.inputReader("deptinst1.txt")
-    Parser.inputReader("testsmall.txt")
+    Parser.inputReader("deptinst1.txt")
+    //Parser.inputReader("testsmall.txt")
     println(Paths.get("").toAbsolutePath())
     val y = constructPSol();
     //println(PSolStringBuilder(y).ToString(y.value))
@@ -21,7 +21,7 @@ fun main() {
 fun constructPSol() : PSol{
     val x: MutableList<Assignment> = mutableListOf()
     ParsedData.PARTIAL_ASSIGNMENTS.forEach {
-        x.add(Assignment(it.course, it.slot as CourseSlot?))
+        x.add(Assignment(it.course, it.slot))
     }
 
     val exclude = ParsedData.PARTIAL_ASSIGNMENTS.map { it.course }
