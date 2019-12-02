@@ -46,7 +46,12 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
 
     override fun fLeaf(leaves: List<AndTree<PSol>.Node>): AndTree<PSol>.Node? {
-        return if (model.depthmode) model.deepest() else model.best()
+
+        return if (model.depthmode) {
+            model.deepest()
+        } else {
+            model.best()
+        }
     }
 
     override fun fTrans(node: AndTree<PSol>.Node?) {
