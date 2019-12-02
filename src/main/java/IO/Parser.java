@@ -56,7 +56,7 @@ public class Parser {
                 }
                 if (line.trim().matches("Not compatible:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 5) {
                     zonesRead.add(line.trim());
-                   // System.out.println(zonesRead.toString());
+                    // System.out.println(zonesRead.toString());
                     line = readNotCompatible(br, line);
                 }
                 if (line.trim().matches("Unwanted:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 6) {
@@ -67,7 +67,7 @@ public class Parser {
                 }
                 if (line.trim().matches("Preferences:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 7) {
                     zonesRead.add(line.trim());
-                   // System.out.println(zonesRead.toString());
+                    // System.out.println(zonesRead.toString());
                     line = readPreferences(br, line);
                 }
                 if (line.trim().matches("Pair:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 8) {
@@ -77,7 +77,7 @@ public class Parser {
                 }
                 if (line.trim().matches("Partial assignments:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 9) {
                     zonesRead.add(line.trim());
-                   // System.out.println(zonesRead.toString());
+                    // System.out.println(zonesRead.toString());
                     readPartialAssignment(br, line);
                 }
             }
@@ -93,14 +93,7 @@ public class Parser {
     }
     //TODO need to check for duplicates
 
-    /**
-     * @param br
-     * @param line
-     * @return line
-     * this reads the name section and throws errors if the name is not a single word or if there is no name
-     * this one does nothing special
-     * returns the last line before the exit string
-     */
+
     private static String readName(BufferedReader br, String line) {
         try {
             int namesFound = 0;
@@ -125,29 +118,9 @@ public class Parser {
         }
         return line;
     }
-
-    /**
-     * @param br
-     * @param line
-     * @return the last line read
-     * reads the course slot. prints an error if the system finds an invalid format designated by the
-     * regex found in IO.RegexStrings
-     * <p>
-     * Creates course slot objects if format is correct
-     * MATCHER LEGEND
-     * -----------------
-     * group(2) is the Day
-     * group(3) is the 24 hour time format
-     * group(4) is hours
-     * group(5) is minutes(up to 59min) : this gets converted to float and added to hours.
-     * group(6) is coursemax
-     * group(7) is coursemin
-     */
     private static String readCourseSlot(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Lab slots:";
-        float minuteConversion = 60f;
-        Pattern pattern = Pattern.compile(RegexStrings.COURSE_SLOTS);
         try {
             while (!(line = br.readLine()).trim().matches(exitString)) {
                 if (line.matches("[\\s]*")) {
@@ -160,16 +133,8 @@ public class Parser {
                     //System.exit(0);
                 }
                 if (line.matches(RegexStrings.COURSE_SLOTS)) {
-
-                    Matcher matcher = pattern.matcher(line);
-                    matcher.matches();
-
-                    //convert minutes to float(minutes/60)
-                    float minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / minuteConversion);
-
-                    //make new course slot and add to courseSlot hashset
-                    CourseSlot newCourseSlot = new CourseSlot(matcher.group(2), minToDecimal, Integer.parseInt(matcher.group(6)), Integer.parseInt(matcher.group(7)));
-                    ParsedData.COURSE_SLOTS.add(newCourseSlot);
+                    boolean slotWasMade = setSlot(line, RegexStrings.COURSE_SLOTS, 0);
+                    if (!slotWasMade)continue;
                 }
                 lastLine = line;
             }
@@ -183,24 +148,6 @@ public class Parser {
 
         return line;
     }
-
-    /**
-     * @param br
-     * @param line
-     * @return the last line read
-     * reads the lab slot. prints an error if the system finds an invalid format designated by the
-     * regex found in IO.RegexStrings
-     * <p>
-     * Creates lab slot objects if format is correct
-     * MATCHER LEGEND
-     * -----------------
-     * group(2) is the Day
-     * group(3) is the 24 hour time format
-     * group(4) is hours
-     * group(5) is minutes(up to 59min) : this gets converted to float and added to hours.
-     * group(6) is labmax
-     * group(7) is labmin
-     */
     private static String readLabSlot(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Courses:";
@@ -213,26 +160,16 @@ public class Parser {
                     continue;
                 }
                 if (!line.matches(RegexStrings.LAB_SLOTS)) {
-                    System.out.println("Parsing error: Could not parse File in Lab slot");
-                    System.out.println(line);
-
+                    System.out.println("Parsing message: Could not parse line"+ line +" in Lab slot");
                 }
                 if (line.matches(RegexStrings.LAB_SLOTS)) {
-
-                    Matcher matcher = pattern.matcher(line);
-                    matcher.matches();
-
-                    //convert minutes to float(minutes/60)
-                    float minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / minuteConversion);
-
-                    //make new course slot and add to courseSlot hashset
-                    LabSlot newLabSlot = new LabSlot(matcher.group(2), minToDecimal, Integer.parseInt(matcher.group(6)), Integer.parseInt(matcher.group(7)));
-                    ParsedData.LAB_SLOT.add(newLabSlot);
+                    boolean slotWasMade = setSlot(line, RegexStrings.LAB_SLOTS,1);
+                    if (!slotWasMade)continue;
+                    lastLine = line;
                 }
-                lastLine = line;
             }
             if (!lastLine.matches("[\\s]*")) {
-                System.out.println("Parsing error: Could not parse File in Lab slot(no space)");
+                System.out.println("Parsing message: Could not parse line:" + line + " in Lab slot(no space)");
                 //System.exit(0);
             }
         } catch (IOException e) {
@@ -241,22 +178,33 @@ public class Parser {
 
         return line;
     }
-
-    /**
-     * @param br
-     * @param line
-     * @return the last line read
-     * reads the course. prints an error if the system finds an invalid format designated by the
-     * regex found in IO.RegexStrings
-     * <p>
-     * Creates course objects if format is correct
-     * MATCHER LEGEND
-     * -----------------
-     * group(2) is Course name
-     * group(3) is Course #
-     * group(4) is "LEC"
-     * group(5) section #
-     */
+    private static boolean setSlot(String line, String regex, int slotToMake){
+        float minuteConversion = 60f;
+        Matcher matcher = Pattern.compile(regex).matcher(line);
+        matcher.matches();
+        //convert minutes to float(minutes/60)
+        float minToDecimal = Float.parseFloat(matcher.group(3)) + (Float.parseFloat(matcher.group(4)) / minuteConversion);
+        String slotDay = matcher.group(2);
+        if (checkStartTimes(slotDay, minToDecimal)) {
+             if (slotToMake == 0) {
+                 CourseSlot newCourseSlot = new CourseSlot(slotDay, minToDecimal, Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
+                 ParsedData.COURSE_SLOTS.add(newCourseSlot);
+             }
+             else{
+                 LabSlot newLabSlot = new LabSlot(slotDay, minToDecimal, Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
+                 ParsedData.LAB_SLOT.add(newLabSlot);
+             }
+            return true;
+        } else {
+            System.out.println("Parsing message: invalid start time(" + line + ")");
+            return false;
+        }
+    }
+    private static boolean checkStartTimes(String day, float timeToCheck) {
+        boolean validTimeMOFRI = Arrays.asList(8f, 9f, 10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f).contains(timeToCheck);
+        boolean validTimeTU = Arrays.asList(8f, 9.5f, 11f, 12.5f, 14f, 15.5f, 17f, 18.5f).contains(timeToCheck);
+        return (((day.equals("MO") || day.equals("FRI")) && validTimeMOFRI) || (day.equals("FRI")) && validTimeTU);
+    }
     private static String readCourse(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Labs:";
@@ -268,14 +216,12 @@ public class Parser {
                     continue;
                 }
                 if (!line.matches(RegexStrings.COURSES)) {
-                    System.out.println("Parsing error: Could not parse File in Courses");
+                    System.out.println("Parsing message: Could not parse line:" + line + " in Courses");
                     System.out.println(line);
-                    //System.exit(0);
                 }
                 if (line.matches(RegexStrings.COURSES)) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.matches();
-
                     //make new course slot and add to courseSlot hashset
                     //Ignoring group(4): "LEC" as it does not contain any additional information.
                     Section newCourse = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
@@ -285,8 +231,8 @@ public class Parser {
                 lastLine = line;
             }
             if (!lastLine.matches("[\\s]*")) {
-                System.out.println("Parsing error: Could not parse File in Courses(no space)");
-               // System.exit(0);
+                System.out.println("Parsing message: Could not parse line:" + line + "  in Courses(no space)");
+                // System.exit(0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -294,31 +240,6 @@ public class Parser {
 
         return line;
     }
-
-    /**
-     * @param br
-     * @param line
-     * @return the last line read
-     * reads the course. prints an error if the system finds an invalid format designated by the
-     * regex found in IO.RegexStrings
-     * <p>
-     * Creates course objects if format is correct
-     * MATCHER LEGEND(LAB)
-     * -----------------
-     * group(2) is Course name
-     * group(3) is Course #
-     * group(4) is "LEC"
-     * group(5) section #
-     * group(6) "LAB|TUT"
-     * group(7) lab section #
-     * <p>
-     * MATCHER LEGEND(TUT)
-     * -----------------
-     * group(3) is Course Name
-     * group(4) is Course #
-     * group(5) "LAB|TUT"
-     * group(6) is tutorial section
-     */
     private static String readLab(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Not compatible:";
@@ -329,25 +250,19 @@ public class Parser {
                     continue;
                 }
                 if (!line.matches(RegexStrings.LABS) && !line.matches(RegexStrings.TUT)) {
-                    System.out.println("Parsing error: Could not parse File in labs");
+                    System.out.println("Parsing message: Could not parse line:" + line + " in labs");
                     System.out.println(line);
                     System.exit(0);
                 }
+                Matcher matcher = Pattern.compile(RegexStrings.TUT_LABS).matcher(line);
+                matcher.matches();
                 if (line.matches(RegexStrings.LABS)) {
-                    Pattern pattern = Pattern.compile(RegexStrings.LABS);
-                    Matcher matcher = pattern.matcher(line);
-                    matcher.matches();
-                    int labNumber = Integer.parseInt(matcher.group(3));
-                    String labName = matcher.group(2);
                     //TODO check for dups
-                    Lab newLab = new Lab(labName, labNumber, matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
+                    Lab newLab = new Lab(matcher.group(7),Integer.parseInt(matcher.group(8)), matcher.group(11), Integer.parseInt(matcher.group(12)), Integer.parseInt(matcher.group(10)));
                     ParsedData.LABS.add(newLab);
                 }
                 if (line.matches(RegexStrings.TUT)) {
-                    Pattern pattern = Pattern.compile(RegexStrings.TUT);
-                    Matcher matcher = pattern.matcher(line);
-                    matcher.matches();
-                    Lab newLab = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(6)));
+                    Lab newLab = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(4), Integer.parseInt(matcher.group(5)));
                     ParsedData.LABS.add(newLab);
                 }
                 lastLine = line;
@@ -362,7 +277,6 @@ public class Parser {
 
         return line;
     }
-
     private static String readNotCompatible(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Unwanted:";
@@ -378,10 +292,8 @@ public class Parser {
                 }
                 if (line.matches(RegexStrings.NOTCOMPATABLE_FORMAT)) {
                     String[] splitUnwanted = line.split(",");
-
                     Course itemOne = getPairs(splitUnwanted[0]);
                     Course itemTwo = getPairs(splitUnwanted[1]);
-
                     NotCompatibleCoursePair notCompatibleCoursePair = new NotCompatibleCoursePair(itemOne, itemTwo);
                     ParsedData.NOT_COMPATIBLE.add(notCompatibleCoursePair);
                 }
@@ -398,29 +310,23 @@ public class Parser {
 
         return line;
     }
-
     private static Course getPairs(String notCompItem) {
         Course item = null;
+        Matcher matcher = Pattern.compile(RegexStrings.PAIRS_GROUPS).matcher(notCompItem);
+        matcher.matches();
         if (notCompItem.matches(".*(TUT|LAB).*")) {
             if (notCompItem.matches(RegexStrings.LABS)) {
-                Matcher matcher = Pattern.compile(RegexStrings.LABS).matcher(notCompItem);
-                matcher.matches();
-
                 item = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
             } else if (notCompItem.matches(RegexStrings.TUT)) {
-                Matcher matcher = Pattern.compile(RegexStrings.TUT).matcher(notCompItem);
-                matcher.matches();
 
-                item = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(6)));
+                item = new Lab(matcher.group(9), Integer.parseInt(matcher.group(10)), matcher.group(11), Integer.parseInt(matcher.group(12)));
             }
         } else {
-            Matcher matcher = Pattern.compile(RegexStrings.COURSES).matcher(notCompItem);
-            matcher.matches();
-            item = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
+
+            item = new Section(matcher.group(14), Integer.parseInt(matcher.group(15)), Integer.parseInt(matcher.group(17)));
         }
         return item;
     }
-
     private static String readUnwanted(BufferedReader br, String line) {
         Course course;
         Slot slot;
@@ -440,41 +346,8 @@ public class Parser {
                     System.out.println(line);
                 }
                 if (line.matches(RegexStrings.UNWANTED)) {
-                    if (line.matches(".*(TUT|LAB).*")) {
-
-                        if (line.matches(RegexStrings.LAB_DAY_TIME)) {
-                            matcher = Pattern.compile(RegexStrings.LAB_DAY_TIME).matcher(line);
-                            matcher.matches();
-                            minToDecimal = Float.parseFloat(matcher.group(12)) + (Float.parseFloat(matcher.group(16)) / 60);
-                            course = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
-
-                            slot = checkSlot("lab", matcher.group(8), minToDecimal);
-                            ParsedData.UNWANTED.add(unwantedCourse = new UnwantedCourseTime(course, slot));
-                        } else if (line.matches(RegexStrings.TUT_DAY_TIME)) {
-                            matcher = Pattern.compile(RegexStrings.TUT_DAY_TIME).matcher(line);
-                            matcher.matches();
-
-                            minToDecimal = Float.parseFloat(matcher.group(11)) + (Float.parseFloat(matcher.group(14)) / 60);
-                            course = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(6)));
-
-                            slot = checkSlot("lab", matcher.group(7), minToDecimal);
-                            ParsedData.UNWANTED.add(new UnwantedCourseTime(course, slot));
-                        }
-                    } else {
-                        matcher = Pattern.compile(RegexStrings.CRS_DAY_TIME).matcher(line);
-                        matcher.matches();
-                        if (!matcher.group(6).matches(RegexStrings.COURSE_VALID_DAY)) {
-                            System.out.println("Invalid Day");
-                            continue;
-                        }
-
-                        minToDecimal = Float.parseFloat(matcher.group(10)) + (Float.parseFloat(matcher.group(14)) / 60);
-                        course = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
-
-                        slot = checkSlot("course", matcher.group(6), minToDecimal);
-                        ParsedData.UNWANTED.add(new UnwantedCourseTime(course, slot));
-
-                    }
+                    boolean makeSuccessful = setIdenDayTime(line,0);
+                    if (!makeSuccessful)continue;
                 }
                 lastLine = line;
             }
@@ -487,7 +360,51 @@ public class Parser {
         }
         return line;
     }
+    private static boolean setIdenDayTime(String line, int objectToMake){
+        Course course = null;
+        Slot slot = null;
+        float minToDecimal;
 
+        if (line.matches(".*(TUT|LAB).*")) {
+
+            if (line.matches(RegexStrings.LAB_DAY_TIME)) {
+                matcher = Pattern.compile(RegexStrings.LAB_DAY_TIME).matcher(line);
+                matcher.matches();
+
+                minToDecimal = Float.parseFloat(matcher.group(8)) + (Float.parseFloat(matcher.group(9)) / 60);
+                course = new Lab(matcher.group(1), Integer.parseInt(matcher.group(2)), matcher.group(5), Integer.parseInt(matcher.group(6)), Integer.parseInt(matcher.group(4)));
+                slot = checkSlot("lab", matcher.group(7), minToDecimal);
+
+
+
+            } else if (line.matches(RegexStrings.TUT_DAY_TIME)) {
+
+                matcher = Pattern.compile(RegexStrings.TUT_DAY_TIME).matcher(line);
+                matcher.matches();
+
+                minToDecimal = Float.parseFloat(matcher.group(6)) + (Float.parseFloat(matcher.group(7)) / 60);
+                course = new Lab(matcher.group(1), Integer.parseInt(matcher.group(2)), matcher.group(3), Integer.parseInt(matcher.group(4)));
+                slot = checkSlot("lab", matcher.group(5), minToDecimal);
+            }
+        } else {
+            matcher = Pattern.compile(RegexStrings.CRS_DAY_TIME).matcher(line);
+            matcher.matches();
+
+            if (!matcher.group(5).matches(RegexStrings.COURSE_VALID_DAY)) {
+                System.out.println("Invalid Day");
+                return false;
+            }
+
+            minToDecimal = Float.parseFloat(matcher.group(6)) + (Float.parseFloat(matcher.group(7)) / 60);
+            course = new Section(matcher.group(1), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(4)));
+            slot = checkSlot("course", matcher.group(5), minToDecimal);
+        }
+        System.out.println(line + "," + objectToMake);
+        if (objectToMake == 0)ParsedData.UNWANTED.add(new UnwantedCourseTime(course, slot));
+        else ParsedData.PARTIAL_ASSIGNMENTS.add(new PreAssignedCourseTime(course, slot));
+
+        return true;
+    }
     private static String readPreferences(BufferedReader br, String line) {
         Course course;
         Slot slot;
@@ -513,7 +430,13 @@ public class Parser {
 
                             matcher = Pattern.compile(RegexStrings.PREFERENCES_L).matcher(line);
                             matcher.matches();
-
+                            System.out.println("______________________________________________________________________________");
+                            int groupCount = matcher.groupCount();
+                            for (int i = 0; i <= groupCount; i++) {
+                                // Group i substring
+                                System.out.println("Group " + i + ": " + matcher.group(i));
+                            }
+                            System.out.println("______________________________________________________________________________");
 
                             minToDecimal = Float.parseFloat(matcher.group(6)) + (Float.parseFloat(matcher.group(10)) / 60);
 
@@ -528,7 +451,13 @@ public class Parser {
                         } else if (line.matches(RegexStrings.PREFERENCES_T)) {
                             matcher = Pattern.compile(RegexStrings.PREFERENCES_T).matcher(line);
                             matcher.matches();
-
+                            System.out.println("______________________________________________________________________________");
+                            int groupCount = matcher.groupCount();
+                            for (int i = 0; i <= groupCount; i++) {
+                                // Group i substring
+                                System.out.println("Group " + i + ": " + matcher.group(i));
+                            }
+                            System.out.println("______________________________________________________________________________");
                             minToDecimal = Float.parseFloat(matcher.group(5)) + (Float.parseFloat(matcher.group(9)) / 60);
                             course = new Lab(matcher.group(12), Integer.parseInt(matcher.group(13)), matcher.group(14), Integer.parseInt(matcher.group(15)));
 
@@ -542,7 +471,13 @@ public class Parser {
                     } else {
                         matcher = Pattern.compile(RegexStrings.PREFERENCES_C).matcher(line);
                         matcher.matches();
-
+                        System.out.println("______________________________________________________________________________");
+                        int groupCount = matcher.groupCount();
+                        for (int i = 0; i <= groupCount; i++) {
+                            // Group i substring
+                            System.out.println("Group " + i + ": " + matcher.group(i));
+                        }
+                        System.out.println("______________________________________________________________________________");
                         minToDecimal = Float.parseFloat(matcher.group(5)) + (Float.parseFloat(matcher.group(9)) / 60);
                         course = new Section(matcher.group(11), Integer.parseInt(matcher.group(12)), Integer.parseInt(matcher.group(14)));
                         slot = checkSlot("course", matcher.group(1), minToDecimal);
@@ -566,14 +501,15 @@ public class Parser {
         }
         return line;
     }
-    private static void count(){
-        int groupCount = matcher.groupCount();
 
+    private static void count() {
+        int groupCount = matcher.groupCount();
         for (int i = 0; i <= groupCount; i++) {
             // Group i substring
             System.out.println("Group " + i + ": " + matcher.group(i));
         }
     }
+
     private static Slot checkSlot(String slotLabCourse, String day, float time) throws NullPointerException {
         LinkedHashSet<Slot> listToParse = null;
         switch (slotLabCourse) {
@@ -614,6 +550,13 @@ public class Parser {
                 if (line.matches(RegexStrings.PAIR)) {
                     Matcher matcher = Pattern.compile(RegexStrings.PAIR).matcher(line);
                     matcher.matches();
+                    System.out.println("______________________________________________________________________________");
+                    int groupCount = matcher.groupCount();
+                    for (int i = 0; i <= groupCount; i++) {
+                        // Group i substring
+                        System.out.println("Group " + i + ": " + matcher.group(i));
+                    }
+                    System.out.println("______________________________________________________________________________");
                     String[] splitPair = line.split(",");
                     Course itemOne = getPairs(splitPair[0]);
                     Course itemTwo = getPairs(splitPair[1]);
@@ -634,70 +577,19 @@ public class Parser {
     }
 
     private static void readPartialAssignment(BufferedReader br, String line) {
-        String lastLine = line;
-        float minToDecimal;
-        Course course;
-        Slot slot;
         try {
             while (!((line = br.readLine()) == null)) {
                 if (line.matches("[\\s]*")) {
-                    lastLine = line;
                     continue;
                 }
-                if (!line.matches(RegexStrings.UNWANTED)) {
+                if (!line.matches(RegexStrings.PARTIALASSIGNMENT)) {
                     System.out.println("Parsing error: Could not parse File in Partial Assignment ");
                     System.out.println(line);
                 }
-                if (line.matches(RegexStrings.UNWANTED)) {
-
-                    if (line.matches(".*(TUT|LAB).*")) {
-                        if (line.matches(RegexStrings.LAB_DAY_TIME)) {
-                            matcher = Pattern.compile(RegexStrings.LAB_DAY_TIME).matcher(line);
-                            matcher.matches();
-                            System.out.println(line);
-                            System.out.println(matcher.group(12)+matcher.group(16))
-                            minToDecimal = Float.parseFloat(matcher.group(12)) + (Float.parseFloat(matcher.group(16)) / 60);
-                            course = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
-
-                            slot = checkSlot("lab", matcher.group(8), minToDecimal);
-                            if (slot == null) {
-                                System.out.println("Invalid Time");
-                                continue;
-                            }
-                            ParsedData.PARTIAL_ASSIGNMENTS.add(new PreAssignedCourseTime(course, slot));
-                        } else if (line.matches(RegexStrings.TUT_DAY_TIME)) {
-                            matcher = Pattern.compile(RegexStrings.TUT_DAY_TIME).matcher(line);
-                            matcher.matches();
-
-                            minToDecimal = Float.parseFloat(matcher.group(11)) + (Float.parseFloat(matcher.group(14)) / 60);
-                            course = new Lab(matcher.group(3), Integer.parseInt(matcher.group(4)), matcher.group(5), Integer.parseInt(matcher.group(6)));
-
-                            slot = checkSlot("lab", matcher.group(7), minToDecimal);
-                            if (slot == null) {
-                                System.out.println("Invalid Time");
-                                continue;
-                            }
-                            ParsedData.PARTIAL_ASSIGNMENTS.add(new PreAssignedCourseTime(course, slot));
-                        }
-                    } else {
-                        matcher = Pattern.compile(RegexStrings.CRS_DAY_TIME).matcher(line);
-                        matcher.matches();
-                        if (!matcher.group(6).matches(RegexStrings.COURSE_VALID_DAY)) {
-                            System.out.println("Invalid Day");
-                            continue;
-                        }
-                        minToDecimal = Float.parseFloat(matcher.group(10)) + (Float.parseFloat(matcher.group(14)) / 60);
-                        course = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
-
-                        slot = checkSlot("course", matcher.group(6), minToDecimal);
-                        if (slot == null) {
-                            System.out.println("Invalid Time");
-                            continue;
-                        }
-                        ParsedData.PARTIAL_ASSIGNMENTS.add(new PreAssignedCourseTime(course, slot));
-                    }
+                if (line.matches(RegexStrings.PARTIALASSIGNMENT)) {
+                    boolean makeSuccessful = setIdenDayTime(line,1);
+                    if (!makeSuccessful)continue;
                 }
-                lastLine = line;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -712,6 +604,6 @@ public class Parser {
 //            inputReader(x);
 //            System.out.println("_______________________________");
 //        }
-        inputReader("poop.txt");
+        inputReader("new2.txt");
     }
 }
