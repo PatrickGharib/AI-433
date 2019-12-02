@@ -163,7 +163,8 @@ public class Parser {
                     System.out.println("Parsing message: Could not parse line"+ line +" in Lab slot");
                 }
                 if (line.matches(RegexStrings.LAB_SLOTS)) {
-                    boolean slotWasMade = setSlot(line, RegexStrings.LAB_SLOTS,1);
+                    boolean slotWasMade = false;
+
                     if (!slotWasMade)continue;
                     lastLine = line;
                 }
@@ -172,7 +173,8 @@ public class Parser {
                 System.out.println("Parsing message: Could not parse line:" + line + " in Lab slot(no space)");
                 //System.exit(0);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -185,26 +187,27 @@ public class Parser {
         //convert minutes to float(minutes/60)
         float minToDecimal = Float.parseFloat(matcher.group(3)) + (Float.parseFloat(matcher.group(4)) / minuteConversion);
         String slotDay = matcher.group(2);
-        if (checkStartTimes(slotDay, minToDecimal)) {
-             if (slotToMake == 0) {
-                 CourseSlot newCourseSlot = new CourseSlot(slotDay, minToDecimal, Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
-                 ParsedData.COURSE_SLOTS.add(newCourseSlot);
-             }
-             else{
-                 LabSlot newLabSlot = new LabSlot(slotDay, minToDecimal, Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
-                 ParsedData.LAB_SLOT.add(newLabSlot);
-             }
+
+        try {
+            if (slotToMake == 0) {
+                CourseSlot newCourseSlot = new CourseSlot(slotDay, minToDecimal, Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
+                ParsedData.COURSE_SLOTS.add(newCourseSlot);
+            }
+            else{
+                LabSlot newLabSlot = new LabSlot(slotDay, minToDecimal, Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
+                ParsedData.LAB_SLOT.add(newLabSlot);
+            }
             return true;
-        } else {
-            System.out.println("Parsing message: invalid start time(" + line + ")");
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return false;
+        }
+        catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
             return false;
         }
     }
-    private static boolean checkStartTimes(String day, float timeToCheck) {
-        boolean validTimeMOFRI = Arrays.asList(8f, 9f, 10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f).contains(timeToCheck);
-        boolean validTimeTU = Arrays.asList(8f, 9.5f, 11f, 12.5f, 14f, 15.5f, 17f, 18.5f).contains(timeToCheck);
-        return (((day.equals("MO") || day.equals("FRI")) && validTimeMOFRI) || (day.equals("FRI")) && validTimeTU);
-    }
+
     private static String readCourse(BufferedReader br, String line) {
         String lastLine = line;
         String exitString = "Labs:";
