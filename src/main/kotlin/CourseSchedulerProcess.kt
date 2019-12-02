@@ -1,5 +1,6 @@
 import DataClass.PSol
 import IO.ParsedData
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.timer
@@ -45,7 +46,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
 
     override fun fLeaf(leaves: List<AndTree<PSol>.Node>): AndTree<PSol>.Node? {
-        return model.best()
+        return if (model.depthmode) model.deepest() else model.best()
     }
 
     override fun fTrans(node: AndTree<PSol>.Node?) {
@@ -63,6 +64,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
         if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 1000000000)) {
             candidate = node.data
+            model.depthmode = false
             println(candidate?.value.toString()+ "||" + model.leaves.count() + "||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
             //println("New Candidate!")
         }
@@ -71,6 +73,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
             it.solved = it.data.complete
             if (it.solved  && (it.data.value < (candidate?.value ?: 1000000000))) {
                 candidate = it.data
+                model.depthmode = false
                 println(candidate?.value.toString()+ "||" + model.leaves.count() + "||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.filter { candidate?.courseLookup(it) != null }?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
 
             }
