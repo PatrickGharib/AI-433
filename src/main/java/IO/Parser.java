@@ -430,18 +430,8 @@ public class Parser {
 
                             matcher = Pattern.compile(RegexStrings.PREFERENCES_L).matcher(line);
                             matcher.matches();
-                            System.out.println("______________________________________________________________________________");
-                            int groupCount = matcher.groupCount();
-                            for (int i = 0; i <= groupCount; i++) {
-                                // Group i substring
-                                System.out.println("Group " + i + ": " + matcher.group(i));
-                            }
-                            System.out.println("______________________________________________________________________________");
-
                             minToDecimal = Float.parseFloat(matcher.group(6)) + (Float.parseFloat(matcher.group(10)) / 60);
-
                             course = new Lab(matcher.group(12), Integer.parseInt(matcher.group(13)), matcher.group(16), Integer.parseInt(matcher.group(17)), Integer.parseInt(matcher.group(15)));
-
                             slot = checkSlot("lab", matcher.group(1), minToDecimal);
                             if (slot == null) {
                                 System.out.println("Invalid Time");
@@ -451,13 +441,6 @@ public class Parser {
                         } else if (line.matches(RegexStrings.PREFERENCES_T)) {
                             matcher = Pattern.compile(RegexStrings.PREFERENCES_T).matcher(line);
                             matcher.matches();
-                            System.out.println("______________________________________________________________________________");
-                            int groupCount = matcher.groupCount();
-                            for (int i = 0; i <= groupCount; i++) {
-                                // Group i substring
-                                System.out.println("Group " + i + ": " + matcher.group(i));
-                            }
-                            System.out.println("______________________________________________________________________________");
                             minToDecimal = Float.parseFloat(matcher.group(5)) + (Float.parseFloat(matcher.group(9)) / 60);
                             course = new Lab(matcher.group(12), Integer.parseInt(matcher.group(13)), matcher.group(14), Integer.parseInt(matcher.group(15)));
 
@@ -471,13 +454,7 @@ public class Parser {
                     } else {
                         matcher = Pattern.compile(RegexStrings.PREFERENCES_C).matcher(line);
                         matcher.matches();
-                        System.out.println("______________________________________________________________________________");
-                        int groupCount = matcher.groupCount();
-                        for (int i = 0; i <= groupCount; i++) {
-                            // Group i substring
-                            System.out.println("Group " + i + ": " + matcher.group(i));
-                        }
-                        System.out.println("______________________________________________________________________________");
+
                         minToDecimal = Float.parseFloat(matcher.group(5)) + (Float.parseFloat(matcher.group(9)) / 60);
                         course = new Section(matcher.group(11), Integer.parseInt(matcher.group(12)), Integer.parseInt(matcher.group(14)));
                         slot = checkSlot("course", matcher.group(1), minToDecimal);
