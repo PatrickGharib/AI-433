@@ -1,6 +1,5 @@
 import DataClass.*;
 import DataClass.Course;
-import javafx.util.Pair;
 
 
 public class PSolComparatorDecorator {
@@ -8,7 +7,7 @@ public class PSolComparatorDecorator {
         private Course b;
         private int compareResult;
 
-    public PSolComparatorDecorator(Pair<Course,Slot> a, Pair<Course,Slot> b) {
+    public PSolComparatorDecorator(Tuple<Course,Slot> a, Tuple<Course,Slot> b) {
         this.a = a.getKey();
         this.b = b.getKey();
     }

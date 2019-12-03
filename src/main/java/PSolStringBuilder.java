@@ -1,18 +1,16 @@
 import DataClass.*;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PSolStringBuilder {
 
-    private List <Pair<Course,Slot>> convert = new ArrayList<>();
+    private List <Tuple<Course,Slot>> convert = new ArrayList<>();
 
     public PSolStringBuilder(PSol sol) {
         for (Course c : sol.courseSet()){
-            this.convert.add(new Pair<>(c, sol.courseLookup(c)));
+            this.convert.add(new Tuple<>(c, sol.courseLookup(c)));
         }
-//        this.convert = sort(convert);
 
         this.convert.sort(new PSolComparator());
     }
@@ -23,7 +21,7 @@ public class PSolStringBuilder {
         StringBuilder sb = new StringBuilder();
         result.add(sb.toString());
         sb.append(evalBuilder(evalValue));
-        for (Pair p : this.convert){
+        for (Tuple p : this.convert){
             result.add(courseSlotBuilder(p).toString());
         }
         printer(result);
@@ -41,7 +39,7 @@ public class PSolStringBuilder {
     }
 
     //this method calls course and slot builder to create a single line of the output (course to slot pairing)
-    private StringBuilder courseSlotBuilder(Pair<Course,Slot> pair){
+    private StringBuilder courseSlotBuilder(Tuple<Course,Slot> pair){
         StringBuilder sb = new StringBuilder();
         sb.append(courseToString(pair.getKey()));
         sb.append("            ");
