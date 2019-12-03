@@ -28,21 +28,21 @@ public class Eval {
     private static Eval eval_instance = null;
 
     //Penalties
-    private int pen_coursemin = 1;                          //for each course below coursemin
-    private int pen_labsmin = 1;                            //for each lab below labmin
-    private int pen_section = 1;                            //for each pair of sections that is schedule into the same slot
-    private int pen_notpaired = 1;                          //for each pair(a,b) for which assign(a) != assign(b)
+    private static int pen_coursemin = 1;                          //for each course below coursemin
+    private static int pen_labsmin = 1;                            //for each lab below labmin
+    private static int pen_section = 1;                            //for each pair of sections that is schedule into the same slot
+    private static int pen_notpaired = 1;                          //for each pair(a,b) for which assign(a) != assign(b)
 
     //Weights
-    private int w_minfilled = 1;                            //CourseMin & LabsMin
-    private int w_pref = 1;                                 //Prederred assignments
-    private int w_pair = 1;                                 //Preferred pairs
-    private int w_secdiff = 1;                              //Sections in different slots
+    private static int w_minfilled = 1;                            //CourseMin & LabsMin
+    private static int w_pref = 1;                                 //Prederred assignments
+    private static int w_pair = 1;                                 //Preferred pairs
+    private static int w_secdiff = 1;                              //Sections in different slots
 
     //Pairs
-    private Set<PreferredCoursePair> coursePairs;                   //Preferred course pairs with same assign value
-    private HashMap<Course, HashMap<Slot, Integer>> prefAssigns;    //Preferred course assignments
-    private HashMap<Course, Integer> pen_prefAssign;                //for each course/lab not assigned to its preferred slot
+    private static Set<PreferredCoursePair> coursePairs;                   //Preferred course pairs with same assign value
+    private static HashMap<Course, HashMap<Slot, Integer>> prefAssigns;    //Preferred course assignments
+    private static HashMap<Course, Integer> pen_prefAssign;                //for each course/lab not assigned to its preferred slot
 
 
     //Private Constructor
@@ -50,10 +50,7 @@ public class Eval {
                  Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
 
         //Update eval attributes
-        this.w_minfilled = wminfilled;
-        this.w_pref = wpref;
-        this.w_pair = wpair;
-        this.w_secdiff = wsecdiff;
+        setWeights(wminfilled, wpref, wpair, wsecdiff);
         this.coursePairs = pairs;
 
         //Build hashmap for preferred assignments
@@ -98,14 +95,19 @@ public class Eval {
 
 
     //Setter for penalties
-    private void setPenalties(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired){
+    public void setPenalties(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired){
         this.pen_coursemin = pen_coursemin;
         this.pen_labsmin = pen_labsmin;
         this.pen_section = pen_section;
         this.pen_notpaired = pen_notpaired;
     }
-    public void setInstancePenalties(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired){
-        eval_instance.setPenalties(pen_coursemin,pen_labsmin,pen_section, pen_notpaired);
+
+    //Setter for Weights (use setter for instance)
+    public void setWeights(int wminfilled, int wpref, int wpair, int wsecdiff){
+        this.w_minfilled = wminfilled;
+        this.w_pref = wpref;
+        this.w_pair = wpair;
+        this.w_secdiff = wsecdiff;
     }
 
 
