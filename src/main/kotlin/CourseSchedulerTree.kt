@@ -22,7 +22,7 @@ class CourseSchedulerTree(val process :CourseSchedulerProcess, root: PSol) : And
                 // goes from a ~89% skip rate to a ~2%, without slowing down the algorithm.
 
                 // essentially these are going to be skipped anyways, may as well skip them now instead of wasting time examining them later.
-                if (Constr.getInstance().constrPartial(p) && p.courseLookup(c) != null){// && (process.candidate?.value ?: 1000000) >= p.value) {
+                if (Constr.getInstance().constrPartial(p) && p.courseLookup(c) != null && (process.candidate?.value ?: 1000000) > p.value) {
                     x.add(p)
                 }
             }
@@ -32,7 +32,7 @@ class CourseSchedulerTree(val process :CourseSchedulerProcess, root: PSol) : And
 
                 val p = pred.assign(c, it)
                 //TODO not sure if Cosntr() is correct
-                if (Constr.getInstance().constrPartial(p) && p.courseLookup(c) != null) {
+                if (Constr.getInstance().constrPartial(p) && p.courseLookup(c) != null  && (process.candidate?.value ?: 1000000) > p.value) {
                     x.add(p)
                 }
             }

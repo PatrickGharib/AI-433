@@ -27,10 +27,8 @@ data class ManyToOneMutableMap<K, V>(
 
         val old = manyToOne[key]
         manyToOne[key] = value
-        oneToMany.remove(old,key)
-        oneToMany.put(value,key)
-
-
+        //oneToMany.remove(old,key)
+        //oneToMany.put(value,key)
     }
 
     fun getKeys(value: V): Set<K>{
