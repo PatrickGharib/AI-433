@@ -11,9 +11,15 @@ Singleton class: Eval
 
 Soft Constraints:
 For each course below coursemin we will get pen_coursemin and for each lab pen_labsmin added to the Tree.Eval-value of an assignment.
-TODO For each assignment in assign, add up the preference-values for a course/lab that refer to a different slot as the penalty that is added to the Tree.Eval-value of assign.
+For each assignment in assign, add up the preference-values for a course/lab that refer to a different slot as the penalty that is added to the Tree.Eval-value of assign.
 For every pair(a,b) statement, for which assign(a) is not equal to assign(b), you have to add pen_notpaired to the Tree.Eval-value of assign.
 For each pair of sections that is scheduled into the same slot, we add a penalty pen_section to the Tree.Eval-value of an assignment assign.
+
+Design:
+Eval is designed using four subfunctions
+ Evalminfilled, Evalpref, Evalpair and Evalsecdiff that are producing a value for each of the 4 types of soft constraints.
+ Then we have
+    Eval(assign) = Evalminfilled(assign) * wminfilled + Evalpref(assign) * wpref + Evalpair * wpair + Evalsecdiff(assign) * wsecdiff
 */
 
 public class Eval {
@@ -21,45 +27,57 @@ public class Eval {
     //Singleton Attribute
     private static Eval eval_instance = null;
 
-    //Attributes
-    private int pen_coursemin;                          //for each course below coursemin
-    private int pen_labsmin;                            //for each lab below labmin
-    private int pen_section;                            //for each pair of sections that is schedule into the same slot
-    private int pen_notpaired;                          //for each pair(a,b) for which assign(a) != assign(b)
+    //Penalties
+    private int pen_coursemin = 1;                          //for each course below coursemin
+    private int pen_labsmin = 1;                            //for each lab below labmin
+    private int pen_section = 1;                            //for each pair of sections that is schedule into the same slot
+    private int pen_notpaired = 1;                          //for each pair(a,b) for which assign(a) != assign(b)
+
+    //Weights
+    private int w_minfilled = 1;                            //CourseMin & LabsMin
+    private int w_pref = 1;                                 //Prederred assignments
+    private int w_pair = 1;                                 //Preferred pairs
+    private int w_secdiff = 1;                              //Sections in different slots
+
+    //Pairs
     private Set<PreferredCoursePair> coursePairs;                   //Preferred course pairs with same assign value
     private HashMap<Course, HashMap<Slot, Integer>> prefAssigns;    //Preferred course assignments
-    private int pen_prefAssign = 0;
+    private HashMap<Course, Integer> pen_prefAssign;                //for each course/lab not assigned to its preferred slot
+
 
     //Private Constructor
-    private Eval(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section,
+    private Eval(int wminfilled, int wpref, int wpair, int wsecdiff,
                  Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
 
-        this.pen_coursemin = pen_coursemin;
-        this.pen_labsmin = pen_labsmin;
-        this.pen_notpaired = pen_notpaired;
-        this.pen_section = pen_section;
+        //Update eval attributes
+        this.w_minfilled = wminfilled;
+        this.w_pref = wpref;
+        this.w_pair = wpair;
+        this.w_secdiff = wsecdiff;
         this.coursePairs = pairs;
 
-        int temp;
+        //Build hashmap for preferred assignments
+        Course course;
+        Integer oldVal;
         HashMap<Slot, Integer> prefs = new HashMap<>();
         this.prefAssigns = new HashMap<>();
-        for (PreferredCourseTime pref : prefAssigns){
-            //Update hashmap
-            temp = pref.getPreferenceVal();
-            prefs.put(pref.getSlot(), pref.getPreferenceVal());
-            this.prefAssigns.put(pref.getCourse(), prefs);
-            //Update penalty
-            if (pen_prefAssign < temp)
-                pen_prefAssign = temp;
-        }
-        this.pen_prefAssign++;
-    }
+        this.pen_prefAssign = new HashMap<>();
 
-    //Instantiation with no given attributes
-    public static Eval getInstance(){
-        if (eval_instance == null)
-            eval_instance = new Eval(1, 1, 1, 1, new LinkedHashSet<>(), new HashSet<>());
-        return eval_instance;
+        for (PreferredCourseTime pref : prefAssigns){
+
+            course = pref.getCourse();
+
+            //Update pref-value hashmap
+            prefs.put(pref.getSlot(), pref.getPreferenceVal());
+            this.prefAssigns.put(course, prefs);
+
+            //Update penalty
+            oldVal = pen_prefAssign.get(course);
+            if (oldVal == null)
+                pen_prefAssign.put(course,pref.getPreferenceVal());
+            else
+                pen_prefAssign.put(course, oldVal+pref.getPreferenceVal());
+        }
     }
 
     //Instantiation with default penalties
@@ -69,13 +87,27 @@ public class Eval {
         return eval_instance;
     }
 
-    //Instantiation with custom penalties
-    public static Eval getInstance(int pen_coursemin, int pen_labsmin, int pen_notpaired, int pen_section,
+    //Instantiation with custom weights
+    public static Eval getInstance(int wminfilled, int wpref, int wpair, int wsecdiff,
                                    Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
-        if (eval_instance == null)
-            eval_instance = new Eval(pen_coursemin, pen_labsmin, pen_notpaired, pen_section, pairs, prefAssigns);
+        if (eval_instance == null) {
+            eval_instance = new Eval(wminfilled, wpref, wpair, wsecdiff, pairs, prefAssigns);
+        }
         return eval_instance;
     }
+
+
+    //Setter for penalties
+    private void setPenalties(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired){
+        this.pen_coursemin = pen_coursemin;
+        this.pen_labsmin = pen_labsmin;
+        this.pen_section = pen_section;
+        this.pen_notpaired = pen_notpaired;
+    }
+    public void setInstancePenalties(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired){
+        eval_instance.setPenalties(pen_coursemin,pen_labsmin,pen_section, pen_notpaired);
+    }
+
 
     //Functions
     public int eval(PSol sol){
@@ -88,8 +120,8 @@ public class Eval {
                 continue;
             }
 
-            int coursenum = 0, labnum = 0;
-            List<String> sections = new ArrayList<>();
+            int coursenum = 0, labnum = 0;                      //Count courses and labs assigned to each slot
+            List<String> sections = new ArrayList<>();          //Keep track of (course) sections assigned to each slot
 
             for (Course course : sol.slotLookup(slot)){
                 //Count how many courses and labs are assigned
@@ -98,36 +130,66 @@ public class Eval {
                 } else{
                     coursenum++;
                     //Check if same section appears in slot
-                    String section = ((Section)course).getSection();
-                    if (sections.contains(section)){
-                        evaluation += pen_section;
-                    } else{
-                        sections.add(section);
-                    }
+                    if (w_secdiff != 0)
+                        evaluation += w_secdiff * eval_secdiff(course, sections);
                 }
                 //Add up preference values
-                if (prefAssigns.get(course) != null) {
-                    Integer prefVal = prefAssigns.get(course).get(slot);
-                    if (prefVal != null)
-                        evaluation += prefVal;
-                    else
-                        evaluation += pen_prefAssign;
-                }
+                if (w_pref != 0)
+                    evaluation += w_pref * eval_pref(course, slot);
             } //For each course in slot
 
             //Check CourseMin and LabsMin
-            if (slot instanceof CourseSlot) {
-                if (coursenum < slot.getMin()) {
-                    evaluation += pen_coursemin;
-                }
-            } else {
-                if (labnum < slot.getMin()) {
-                    evaluation += pen_labsmin;
-                }
-            }
+            if (w_minfilled != 0)
+                evaluation += w_minfilled * eval_minFilled(sol, slot, coursenum, labnum);
         } //For each slot in sol
 
         //Check if a pair has the same assignment
+        if (w_pair != 0)
+            evaluation += w_pair * eval_pair(sol);
+
+        return evaluation;
+    }
+
+
+    //For each course below coursemin we will get pen_coursemin and for each lab pen_labsmin added to the Eval-value
+    private int eval_minFilled(PSol sol, Slot slot, int coursenum, int labnum){
+
+        int evaluation = 0;
+
+        if (slot instanceof CourseSlot) {
+            if (coursenum < slot.getMin()) {
+                evaluation += pen_coursemin;
+            }
+        } else {
+            if (labnum < slot.getMin()) {
+                evaluation += pen_labsmin;
+            }
+        }
+
+        return evaluation;
+    }
+
+    //For each assignment, add up the preference-values for a course/lab that refers to a different slot as the penalty that is added to the Eval-value of assign.
+    private int eval_pref(Course course, Slot slot){
+
+        int evaluation = 0;
+        Integer base = pen_prefAssign.get(course);
+
+        if (base != null){
+            evaluation += base;
+            Integer prefVal = prefAssigns.get(course).get(slot);
+            if (prefVal != null)
+                evaluation -= prefVal;
+        }
+
+        return evaluation;
+    }
+
+    //For every pair(a,b) statement, for which assign(a) != assign(b), add pen_notpaired to the Eval-value
+    private int eval_pair(PSol sol){
+
+        int evaluation = 0;
+
         for (PreferredCoursePair pair : coursePairs){
             Slot s1 = sol.courseLookup(pair.getCourse1());
             Slot s2 = sol.courseLookup(pair.getCourse2());
@@ -139,4 +201,17 @@ public class Eval {
         return evaluation;
     }
 
+    private int eval_secdiff(Course course, List<String> sections){
+
+        int evaluation = 0;
+        String section = ((Section)course).getSection();
+
+        if (sections.contains(section)){
+            evaluation += pen_section;
+        } else{
+            sections.add(section);              //Original list gets changed
+        }
+
+        return evaluation;
+    }
 }
