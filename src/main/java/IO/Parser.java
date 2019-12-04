@@ -163,7 +163,7 @@ public class Parser {
                     System.out.println("Parsing message: Could not parse line"+ line +" in Lab slot");
                 }
                 if (line.matches(RegexStrings.LAB_SLOTS)) {
-                    boolean slotWasMade = false;
+                    boolean slotWasMade = setSlot(line, RegexStrings.COURSE_SLOTS, 1);
 
                     if (!slotWasMade)continue;
                     lastLine = line;
