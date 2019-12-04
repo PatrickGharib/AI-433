@@ -26,7 +26,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
             fTrans(fLeafDepth())
         }
         model.depthFirst.clear()
-        while (model.peekBest() != null && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(60*12)){
+        while (model.peekBest() != null && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(0)){
 
             while (model.peekBest()?.data?.value ?: 1000001 >= candidate?.value ?: 1000000) {
                 model.best()

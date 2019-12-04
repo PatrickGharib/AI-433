@@ -3,11 +3,23 @@ import DataClass.CourseSlot
 import DataClass.PSol
 import IO.ParsedData
 import IO.Parser
+import Tree.Eval
 import java.nio.file.Paths
 
-fun main() {
-    Parser.inputReader("deptinst1.txt")
+fun main(args: Array<String>) {
+    //println(args.size)
+    val file = if (args.isNotEmpty()){
+        args[0]
+    } else{
+        "testsmall.txt"
+    }
+    Parser.inputReader(file)
     //Parser.inputReader("testsmall.txt")
+
+    if (args.size == 4){
+        Eval.getInstance(args[1].toInt(),args[2].toInt(),args[3].toInt(),args[4].toInt(),ParsedData.PAIR,ParsedData.PREFERENCES)
+    }
+
     println(Paths.get("").toAbsolutePath())
     val y = constructPSol();
     //println(PSolStringBuilder(y).ToString(y.value))
