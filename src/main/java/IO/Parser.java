@@ -161,7 +161,7 @@ public class Parser {
                     System.out.println("Parsing message: Could not parse line" + line + " in Lab slot");
                 }
                 if (line.matches(RegexStrings.LAB_SLOTS)) {
-                    boolean slotWasMade = setSlot(line, RegexStrings.COURSE_SLOTS, 1);
+                    boolean slotWasMade = setSlot(line, RegexStrings.LAB_SLOTS, 1);
 
                     if (!slotWasMade) continue;
                     lastLine = line;
@@ -579,6 +579,6 @@ public class Parser {
 //            inputReader(x);
 //            System.out.println("_______________________________");
 //        }
-        inputReader("dupcheck.txt");
+        inputReader("example1.txt");
     }
 }
