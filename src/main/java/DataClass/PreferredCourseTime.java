@@ -1,5 +1,7 @@
 package DataClass;
 
+import java.util.Objects;
+
 public class PreferredCourseTime
 {
     private Slot slot;
@@ -20,19 +22,26 @@ public class PreferredCourseTime
     public int getPreferenceVal() { return preferenceVal; }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof PreferredCourseTime)
-        {
-            PreferredCourseTime them = (PreferredCourseTime) o;
-            return getCourse().equals(them.getCourse()) && getSlot().equals(them.getSlot()) && getSlot().equals(them.getSlot());
-        }
-
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PreferredCourseTime that = (PreferredCourseTime) o;
+        return getPreferenceVal() == that.getPreferenceVal() &&
+                getSlot().equals(that.getSlot()) &&
+                getCourse().equals(that.getCourse());
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(getSlot(), getCourse());
+    }
+
+    @Override
+    public String toString() {
+        return "PreferredCourseTime{" +
+                "slot=" + slot +
+                ", course=" + course +
+                ", preferenceVal=" + preferenceVal +
+                '}';
     }
 }

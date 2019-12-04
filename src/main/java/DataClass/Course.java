@@ -34,4 +34,12 @@ public abstract class Course {
     public int hashCode() {
         return 87 * Objects.hash(getCourseName(), getCourseNumber());
     }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "courseName='" + courseName + '\'' +
+                ", courseNumber=" + courseNumber +
+                '}';
+    }
 }

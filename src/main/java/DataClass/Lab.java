@@ -46,7 +46,6 @@ public class Lab extends Course {
         return sections;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,6 +59,17 @@ public class Lab extends Course {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getTutLab(), getTutLabNum());
+    }
+
+    @Override
+    public String toString() {
+        return "Lab{" +
+                "tutLab='" + tutLab + '\'' +
+                ", tutLabNum=" + tutLabNum +
+                ", sections=" + sections +
+                ", courseName='" + courseName + '\'' +
+                ", courseNumber=" + courseNumber +
+                '}';
     }
 }
 

@@ -18,19 +18,24 @@ public class PreAssignedCourseTime
     public Slot getSlot() { return slot; }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof PreAssignedCourseTime)
-        {
-            PreAssignedCourseTime them = (PreAssignedCourseTime) o;
-            return getCourse().equals(them.getCourse()) && getSlot().equals(them.getSlot());
-        }
-
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PreAssignedCourseTime that = (PreAssignedCourseTime) o;
+        return getCourse().equals(that.getCourse()) &&
+                getSlot().equals(that.getSlot());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(course, slot);
+        return Objects.hash(getCourse(), getSlot());
+    }
+
+    @Override
+    public String toString() {
+        return "PreAssignedCourseTime{" +
+                "course=" + course +
+                ", slot=" + slot +
+                '}';
     }
 }

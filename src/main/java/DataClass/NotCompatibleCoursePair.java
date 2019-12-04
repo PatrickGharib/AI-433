@@ -20,19 +20,24 @@ public class NotCompatibleCoursePair
     }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof NotCompatibleCoursePair)
-        {
-            NotCompatibleCoursePair them = (NotCompatibleCoursePair) o;
-            return getCourse1().equals(them.getCourse1()) && getCourse2().equals(them.getCourse2());
-        }
-
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NotCompatibleCoursePair that = (NotCompatibleCoursePair) o;
+        return getCourse1().equals(that.getCourse1()) &&
+                getCourse2().equals(that.getCourse2());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getCourse1(), getCourse2());
+    }
+
+    @Override
+    public String toString() {
+        return "NotCompatibleCoursePair{" +
+                "course1=" + course1 +
+                ", course2=" + course2 +
+                '}';
     }
 }

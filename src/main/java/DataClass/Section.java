@@ -32,4 +32,13 @@ public class Section extends Course{
     public int hashCode() {
         return Objects.hash(super.hashCode(), getLecNum());
     }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "lecNum=" + lecNum +
+                ", courseName='" + courseName + '\'' +
+                ", courseNumber=" + courseNumber +
+                '}';
+    }
 }

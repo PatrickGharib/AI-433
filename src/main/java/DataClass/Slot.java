@@ -3,22 +3,6 @@ package DataClass;
 import java.util.*;
 
 public abstract class Slot {
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Slot)) return false;
-        Slot slot = (Slot) o;
-        return Float.compare(slot.startTime, startTime) == 0 &&
-                Float.compare(slot.endTime, endTime) == 0 &&
-                max == slot.max &&
-                min == slot.min &&
-                day == slot.day;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(day, startTime, endTime, max, min);
-    }
 
     public enum Day
     {
@@ -30,6 +14,9 @@ public abstract class Slot {
     protected Day day;
     protected float startTime;
     protected float endTime;
+
+    protected int max;
+    protected int min;
 
     public Slot(Day day, float startTime, int max, int min, List<Float> validTimes) {
         this.day = day;
@@ -47,9 +34,6 @@ public abstract class Slot {
     public int getMin() {
         return min;
     }
-
-    protected int max;
-    protected int min;
 
     public Day getDay() {
         return day;
@@ -90,6 +74,27 @@ public abstract class Slot {
         return getEndTime() >= s.getStartTime() && s.getEndTime() >= getStartTime();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Slot slot = (Slot) o;
+        return Float.compare(slot.getStartTime(), getStartTime()) == 0 &&
+                getDay() == slot.getDay();
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDay(), getStartTime());
+    }
 
+    @Override
+    public String toString() {
+        return "Slot{" +
+                "day=" + day +
+                ", startTime=" + startTime +
+                ", max=" + max +
+                ", min=" + min +
+                '}';
+    }
 }
