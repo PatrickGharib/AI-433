@@ -8,10 +8,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-/**
- *
- */
 public class Parser {
 
     private static Matcher matcher;
@@ -193,10 +189,10 @@ public class Parser {
         try {
             if (slotToMake == 0) {
                 CourseSlot newCourseSlot = new CourseSlot(slotDay, minToDecimal, Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
-                ParsedData.COURSE_SLOTS.add(newCourseSlot);
+                addData(ParsedData.COURSE_SLOTS, newCourseSlot);
             } else {
                 LabSlot newLabSlot = new LabSlot(slotDay, minToDecimal, Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
-                ParsedData.LAB_SLOT.add(newLabSlot);
+                addData(ParsedData.LAB_SLOT, newLabSlot);
             }
             return true;
         } catch (NumberFormatException e) {
@@ -228,7 +224,7 @@ public class Parser {
                     //make new course slot and add to courseSlot hashset
                     //Ignoring group(4): "LEC" as it does not contain any additional information.
                     Section newCourse = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
-                    ParsedData.COURSES.add(newCourse); //TODO check if dup, warn if so.
+                    addData(ParsedData.COURSES, newCourse);
                 }
 
                 lastLine = line;
@@ -262,11 +258,11 @@ public class Parser {
                 if (line.matches(RegexStrings.LABS)) {
 
                     Lab newLab = new Lab(matcher.group(7), Integer.parseInt(matcher.group(8)), matcher.group(11), Integer.parseInt(matcher.group(12)), Integer.parseInt(matcher.group(10)));
-                    ParsedData.LABS.add(newLab); //TODO check for dups
+                    addData(ParsedData.LABS, newLab);
                 }
                 if (line.matches(RegexStrings.TUT)) {
                     Lab newLab = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(4), Integer.parseInt(matcher.group(5)));
-                    ParsedData.LABS.add(newLab); //TODO check for dups
+                    addData(ParsedData.LABS, newLab);
                 }
                 lastLine = line;
             }
@@ -300,7 +296,7 @@ public class Parser {
                     Course itemTwo = generateCourseObject(splitUnwanted[1]);
 
                     NotCompatibleCoursePair notCompatibleCoursePair = new NotCompatibleCoursePair(itemOne, itemTwo);
-                    ParsedData.NOT_COMPATIBLE.add(notCompatibleCoursePair); //TODO: Check dup
+                    addData(ParsedData.NOT_COMPATIBLE, notCompatibleCoursePair);
                 }
                 lastLine = line;
             }
@@ -322,14 +318,14 @@ public class Parser {
         matcher.matches();
         if (courseItem.matches(".*(TUT|LAB).*")) {
             if (courseItem.matches(RegexStrings.LABS)) {
-                item = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5))); //TODO: check dup
+                item = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(6), Integer.parseInt(matcher.group(7)), Integer.parseInt(matcher.group(5)));
             } else if (courseItem.matches(RegexStrings.TUT)) {
 
-                item = new Lab(matcher.group(9), Integer.parseInt(matcher.group(10)), matcher.group(11), Integer.parseInt(matcher.group(12))); //TODO: check dup
+                item = new Lab(matcher.group(9), Integer.parseInt(matcher.group(10)), matcher.group(11), Integer.parseInt(matcher.group(12)));
             }
         } else {
 
-            item = new Section(matcher.group(14), Integer.parseInt(matcher.group(15)), Integer.parseInt(matcher.group(17))); //TODO: check dup
+            item = new Section(matcher.group(14), Integer.parseInt(matcher.group(15)), Integer.parseInt(matcher.group(17)));
         }
         return item;
     }
@@ -375,7 +371,7 @@ public class Parser {
                 matcher = Pattern.compile(RegexStrings.LAB_DAY_TIME).matcher(line);
                 matcher.matches();
                 minToDecimal = Float.parseFloat(matcher.group(8)) + (Float.parseFloat(matcher.group(9)) / 60);
-                course = new Lab(matcher.group(1), Integer.parseInt(matcher.group(2)), matcher.group(5), Integer.parseInt(matcher.group(6)), Integer.parseInt(matcher.group(4))); //TODO: check dupe
+                course = new Lab(matcher.group(1), Integer.parseInt(matcher.group(2)), matcher.group(5), Integer.parseInt(matcher.group(6)), Integer.parseInt(matcher.group(4)));
                 slot = checkSlot("lab", matcher.group(7), minToDecimal);
 
                 if (slot == null) {
@@ -387,7 +383,7 @@ public class Parser {
                 matcher = Pattern.compile(RegexStrings.TUT_DAY_TIME).matcher(line);
                 matcher.matches();
                 minToDecimal = Float.parseFloat(matcher.group(6)) + (Float.parseFloat(matcher.group(7)) / 60);
-                course = new Lab(matcher.group(1), Integer.parseInt(matcher.group(2)), matcher.group(3), Integer.parseInt(matcher.group(4))); //TODO: check dupe
+                course = new Lab(matcher.group(1), Integer.parseInt(matcher.group(2)), matcher.group(3), Integer.parseInt(matcher.group(4)));
                 slot = checkSlot("lab", matcher.group(5), minToDecimal);
                 if (slot == null) {
                     System.out.println("Invalid Time, no slot at: " + matcher.group(5) + "," + matcher.group(6) + ":" + matcher.group(7) + "\nline: " + line + "\n");
@@ -404,7 +400,7 @@ public class Parser {
             }
 
             minToDecimal = Float.parseFloat(matcher.group(6)) + (Float.parseFloat(matcher.group(7)) / 60);
-            course = new Section(matcher.group(1), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(4))); //TODO: check dupe
+            course = new Section(matcher.group(1), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(4)));
             slot = checkSlot("course", matcher.group(5), minToDecimal);
             if (slot == null) {
                 System.out.println("Invalid Time, no slot at: " + matcher.group(5) + "," + matcher.group(6) + ":" + matcher.group(7) + "\nline: " + line + "\n");
@@ -412,8 +408,8 @@ public class Parser {
             }
         }
 
-        if (objectToMake == 0) ParsedData.UNWANTED.add(new UnwantedCourseTime(course, slot)); //TODO: check dups
-        else ParsedData.PARTIAL_ASSIGNMENTS.add(new PreAssignedCourseTime(course, slot)); //TODO: check dups
+        if (objectToMake == 0) addData(ParsedData.UNWANTED, new UnwantedCourseTime(course, slot));
+        else addData(ParsedData.PARTIAL_ASSIGNMENTS, new PreAssignedCourseTime(course, slot));
 
         return true;
     }
@@ -443,40 +439,40 @@ public class Parser {
                             matcher.matches();
 
                             minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / 60);
-                            course = new Lab(matcher.group(7), Integer.parseInt(matcher.group(8)), matcher.group(11), Integer.parseInt(matcher.group(12)), Integer.parseInt(matcher.group(10))); //TODO: Check dup
-                            slot = checkSlot("lab", matcher.group(2), minToDecimal); //TODO: Check dup
+                            course = new Lab(matcher.group(7), Integer.parseInt(matcher.group(8)), matcher.group(11), Integer.parseInt(matcher.group(12)), Integer.parseInt(matcher.group(10)));
+                            slot = checkSlot("lab", matcher.group(2), minToDecimal);
                             if (slot == null) {
                                 System.out.println("Invalid Time, no slot at: " + matcher.group(2) + matcher.group(3) + "\nline: " + line + "\n");
                                 continue;
                             }
-                            ParsedData.PREFERENCES.add(new PreferredCourseTime(slot, course, Integer.parseInt(matcher.group(13)))); //TODO: Check dup
+                            addData(ParsedData.PREFERENCES, new PreferredCourseTime(slot, course, Integer.parseInt(matcher.group(13))));
                         } else if (line.matches(RegexStrings.PREFERENCES_T)) {
                             matcher = Pattern.compile(RegexStrings.PREFERENCES_T).matcher(line);
                             matcher.matches();
 
                             minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / 60);
-                            course = new Lab(matcher.group(7), Integer.parseInt(matcher.group(8)), matcher.group(9), Integer.parseInt(matcher.group(10))); //TODO: Check dup
+                            course = new Lab(matcher.group(7), Integer.parseInt(matcher.group(8)), matcher.group(9), Integer.parseInt(matcher.group(10)));
 
                             slot = checkSlot("lab", matcher.group(2), minToDecimal);
                             if (slot == null) {
                                 System.out.println("Invalid Time, no slot at: " + matcher.group(2) + "," + matcher.group(3) + "\nline: " + line + "\n");
                                 continue;
                             }
-                            ParsedData.PREFERENCES.add(new PreferredCourseTime(slot, course, Integer.parseInt(matcher.group(11)))); //TODO: Check dup
+                            addData(ParsedData.PREFERENCES, new PreferredCourseTime(slot, course, Integer.parseInt(matcher.group(11))));
                         }
                     } else {
                         matcher = Pattern.compile(RegexStrings.PREFERENCES_C).matcher(line);
                         matcher.matches();
 
                         minToDecimal = Float.parseFloat(matcher.group(4)) + (Float.parseFloat(matcher.group(5)) / 60);
-                        course = new Section(matcher.group(7), Integer.parseInt(matcher.group(8)), Integer.parseInt(matcher.group(10))); //TODO: Check dup
+                        course = new Section(matcher.group(7), Integer.parseInt(matcher.group(8)), Integer.parseInt(matcher.group(10)));
                         slot = checkSlot("course", matcher.group(2), minToDecimal);
                         if (slot == null) {
                             System.out.println("Invalid Time, no slot at: " + matcher.group(2) + matcher.group(3) + "\nline: " + line + "\n");
                             continue;
                         }
 
-                        ParsedData.PREFERENCES.add(new PreferredCourseTime(slot, course, Integer.parseInt(matcher.group(11)))); //TODO: Check dup
+                        addData(ParsedData.PREFERENCES, new PreferredCourseTime(slot, course, Integer.parseInt(matcher.group(11))));
                     }
                 }
                 lastLine = line;
@@ -536,7 +532,7 @@ public class Parser {
                     Course itemTwo = generateCourseObject(splitPair[1]);
 
                     PreferredCoursePair coursePair = new PreferredCoursePair(itemOne, itemTwo);
-                    ParsedData.PAIR.add(coursePair); //TODO: Check dup
+                    addData(ParsedData.PAIR, coursePair);
                 }
                 lastLine = line;
             }
@@ -570,6 +566,11 @@ public class Parser {
         }
     }
 
+    private static <E> void addData(LinkedHashSet<E> parsedDataHolder, E data)
+    {
+        if(!parsedDataHolder.add(data)) System.out.println("The " + data.getClass().toString() + " :" + data.toString() + " already exists and will not be added twice.");
+    }
+
     public static void main(String[] args) {
         //String fileName = args[0];
         //Scanner in = new Scanner(System.in);String fileName = in.nextLine();
@@ -578,6 +579,6 @@ public class Parser {
 //            inputReader(x);
 //            System.out.println("_______________________________");
 //        }
-        inputReader("new2.txt");
+        inputReader("dupcheck.txt");
     }
 }
