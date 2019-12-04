@@ -228,7 +228,7 @@ public class Parser {
                     //make new course slot and add to courseSlot hashset
                     //Ignoring group(4): "LEC" as it does not contain any additional information.
                     Section newCourse = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
-                    ParsedData.COURSES.add(newCourse);
+                    ParsedData.COURSES.add(newCourse); //TODO check if dup, warn if so.
                 }
 
                 lastLine = line;
@@ -255,7 +255,6 @@ public class Parser {
                 if (!line.matches(RegexStrings.LABS) && !line.matches(RegexStrings.TUT)) {
                     System.out.println("Parsing message: Could not parse line:" + line + " in labs");
                     System.out.println(line);
-                    System.exit(0);
                 }
                 Matcher matcher = Pattern.compile(RegexStrings.TUT_LABS).matcher(line);
                 matcher.matches();
