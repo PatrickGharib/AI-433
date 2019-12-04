@@ -234,8 +234,7 @@ public class Parser {
                 lastLine = line;
             }
             if (!lastLine.matches("[\\s]*")) {
-                System.out.println("Parsing message: Could not parse line:" + line + "  in Courses(no space)");
-                // System.exit(0);
+                System.out.println("Parsing message: Could not parse line:" + line + " in Courses(no space)");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -259,19 +258,17 @@ public class Parser {
                 Matcher matcher = Pattern.compile(RegexStrings.TUT_LABS).matcher(line);
                 matcher.matches();
                 if (line.matches(RegexStrings.LABS)) {
-                    //TODO check for dups
                     Lab newLab = new Lab(matcher.group(7),Integer.parseInt(matcher.group(8)), matcher.group(11), Integer.parseInt(matcher.group(12)), Integer.parseInt(matcher.group(10)));
-                    ParsedData.LABS.add(newLab);
+                    ParsedData.LABS.add(newLab); //TODO check for dups
                 }
                 if (line.matches(RegexStrings.TUT)) {
                     Lab newLab = new Lab(matcher.group(2), Integer.parseInt(matcher.group(3)), matcher.group(4), Integer.parseInt(matcher.group(5)));
-                    ParsedData.LABS.add(newLab);
+                    ParsedData.LABS.add(newLab); //TODO check for dups
                 }
                 lastLine = line;
             }
             if (!lastLine.matches("[\\s]*")) {
-                System.out.println("Parsing error: Could not parse File in labs(no space)");
-                System.exit(0);
+                System.out.println("Parsing message: Could not parse line:" + line + " in Labs(no space)");
             }
         } catch (IOException e) {
             e.printStackTrace();
