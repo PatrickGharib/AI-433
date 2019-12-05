@@ -49,11 +49,13 @@ public class Eval {
 
 
     //Private Constructor
-    private Eval(int wminfilled, int wpref, int wpair, int wsecdiff,
+    private Eval(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired,
+                int wminfilled, int wpref, int wpair, int wsecdiff,
                  Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
 
         //Update eval attributes
         setWeights(wminfilled, wpref, wpair, wsecdiff);
+        setPenalties(pen_coursemin, pen_labsmin, pen_section, pen_notpaired);
         this.coursePairs = pairs;
 
         //Build hashmap for preferred assignments
@@ -84,7 +86,7 @@ public class Eval {
     //Instantiation with default penalties
     public static Eval getInstance(Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
         if (eval_instance == null)
-            eval_instance = new Eval(1, 1, 1, 1, pairs, prefAssigns);
+            eval_instance = new Eval(1,1,1,1,1, 1, 1, 1, pairs, prefAssigns);
         return eval_instance;
     }
 
@@ -92,11 +94,21 @@ public class Eval {
     public static Eval getInstance(int wminfilled, int wpref, int wpair, int wsecdiff,
                                    Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
         if (eval_instance == null) {
-            eval_instance = new Eval(wminfilled, wpref, wpair, wsecdiff, pairs, prefAssigns);
+            eval_instance = new Eval(1,1,1,1,wminfilled, wpref, wpair, wsecdiff, pairs, prefAssigns);
         }
         return eval_instance;
     }
 
+    //Instantiation with custom weights and penalties
+    public static Eval getInstance(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired,
+                                   int wminfilled, int wpref, int wpair, int wsecdiff,
+                                   Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
+        if (eval_instance == null) {
+            eval_instance = new Eval( pen_coursemin, pen_labsmin, pen_section, pen_notpaired,
+                    wminfilled, wpref, wpair, wsecdiff, pairs, prefAssigns);
+        }
+        return eval_instance;
+    }
 
     //Setter for penalties
     public void setPenalties(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired){
