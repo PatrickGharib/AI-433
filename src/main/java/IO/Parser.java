@@ -13,6 +13,7 @@ public class Parser {
     private static Matcher matcher;
 
     public static void inputReader(String fileName) {
+        String[] zones = {"Name:","Course slots:","Lab slots:", "Courses:","Labs:","Not compatible:","Unwanted:","Preferences:","Pair:","Partial assignments:"};
         List<String> zonesRead = new ArrayList<String>();
         String zone;
         FileReader fr = null;
@@ -22,58 +23,54 @@ public class Parser {
         try {
             fr = new FileReader(fileName);
             br = new BufferedReader(fr);
+            int count =0;
+            while ((zone = br.readLine()) != null){
+                if(count < 10){
+                    if (zone.trim().equals(zones[count]) && !zonesRead.contains(zone.trim()) && zonesRead.isEmpty()){
+                        zonesRead.add(zone.trim());
+                        count++;
+                    }
+                    if (zone.trim().equals(zones[count]) && !zonesRead.contains(zone.trim()) && zonesRead.size() == count){
+                        zonesRead.add(zone.trim());
+                        count++;
+                    }
+                }
+            }
+            if (count!= 10 ){
+                System.out.println("Could not Parse input");
+                System.exit(0);
+            }
+            fr = new FileReader(fileName);
+            br = new BufferedReader(fr);
             while ((line = br.readLine()) != null) {
-                // creates a matcher object with a specific pattern that it looks for
-                // this is how most of the error checking is done
-                //Matcher emptyCheck = Pattern.compile("[\\s]*").matcher(line);
-                // looks for name header along with an infinite amount of white space that
-                // follows
-                // there can be no white space before though
-                if (line.trim().matches("Name:") && !zonesRead.contains(line.trim()) && zonesRead.isEmpty()) {
-                    zonesRead.add(line.trim());
+                if (line.trim().matches("Name:")) {
                     line = readName(br, line);
                 }
-                if (line.trim().matches("Course slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 1) {
-                    zonesRead.add(line.trim());
+                if (line.trim().matches("Course slots:")) {
                     line = readCourseSlot(br, line);
-
                 }
-                if (line.trim().matches("Lab slots:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 2) {
-                    zonesRead.add(line.trim());
+                if (line.trim().matches("Lab slots:")) {
                     line = readLabSlot(br, line);
                 }
-                if (line.trim().matches("Courses:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 3) {
-                    zonesRead.add(line.trim());
+                if (line.trim().matches("Courses:")) {
                     line = readCourse(br, line);
                 }
-                if (line.trim().matches("Labs:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 4) {
-                    zonesRead.add(line.trim());
+                if (line.trim().matches("Labs:")) {
                     line = readLab(br, line);
                 }
-                if (line.trim().matches("Not compatible:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 5) {
-                    zonesRead.add(line.trim());
-                    // System.out.println(zonesRead.toString());
+                if (line.trim().matches("Not compatible:")) {
                     line = readNotCompatible(br, line);
                 }
-                if (line.trim().matches("Unwanted:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 6) {
-                    zonesRead.add(line.trim());
-                    //System.out.println(zonesRead.toString());
+                if (line.trim().matches("Unwanted:")) {
                     line = readUnwanted(br, line);
-
                 }
-                if (line.trim().matches("Preferences:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 7) {
-                    zonesRead.add(line.trim());
-                    // System.out.println(zonesRead.toString());
+                if (line.trim().matches("Preferences:")) {
                     line = readPreferences(br, line);
                 }
-                if (line.trim().matches("Pair:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 8) {
-                    zonesRead.add(line.trim());
-                    //System.out.println(zonesRead.toString());
+                if (line.trim().matches("Pair:") ) {
                     line = readPair(br, line);
                 }
-                if (line.trim().matches("Partial assignments:") && !zonesRead.contains(line.trim()) && zonesRead.size() == 9) {
-                    zonesRead.add(line.trim());
-                    // System.out.println(zonesRead.toString());
+                if (line.trim().matches("Partial assignments:")) {
                     readPartialAssignment(br, line);
                 }
             }
@@ -84,7 +81,7 @@ public class Parser {
             System.exit(0);
             return;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Could not parse input");
         }
     }
 
@@ -580,5 +577,6 @@ public class Parser {
 //            System.out.println("_______________________________");
 //        }
         inputReader("example1.txt");
+        System.out.println("finished");
     }
 }
