@@ -1,6 +1,7 @@
 package Tree;
 
 import DataClass.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -29,7 +30,7 @@ public class Constr {
     private Set<UnwantedCourseTime> unwanted;
 
     //Constructor
-    public Constr(Set<NotCompatibleCoursePair> pairs, Set<UnwantedCourseTime> unwanted){
+    private Constr(Set<NotCompatibleCoursePair> pairs, Set<UnwantedCourseTime> unwanted){
         notCompatibles = pairs;
         this.unwanted = unwanted;
     }
@@ -49,7 +50,7 @@ public class Constr {
     }
 
     //Functions
-    public boolean constr(PSol sol){
+    public boolean constr(@NotNull PSol sol){
 
         //Check if solution is complete
         if(! sol.getComplete())
@@ -60,7 +61,7 @@ public class Constr {
         return true;
     }
 
-    public boolean constrPartial(PSol sol){
+    public boolean constrPartial(@NotNull PSol sol){
 
         Set<Slot> slots = sol.slotSet();
         //Special Courses conditions
@@ -147,7 +148,7 @@ public class Constr {
         for (NotCompatibleCoursePair pair : notCompatibles) {
             Slot s1 = sol.courseLookup(pair.getCourse1());
             Slot s2 = sol.courseLookup(pair.getCourse2());
-            if ( (s1 != null) && (s2 != null) && (s1.equals(s2))) {
+            if ((s1 != null) && (s1.equals(s2))) {
                 return false;
             }
         }
@@ -156,7 +157,7 @@ public class Constr {
         for (UnwantedCourseTime pair : unwanted) {
             Course c = pair.getCourse();
             Slot s = pair.getSlot();
-            if (sol.courseLookup(c).equals(s)) {
+            if (Objects.equals(sol.courseLookup(c), s)) {
                 return false;
             }
         }
@@ -164,15 +165,15 @@ public class Constr {
         //Check if special courses overlap with unwanted overlaps
         //CPSC 813 is not allowed to overlap with any labs/tutorials of CPSC 313 or with any course section of CPSC 313.
         if (c813 != null){
-            for (Course c : noOverlap913){
-                if (sol.courseLookup(c).overlaps(sol.courseLookup(c813)))
+            for (Course c : noOverlap813){
+                if (Objects.requireNonNull(sol.courseLookup(c)).overlaps(sol.courseLookup(c813)))
                     return false;
             }
         }
         //CPSC 913 is not allowed to overlap with any labs/tutorials of CPSC 413 or with any course section of CPSC 413.
         if (c913 != null){
             for (Course c : noOverlap913){
-                if (sol.courseLookup(c).overlaps(sol.courseLookup(c913)))
+                if (Objects.requireNonNull(sol.courseLookup(c)).overlaps(sol.courseLookup(c913)))
                     return false;
             }
         }
