@@ -49,11 +49,13 @@ public class Eval {
 
 
     //Private Constructor
-    private Eval(int wminfilled, int wpref, int wpair, int wsecdiff,
+    private Eval(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired,
+                int wminfilled, int wpref, int wpair, int wsecdiff,
                  Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
 
         //Update eval attributes
         setWeights(wminfilled, wpref, wpair, wsecdiff);
+        setPenalties(pen_coursemin, pen_labsmin, pen_section, pen_notpaired);
         this.coursePairs = pairs;
 
         //Build hashmap for preferred assignments
@@ -84,7 +86,7 @@ public class Eval {
     //Instantiation with default penalties
     public static Eval getInstance(Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
         if (eval_instance == null)
-            eval_instance = new Eval(1, 1, 1, 1, pairs, prefAssigns);
+            eval_instance = new Eval(1,1,1,1,1, 1, 1, 1, pairs, prefAssigns);
         return eval_instance;
     }
 
@@ -92,11 +94,21 @@ public class Eval {
     public static Eval getInstance(int wminfilled, int wpref, int wpair, int wsecdiff,
                                    Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
         if (eval_instance == null) {
-            eval_instance = new Eval(wminfilled, wpref, wpair, wsecdiff, pairs, prefAssigns);
+            eval_instance = new Eval(1,1,1,1,wminfilled, wpref, wpair, wsecdiff, pairs, prefAssigns);
         }
         return eval_instance;
     }
 
+    //Instantiation with custom weights and penalties
+    public static Eval getInstance(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired,
+                                   int wminfilled, int wpref, int wpair, int wsecdiff,
+                                   Set<PreferredCoursePair> pairs, Set<PreferredCourseTime> prefAssigns){
+        if (eval_instance == null) {
+            eval_instance = new Eval( pen_coursemin, pen_labsmin, pen_section, pen_notpaired,
+                    wminfilled, wpref, wpair, wsecdiff, pairs, prefAssigns);
+        }
+        return eval_instance;
+    }
 
     //Setter for penalties
     public void setPenalties(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired){
@@ -119,7 +131,7 @@ public class Eval {
     public int eval(PSol sol){
 
         int evaluation = 0;
-         Set<Slot> slots = sol.slotSet();
+        Set<Slot> slots = sol.slotSet();
         for (Slot slot : slots) {
 
             if (slot == null) {
@@ -146,7 +158,7 @@ public class Eval {
             } //For each course in slot
 
             //Check CourseMin and LabsMin
-            if (w_minfilled != 0)
+            if (w_minfilled != 0 && sol.getComplete())
                 evaluation += w_minfilled * eval_minFilled(sol, slot, coursenum, labnum);
         } //For each slot in sol
 
@@ -154,23 +166,24 @@ public class Eval {
         if (w_pair != 0)
             evaluation += w_pair * eval_pair(sol);
 
-        // temporary naive preffered time eval.
+        // temporary naive preferred time eval.
         int aEval = naivePrefEval(sol);
         evaluation += w_pref * aEval;
 
         return evaluation;
     }
+    
 
     private int naivePrefEval(PSol sol) {
         int aEval = 0;
         for (PreferredCourseTime p : ParsedData.PREFERENCES){
             Slot s = sol.courseLookup(p.getCourse());
 
-            // if its unassigned ignore it (dont increment)
+            // if its unassigned ignore it (don't increment)
             if (s == null){
                 continue;
             }
-            // if it IS assigned, but doesnt match the current pref course time, increment the penalty.
+            // if it IS assigned, but doesn't match the current pref course time, increment the penalty.
             if (s != p.getSlot()){
                 aEval+= p.getPreferenceVal();
             }
