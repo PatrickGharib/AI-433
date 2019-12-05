@@ -76,7 +76,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
 
         node!!.expand()
 
-        println(node.data.value)
+        //println(node.data.value)
 
         // candidate?.value ?: 100000 explanation:
         // candidate?.value says IF candidate != null then get its value, otherwise return null, (no null pointer exception)
