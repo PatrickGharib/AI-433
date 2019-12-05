@@ -41,9 +41,9 @@ public class PSolStringBuilder {
     //this method calls course and slot builder to create a single line of the output (course to slot pairing)
     private StringBuilder courseSlotBuilder(Tuple<Course,Slot> pair){
         StringBuilder sb = new StringBuilder();
-        sb.append(courseToString(pair.getKey()));
-        sb.append("            ");
-        sb.append(slotToString(pair.getValue()));
+        //sb.append(courseToString(pair.getKey()));
+        sb.append(String.format("%-20s %20s",courseToString(pair.getKey()),slotToString(pair.getValue())));
+        //sb.append(slotToString(pair.getValue()));
         return sb;
     }
 
