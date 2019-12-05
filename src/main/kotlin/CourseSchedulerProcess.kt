@@ -55,7 +55,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
     }
 
     private fun fTrans(node: AndTree<PSol>.Node?) {
-        println(node?.data?.value.toString())
+        //println(node?.data?.value.toString())
         node!!.expand()
         //println(node.depth.toString() +"||"+node?.data.value.toString()+ "||" + model.leaves.count() + "||" + node.data.courseSet().filter {node.data.courseLookup(it) != null }.count() +"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
         if (node.children.isEmpty()) {
