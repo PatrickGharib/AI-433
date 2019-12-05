@@ -220,7 +220,13 @@ public class Parser {
                     matcher.matches();
                     //make new course slot and add to courseSlot hashset
                     //Ignoring group(4): "LEC" as it does not contain any additional information.
+
                     Section newCourse = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
+                    if (newCourse.getCourseName() == "CPSC" && newCourse.getLecNum() == 313 )
+                        addData(ParsedData.COURSES, new Section("CPSC", 813, 01));
+                    if (newCourse.getCourseName() == "CPSC" && newCourse.getLecNum() == 413 )
+                        addData(ParsedData.COURSES, new Section("CPSC", 913, 01));
+
                     addData(ParsedData.COURSES, newCourse);
                 }
 

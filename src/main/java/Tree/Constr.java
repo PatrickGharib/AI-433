@@ -176,6 +176,10 @@ public class Constr {
             }
         }
 
+        for( Slot s : sol.slotSet()){
+
+        }
+
         return true;
     } //End of constrPartial
 
