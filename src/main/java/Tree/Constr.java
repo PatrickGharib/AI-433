@@ -98,7 +98,7 @@ public class Constr {
                     }
 
                     //Count 500-level courses
-                    if (course.getCourseNumber() == 500) {
+                    if ((course.getCourseNumber() / 100) == 5) {
                         if (courses500.size() > 0)  return false;
                         courses500.add(course);
                     }
