@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSol>() {
     override fun execute(): PSol? {
         // start time
+
         val start = System.currentTimeMillis()
 
 
@@ -74,6 +75,8 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
     private fun fTrans(node: AndTree<PSol>.Node?) {
 
         node!!.expand()
+
+        println(node.data.value)
 
         // candidate?.value ?: 100000 explanation:
         // candidate?.value says IF candidate != null then get its value, otherwise return null, (no null pointer exception)
