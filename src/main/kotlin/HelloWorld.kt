@@ -18,12 +18,14 @@ fun main(args: Array<String>) {
 
 
     println(Paths.get("").toAbsolutePath())
-    val y = constructPSol();
 
 
-    if (args.size == 4){
+
+    if (args.size == 5){
         Eval.getInstance(args[1].toInt(),args[2].toInt(),args[3].toInt(),args[4].toInt(),ParsedData.PAIR,ParsedData.PREFERENCES)
     }
+
+    val y = constructPSol();
     //println(PSolStringBuilder(y).ToString(y.value))
     val x = CourseSchedulerProcess(y).execute()
     println(x?.value)
@@ -33,27 +35,25 @@ fun main(args: Array<String>) {
 
 }
 
-fun constructPSol() : PSol{
+fun constructPSol() : PSol {
     val x: MutableList<Assignment> = mutableListOf()
     ParsedData.PARTIAL_ASSIGNMENTS.forEach {
-        if (it.course !=null) {
-            x.add(Assignment(it.course, it.slot))
-        }
+        x.add(Assignment(it.course, it.slot))
     }
 
-    val exclude = ParsedData.PARTIAL_ASSIGNMENTS.filter { it.course!=null }.map { it.course }
+    val exclude = ParsedData.PARTIAL_ASSIGNMENTS.filter { it.course != null }.map { it.course }
     ParsedData.COURSES.forEach {
-        if (it in exclude){
+        if (it in exclude) {
             return@forEach
-        }else {
+        } else {
             x.add(Assignment(it, null))
         }
     }
 
     ParsedData.LABS.forEach {
-        if (it in exclude){
+        if (it in exclude) {
             return@forEach
-        }else{
+        } else {
             x.add(Assignment(it, null))
         }
     }

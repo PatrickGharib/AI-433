@@ -17,7 +17,7 @@ In order to provide custom weights a file must be specified. Default weights are
 
 ./gradlew run - build and runs the source code
 
-./gradlew run --args "\<arg1\>" "\<arg2\>".... - builds and runs the source code, providing the given arguements to the program.
+./gradlew run --args "\<arg1\> \<arg2\> ...." - builds and runs the source code, providing the given arguements to the program.
 
 ./gradlew distZip - build and zips a runnable distribution under build\distributions
 
