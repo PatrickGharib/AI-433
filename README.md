@@ -8,7 +8,7 @@ On Mac OS and Linux,  gradlew must be made executable. For example, chmod +x gra
 
 ## Args
 
-Arguements: [\<file\> [\<pen_\> \<pen_\> \<pen_\> \<pen_\>]] 
+Arguements: [\<file\> [\<w_minfilled\> \<w_pref\> \<w_pair\> \<w_secdiff\>]] 
 
 In order to provide custom weights a file must be specified. Default weights are 1,1,1,1.
 
@@ -17,7 +17,7 @@ In order to provide custom weights a file must be specified. Default weights are
 
 ./gradlew run - build and runs the source code
 
-./gradlew run --args "\<arg1\> \<arg2\> ...." - builds and runs the source code, providing the given arguements to the program.
+./gradlew run --args "\<arg1\> \<arg2\> ...." - builds and runs the source code, providing the given arguements to the program. Example: ./gradlew run --args "deptinst1.txt 1 1 0 1"
 
 ./gradlew distZip - build and zips a runnable distribution under build\distributions
 
