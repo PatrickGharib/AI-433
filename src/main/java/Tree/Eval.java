@@ -131,7 +131,7 @@ public class Eval {
     public int eval(PSol sol){
 
         int evaluation = 0;
-         Set<Slot> slots = sol.slotSet();
+        Set<Slot> slots = sol.slotSet();
         for (Slot slot : slots) {
 
             if (slot == null) {
@@ -158,7 +158,7 @@ public class Eval {
             } //For each course in slot
 
             //Check CourseMin and LabsMin
-            if (w_minfilled != 0)
+            if (w_minfilled != 0 && sol.getComplete())
                 evaluation += w_minfilled * eval_minFilled(sol, slot, coursenum, labnum);
         } //For each slot in sol
 
@@ -166,23 +166,24 @@ public class Eval {
         if (w_pair != 0)
             evaluation += w_pair * eval_pair(sol);
 
-        // temporary naive preffered time eval.
+        // temporary naive preferred time eval.
         int aEval = naivePrefEval(sol);
         evaluation += w_pref * aEval;
 
         return evaluation;
     }
+    
 
     private int naivePrefEval(PSol sol) {
         int aEval = 0;
         for (PreferredCourseTime p : ParsedData.PREFERENCES){
             Slot s = sol.courseLookup(p.getCourse());
 
-            // if its unassigned ignore it (dont increment)
+            // if its unassigned ignore it (don't increment)
             if (s == null){
                 continue;
             }
-            // if it IS assigned, but doesnt match the current pref course time, increment the penalty.
+            // if it IS assigned, but doesn't match the current pref course time, increment the penalty.
             if (s != p.getSlot()){
                 aEval+= p.getPreferenceVal();
             }
