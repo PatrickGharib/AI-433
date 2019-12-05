@@ -1,8 +1,11 @@
 package Tree;
 
 import DataClass.*;
+
+import java.lang.reflect.Array;
 import java.util.*;
 import DataClass.PreferredCoursePair;
+import IO.ParsedData;
 
 /*
 @author Zahra Ghavasieh
@@ -67,6 +70,7 @@ public class Eval {
             //Update pref-value hashmap
             prefs.put(pref.getSlot(), pref.getPreferenceVal());
             this.prefAssigns.put(course, prefs);
+
 
             //Update penalty
             oldVal = pen_prefAssign.get(course);
@@ -136,8 +140,9 @@ public class Eval {
                         evaluation += w_secdiff * eval_secdiff(course, sections);
                 }
                 //Add up preference values
-                if (w_pref != 0)
-                    evaluation += w_pref * eval_pref(course, slot);
+                if (w_pref != 0) {
+                    //evaluation += w_pref * eval_pref(course, slot);
+                }
             } //For each course in slot
 
             //Check CourseMin and LabsMin
@@ -148,6 +153,18 @@ public class Eval {
         //Check if a pair has the same assignment
         if (w_pair != 0)
             evaluation += w_pair * eval_pair(sol);
+
+        int aEval = 0;
+        for (PreferredCourseTime p : ParsedData.PREFERENCES){
+            Slot s = sol.courseLookup(p.getCourse());
+            if (s == null){
+                continue;
+            }
+            if (s != p.getSlot()){
+                aEval+= p.getPreferenceVal();
+            }
+        }
+        evaluation += w_pref * aEval;
 
         return evaluation;
     }

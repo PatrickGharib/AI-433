@@ -26,7 +26,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
             fTrans(fLeafDepth())
         }
         model.depthFirst.clear()
-        while (model.peekBest() != null && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(60*12)){
+        while (model.peekBest() != null && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(5)){
 
             while (model.peekBest()?.data?.value ?: 1000001 >= candidate?.value ?: 1000000) {
                 model.best()
@@ -55,6 +55,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
     }
 
     private fun fTrans(node: AndTree<PSol>.Node?) {
+        println(node?.data?.value.toString())
         node!!.expand()
         //println(node.depth.toString() +"||"+node?.data.value.toString()+ "||" + model.leaves.count() + "||" + node.data.courseSet().filter {node.data.courseLookup(it) != null }.count() +"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
         if (node.children.isEmpty()) {
