@@ -21,17 +21,21 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
         //      return x.data.value
         // }
 
+        val duration = TimeUnit.MINUTES.toMillis(5)
+
         // atomic in case we wanted to thread it
         val count = AtomicInteger(0)
         val skipped = AtomicInteger(0)
 
         // find initial candidate
-        while (candidate== null && model.peekDeepest() !=null && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(5)){
+        while (candidate== null && model.peekDeepest() !=null && (System.currentTimeMillis()-start) < duration){
             count.incrementAndGet()
 
             // do work
             fTrans(fLeafDepth())
         }
+
+
 
         // deallocate depth first queue.
         model.depthFirst.clear()

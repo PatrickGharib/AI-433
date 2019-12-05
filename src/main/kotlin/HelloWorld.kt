@@ -28,10 +28,15 @@ fun main(args: Array<String>) {
     val y = constructPSol();
     //println(PSolStringBuilder(y).ToString(y.value))
     val x = CourseSchedulerProcess(y).execute()
-    println(x?.value)
-    Eval.getInstance(ParsedData.PAIR,ParsedData.PREFERENCES).eval(x)
-    println("done")
-    x?.value?.let { PSolStringBuilder(x).ToString(it) }
+
+    if( x == null){
+        println(" No soloution")
+    }else {
+        println(x?.value)
+        Eval.getInstance(ParsedData.PAIR, ParsedData.PREFERENCES).eval(x)
+        println("done")
+        x?.value?.let { PSolStringBuilder(x).ToString(it) }
+    }
 
 }
 
