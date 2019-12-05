@@ -2,6 +2,7 @@ package DataClass
 
 import java.util.Comparator
 
+@Deprecated("Use java queue instead")
 class HeapArrayQueue<T>(size: Int, val comparator: Comparator<T>? = null) : PriorityQueue<T>() {
 
 
@@ -69,10 +70,11 @@ class HeapArrayQueue<T>(size: Int, val comparator: Comparator<T>? = null) : Prio
     override fun get(): T? {
         return data[1]
     }
+    private fun <T> Array<T>.swap(i: Int, size: Int) {
+        val x = this[i]
+        this[i] = this[size]
+        this[size] = x
+    }
 }
 
-private fun <T> Array<T>.swap(i: Int, size: Int) {
-    val x = this[i]
-    this[i] = this[size]
-    this[size] = x
-}
+
