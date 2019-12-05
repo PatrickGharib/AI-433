@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
     println(x?.value)
     Eval.getInstance(ParsedData.PAIR,ParsedData.PREFERENCES).eval(x)
     println("done")
-    println(x?.value?.let { PSolStringBuilder(x).ToString(it) })
+    x?.value?.let { PSolStringBuilder(x).ToString(it) }
 
 }
 
