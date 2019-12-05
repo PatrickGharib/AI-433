@@ -154,19 +154,28 @@ public class Eval {
         if (w_pair != 0)
             evaluation += w_pair * eval_pair(sol);
 
+        // temporary naive preffered time eval.
+        int aEval = naivePrefEval(sol);
+        evaluation += w_pref * aEval;
+
+        return evaluation;
+    }
+
+    private int naivePrefEval(PSol sol) {
         int aEval = 0;
         for (PreferredCourseTime p : ParsedData.PREFERENCES){
             Slot s = sol.courseLookup(p.getCourse());
+
+            // if its unassigned ignore it (dont increment)
             if (s == null){
                 continue;
             }
+            // if it IS assigned, but doesnt match the current pref course time, increment the penalty.
             if (s != p.getSlot()){
                 aEval+= p.getPreferenceVal();
             }
         }
-        evaluation += w_pref * aEval;
-
-        return evaluation;
+        return aEval;
     }
 
 
