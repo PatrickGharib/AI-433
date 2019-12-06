@@ -1,9 +1,16 @@
 import DataClass.PSol
 import IO.ParsedData
+import kotlinx.coroutines.*
+
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.coroutineContext
 
 class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): SearchProcess<CourseSchedulerTree, PSol>() {
+
+    val mutex  = Mutex()
     override fun execute(): PSol? {
         // start time
 
@@ -28,51 +35,67 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
         val count = AtomicInteger(0)
         val skipped = AtomicInteger(0)
 
+
         // find initial candidate
+        /*
         while (candidate== null && model.peekDeepest() !=null && (System.currentTimeMillis()-start) < duration){
             count.incrementAndGet()
 
             // do work
             fTrans(fLeafDepth())
         }
-
-
-
+        */
         // deallocate depth first queue.
-        model.depthFirst.clear()
+
 
         // search for anything better.
-        while (model.peekBest() != null && (System.currentTimeMillis()-start) < duration){
-
-            // skip any bad nodes.
-            while (model.peekBest()?.data?.value ?: 1000001 >= candidate?.value ?: 1000000) {
-                model.best()
-                skipped.incrementAndGet()
-                count.incrementAndGet()
-                if (model.peekBest() == null) {
-                    break
-                }
-            }
-            // quit if we run out of nodes.
-            if (model.peekBest() == null) break
-            count.incrementAndGet()
-
-            // do work
+        runBlocking {
             fTrans(fLeafBest())
+        }
+        val jobs = List(1){
+            GlobalScope.async(Dispatchers.Default){
+                println(it)
+                while (model.peekBest() != null && (System.currentTimeMillis() - start) < duration) {
+
+                    // skip any bad nodes.
+                    while (model.peekBest()?.data?.value ?: 1000001 >= candidate?.value ?: 1000000) {
+                        model.best()
+                        skipped.incrementAndGet()
+                        count.incrementAndGet()
+                        if (model.peekBest() == null) {
+                            break
+                        }
+                    }
+                    // quit if we run out of nodes.
+                    if (model.peekBest() == null) break
+                    count.incrementAndGet()
+
+                    // do work
+                    fTrans(fLeafBest())
+                }
+                println("$it done")
+            }
+        }
+        runBlocking {
+            jobs.forEach { it.await() }
         }
         println("Examined $count leaves, skipping $skipped. This means we skipped ${(skipped.get().toFloat()/count.get().toFloat())*100}%.")
         return candidate
     }
 
-    private fun fLeafDepth(): AndTree<PSol>.Node? {
-        return model.deepest()
-    }
+
 
     private fun fLeafBest(): AndTree<PSol>.Node? {
         return model.best()
     }
 
-    private fun fTrans(node: AndTree<PSol>.Node?) {
+    private suspend fun asyncUpdate(sol: PSol){
+        mutex.withLock {
+            if (candidate?.value ?: 1000000 >= sol.value) candidate = sol
+        }
+    }
+
+    private suspend fun fTrans(node: AndTree<PSol>.Node?) {
 
         node!!.expand()
 
@@ -83,10 +106,13 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
         // then ?: says if the left is null then return the right, in this case 100000.
         // so if candidate is null it goes: (candidate?.value) ?: 100000 -> (null) ?: 100000 -> 100000
 
+
         // examine the current node.
         node.solved = node.data.complete
         if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 1000000000)) {
-            candidate = node.data
+            mutex.withLock {
+                candidate = node.data
+            }
             model.depthmode = false
             println(candidate?.value.toString()+ "||||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
         }
@@ -95,7 +121,11 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
         node.children.forEach {
             it.solved = it.data.complete
             if (it.solved  && (it.data.value < (candidate?.value ?: 1000000000))) {
-                candidate = it.data
+                coroutineScope {
+                    launch{
+                        asyncUpdate(node.data)
+                    }
+                }
                 model.depthmode = false
                 println(candidate?.value.toString()+ "||||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.filter { candidate?.courseLookup(it) != null }?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
 
