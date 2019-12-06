@@ -39,6 +39,7 @@ data class ManyToOneMutableMap<K, V>(
 
     val m = HashMap<V, Set<K>>()
     fun getKeys(value: V): Set<K>{
+        return manyToOne.keys.filter{ manyToOne[it] == value}.toSet()
         return oneToMany[value].toSet()
         if (value !in m.keys){
             m[value] = manyToOne.keys.filter{ manyToOne[it] == value}.toSet()

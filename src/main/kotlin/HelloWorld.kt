@@ -45,9 +45,9 @@ fun main(args: Array<String>) {
     }
 
     val y = constructPSol();
-    println("Valid: ${Constr.getInstance().constrPartial(y)}")
+    println("Valid: ${Constr.getInstance(ParsedData.NOT_COMPATIBLE, ParsedData.UNWANTED).constrPartial(y)}")
     //println(PSolStringBuilder(y).ToString(y.value))
-    /*
+
     val x = CourseSchedulerProcess(y, time, threads).execute()
 
     if( x == null){
@@ -58,8 +58,8 @@ fun main(args: Array<String>) {
         println("done")
         x?.value?.let { PSolStringBuilder(x).ToString(it) }
     }
-    8/
-     */
+
+
 
 }
 
@@ -89,6 +89,8 @@ fun constructPSol() : PSol {
         }
 
         if(it2.courseNumber>=500) complexity+=100
+
+        if (it2.courseNumber >= 800) complexity +=1000
 
         //println("Complexity: $complexity Name: ${it2.courseName} ${it2.courseNumber}")
         Pair(complexity,it2)

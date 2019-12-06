@@ -54,7 +54,7 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
         fun expand(distQueue: ConcurrentLinkedQueue<Node>) {
                 childGen(data).forEach {
                     val x = Node(it,depth = depth + 1)
-                    //_children.add(x)
+                    _children.add(x)
                     //_leaves.add(x)
                     distQueue.add(x)
                 }

@@ -12,7 +12,7 @@ data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) : Comparab
 
     constructor(assignments: List<Assignment>) : this(ManyToOneMutableMap(assignments.map{ Pair<Course, Slot?>(it.course,it.courseSlot) }))
 
-    val complete: Boolean = data.getKeys(null).isEmpty()
+    val complete: Boolean = data.keySet.none { data.get(it) == null }
     val value: Int = Eval.getInstance(ParsedData.PAIR, ParsedData.PREFERENCES).eval(this)
 
     // returns true if no keys are mapped to null.
