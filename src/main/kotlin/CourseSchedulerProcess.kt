@@ -181,7 +181,9 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
                     }
                 }
                 model.depthmode = false
-                println(candidate?.value.toString()+ "||||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.filter { candidate?.courseLookup(it) != null }?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
+                if (candidate != null) {
+                    println(candidate?.value.toString() + "||||" + candidate?.slotLookup(null) + "||" + candidate?.courseSet()?.filter { candidate?.courseLookup(it) != null }?.count() + "/" + (ParsedData.COURSES.count() + ParsedData.LABS.count()))
+                }
 
             }
         }
