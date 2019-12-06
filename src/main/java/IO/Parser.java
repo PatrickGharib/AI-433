@@ -297,9 +297,9 @@ public class Parser {
                     String[] splitUnwanted = line.split(",");
                     Course itemOne = generateCourseObject(splitUnwanted[0]);
                     Course itemTwo = generateCourseObject(splitUnwanted[1]);
-
                     NotCompatibleCoursePair notCompatibleCoursePair = new NotCompatibleCoursePair(itemOne, itemTwo);
                     addData(ParsedData.NOT_COMPATIBLE, notCompatibleCoursePair);
+
                 }
                 lastLine = line;
             }

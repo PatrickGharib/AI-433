@@ -11,7 +11,7 @@ fun main(args: Array<String>) {
     val file = if (args.isNotEmpty()){
         args[0]
     } else{
-        "testsmall.txt"
+        "minnumber.txt"
     }
     Parser.inputReader(file)
     //Parser.inputReader("testsmall.txt")
@@ -24,10 +24,19 @@ fun main(args: Array<String>) {
     if (args.size == 5){
         Eval.getInstance(args[1].toInt(),args[2].toInt(),args[3].toInt(),args[4].toInt(),ParsedData.PAIR,ParsedData.PREFERENCES)
     }
+    else if (args.size == 9){
+        Eval.getInstance(args[1].toInt(),args[2].toInt(),args[3].toInt(),args[4].toInt(),args[5].toInt(),args[6].toInt(),args[7].toInt(),args[8].toInt(),ParsedData.PAIR,ParsedData.PREFERENCES)
+    }
+
+    val time = if (args.size == 10){
+        args[9].toLong()
+    }else{
+        15
+    }
 
     val y = constructPSol();
     //println(PSolStringBuilder(y).ToString(y.value))
-    val x = CourseSchedulerProcess(y).execute()
+    val x = CourseSchedulerProcess(y, time).execute()
 
     if( x == null){
         println(" No soloution")
