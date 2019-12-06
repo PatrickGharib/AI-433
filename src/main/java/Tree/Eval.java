@@ -56,14 +56,14 @@ public class Eval {
         //Update eval attributes
         setWeights(wminfilled, wpref, wpair, wsecdiff);
         setPenalties(pen_coursemin, pen_labsmin, pen_section, pen_notpaired);
-        this.coursePairs = pairs;
+        Eval.coursePairs = pairs;
 
         //Build hashmap for preferred assignments
         Course course;
         Integer oldVal;
         HashMap<Slot, Integer> prefs = new HashMap<>();
-        this.prefAssigns = new HashMap<>();
-        this.pen_prefAssign = new HashMap<>();
+        Eval.prefAssigns = new HashMap<>();
+        Eval.pen_prefAssign = new HashMap<>();
 
         for (PreferredCourseTime pref : prefAssigns){
 
@@ -71,7 +71,7 @@ public class Eval {
 
             //Update pref-value hashmap
             prefs.put(pref.getSlot(), pref.getPreferenceVal());
-            this.prefAssigns.put(course, prefs);
+            Eval.prefAssigns.put(course, prefs);
 
 
             //Update penalty
@@ -112,18 +112,18 @@ public class Eval {
 
     //Setter for penalties
     public void setPenalties(int pen_coursemin, int pen_labsmin, int pen_section, int pen_notpaired){
-        this.pen_coursemin = pen_coursemin;
-        this.pen_labsmin = pen_labsmin;
-        this.pen_section = pen_section;
-        this.pen_notpaired = pen_notpaired;
+        Eval.pen_coursemin = pen_coursemin;
+        Eval.pen_labsmin = pen_labsmin;
+        Eval.pen_section = pen_section;
+        Eval.pen_notpaired = pen_notpaired;
     }
 
     //Setter for Weights (use setter for instance)
     public void setWeights(int wminfilled, int wpref, int wpair, int wsecdiff){
-        this.w_minfilled = wminfilled;
-        this.w_pref = wpref;
-        this.w_pair = wpair;
-        this.w_secdiff = wsecdiff;
+        Eval.w_minfilled = wminfilled;
+        Eval.w_pref = wpref;
+        Eval.w_pair = wpair;
+        Eval.w_secdiff = wsecdiff;
     }
 
 
