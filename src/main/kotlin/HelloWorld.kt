@@ -15,9 +15,9 @@ fun main(args: Array<String>) {
     Parser.inputReader(file)
     //Parser.inputReader("testsmall.txt")
 
-    println(ParsedData.COURSE_SLOTS)
+    //println(ParsedData.COURSE_SLOTS)
 
-    println(Paths.get("").toAbsolutePath())
+    //println(Paths.get("").toAbsolutePath())
 
 
 
