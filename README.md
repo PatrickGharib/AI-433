@@ -22,6 +22,7 @@ Each block of arguements requires all those preceding it.
 Number of Threads > 0
 Time must be long enough for system to find a solution. It must be longer than 5 minutes for large instances.
 
+
 ## Example
 
 run "deptinst1.txt"
@@ -32,7 +33,13 @@ number of threads = 16 (this is optional)
 
 Run inst1 with default weights, 2 minutes and 4 threads.
 
+
+### MAC OS or Linux Systems:
 ./gradlew run --args "deptinst1.txt 1 1 1 1 1 1 1 1 2 4"
+
+### Windows
+gradlew run --args "deptinst1.txt 1 1 1 1 1 1 1 1 2 4"
+
 
 In order to provide custom weights a file must be specified. Default weights are 1,1,1,1.
 
@@ -43,6 +50,3 @@ In order to provide custom weights a file must be specified. Default weights are
 ./gradlew run - build and runs the source code
 
 ./gradlew run --args "\<arg1\> \<arg2\> ...." - builds and runs the source code, providing the given arguments to the program. Example: ./gradlew run --args "deptinst1.txt 1 1 1 1 1 1 1 1 2 16"
-
-
-
