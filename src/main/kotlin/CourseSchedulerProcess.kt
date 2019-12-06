@@ -4,13 +4,16 @@ import kotlinx.coroutines.*
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.PriorityBlockingQueue
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.coroutineContext
 
-class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): SearchProcess<CourseSchedulerTree, PSol>() {
+class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val num_threads: Int = 4): SearchProcess<CourseSchedulerTree, PSol>() {
 
     val mutex  = Mutex()
+    val distQueue = ConcurrentLinkedQueue<AndTree<PSol>.Node>()
     override fun execute(): PSol? {
         // start time
 
@@ -48,41 +51,64 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
         // deallocate depth first queue.
 
 
-        // search for anything better.
-        runBlocking{
-            launch {
-                for (i in 1..5) {
-                    fTrans(fLeafBest())
-                }
-            }
+
+        val queuePool = mutableListOf<PriorityBlockingQueue<AndTree<PSol>.Node>>()
+        val done = AtomicBoolean(false)
+
+
+        for (i in 0..num_threads){
+            queuePool.add(PriorityBlockingQueue(5))
         }
-        // number of "threads" to start. (not actually threads as they run on a pool but w/e)
-        val jobs = List(10){
+        // worker threads
+        val jobs = List(num_threads){
             GlobalScope.async(Dispatchers.Default){
                 println(it)
-                while (model.peekBest() != null && (System.currentTimeMillis() - start) < duration) {
+                val queue = queuePool[it]
+                while (!done.get()) {
 
-                    // skip any bad nodes.
-                    while (model.peekBest()?.data?.value ?: 1000001 >= candidate?.value ?: 1000000) {
-                        model.best()
-                        skipped.incrementAndGet()
-                        count.incrementAndGet()
-                        if (model.peekBest() == null) {
-                            break
-                        }
+                    while (queue.peek() == null && !done.get()) {
+                        delay(5)
                     }
-                    // quit if we run out of nodes.
-                    if (model.peekBest() == null) break
                     count.incrementAndGet()
 
                     // do work
-                    fTrans(fLeafBest())
+                    fTrans(queue.poll())
                 }
                 println("$it done")
             }
         }
+
+        var current = 0
+
+        val stats = mutableListOf<Int>()
+        for (i in 0..num_threads){
+            stats.add(0)
+        }
+
+        // Manager thread
         runBlocking {
-            jobs.forEach { it.await() }
+            launch{
+
+                while((System.currentTimeMillis() - start) < duration){
+                    while (distQueue.peek() == null){
+                        delay(5)
+                    }
+                    val x = distQueue.poll()
+                    if (x.data.value >= candidate?.value ?: 1000000) continue
+                    queuePool[current].add(x)
+                    current = (current+1) % (num_threads-1)
+                    stats[current]++
+                }
+                println("Quit")
+                done.set(true)
+            }
+        }
+
+        println(stats)
+
+        //wait for threads to catch up
+        runBlocking {
+            jobs.awaitAll()
         }
         println("Examined $count leaves, skipping $skipped. This means we skipped ${(skipped.get().toFloat()/count.get().toFloat())*100}%.")
         return candidate
@@ -102,7 +128,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
 
     private suspend fun fTrans(node: AndTree<PSol>.Node?) {
         if (node == null) return
-        node.expand()
+        node.expand(distQueue)
 
         //println(node.data.value)
 
