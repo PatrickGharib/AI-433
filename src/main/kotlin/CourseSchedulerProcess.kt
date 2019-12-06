@@ -94,7 +94,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
                     //println("running")
                     while (distQueue.peek() == null && (System.currentTimeMillis() - start) < duration){
                         delay(5)
-                        println("waiting ${(System.currentTimeMillis() - start)} $duration")
+                        //println("waiting ${(System.currentTimeMillis() - start)} $duration")
                         if ((System.currentTimeMillis() - start) >= duration){
                             println("qutting")
                             done.set(true)
