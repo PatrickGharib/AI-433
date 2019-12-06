@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
     }
 
     val y = constructPSol();
-    println("Valid: ${Constr.getInstance(ParsedData.NOT_COMPATIBLE, ParsedData.UNWANTED).constrPartial(y)}")
+    //println("Valid: ${Constr.getInstance(ParsedData.NOT_COMPATIBLE, ParsedData.UNWANTED).constrPartial(y)}")
     //println(PSolStringBuilder(y).ToString(y.value))
 
     val x = CourseSchedulerProcess(y, time, threads).execute()
@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
         println(x?.value)
         Eval.getInstance(ParsedData.PAIR, ParsedData.PREFERENCES).eval(x)
         println("done")
-        x?.value?.let { PSolStringBuilder(x).ToString(it) }
+        x?.value?.let { println(PSolStringBuilder(x).ToString(it).size) }
     }
 
 

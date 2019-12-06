@@ -67,7 +67,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
         // worker threads
         val jobs = List(num_threads){
             thread{
-                println(it)
+                //println(it)
                 val queue = queuePool[it]
                 while (!done.get()) {
 
@@ -82,7 +82,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
                         fTrans(queue.poll())
                     }
                 }
-                println("$it done")
+                //println("$it done")
             }
         }
 
