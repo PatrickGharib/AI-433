@@ -1,7 +1,5 @@
-import DataClass.HeapArrayQueue
-
-import java.lang.Exception
 import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 
 import java.util.concurrent.PriorityBlockingQueue
 
@@ -53,12 +51,12 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
         // read-only view of _children (does not copy)
         val children: List<Node> get() = _children
 
-        fun expand(){
+        fun expand(distQueue: ConcurrentLinkedQueue<Node>) {
                 childGen(data).forEach {
                     val x = Node(it,depth = depth + 1)
                     //_children.add(x)
                     //_leaves.add(x)
-                    queue.add(x)
+                    distQueue.add(x)
                 }
         }
 
