@@ -87,7 +87,7 @@ public class Constr {
                     for (Section sec : ((Lab) course).getSections()){
                         if (slot.overlaps(sol.courseLookup(sec))) {
 
-                            System.out.println("Fail 1");
+                            //System.out.println("Fail 1");
                             /*
                             System.out.println(sec);
                             System.out.println(course);
@@ -107,7 +107,7 @@ public class Constr {
                     //Check evening courses
                     if(((Section)course).getLecNum() >= 9) {
                         if ((int)slot.getStartTime() < 18) {
-                            System.out.println("Fail 2");
+                            //System.out.println("Fail 2");
                             return false;
                         }
                     }
@@ -115,7 +115,7 @@ public class Constr {
                     //Count 500-level courses
                     if ((course.getCourseNumber() / 100) == 5) {
                         if (courses500.size() > 0)  {
-                            System.out.println("Fail 3");
+                            //System.out.println("Fail 3");
                             return false;
                         }
                         courses500.add(course);
@@ -126,7 +126,7 @@ public class Constr {
                 if (slot.getDay().equals(Slot.Day.TU)) {
                     if ((slot.getStartTime() == 11) || slot.getStartTime() == 12) {
                         if (coursenum > 0) {
-                            System.out.println("Fail 4");
+                            //System.out.println("Fail 4");
                             return false;
                         }
                     }
@@ -135,7 +135,7 @@ public class Constr {
                 //Special "course" CPSC 813 has to be scheduled tuesdays/thursdays 18:00-19:00
                 if ((course.getCourseNumber() == 813) && (course.getCourseName().equals("CPSC"))){
                     if (! (slot.getDay().equals(Slot.Day.TU) && slot.getStartTime() == 18)) {
-                        System.out.println("Fail 5");
+                        //System.out.println("Fail 5");
                         //System.out.println(slot);
                         return false;
                     }
@@ -144,7 +144,7 @@ public class Constr {
                 //Special "course" CPSC 913 has to be scheduled tuesdays/thursdays 18:00-19:00
                 if ((course.getCourseNumber() == 913) && (course.getCourseName().equals("CPSC"))){
                     if (! (slot.getDay().equals(Slot.Day.TU) && slot.getStartTime() == 18)) {
-                        System.out.println("Fail 6");
+                        //System.out.println("Fail 6");
                         return false;
                     }
                     c913 = course;
@@ -158,12 +158,12 @@ public class Constr {
             //Check CourseMin and LabsMin
             if (slot instanceof CourseSlot) {
                 if (coursenum > slot.getMax()) {
-                    System.out.println("Fail 7");
+                    //System.out.println("Fail 7");
                     return false;
                 }
             } else {
                 if (labnum > slot.getMax()) {
-                    System.out.println("Fail 8");
+                    //System.out.println("Fail 8");
                     return false;
                 }
             }
@@ -174,7 +174,7 @@ public class Constr {
             Slot s1 = sol.courseLookup(pair.getCourse1());
             Slot s2 = sol.courseLookup(pair.getCourse2());
             if ((s1 != null) && (s1.equals(s2))) {
-                System.out.println("Fail 9");
+                //System.out.println("Fail 9");
                 return false;
             }
         }
@@ -194,7 +194,7 @@ public class Constr {
         if (c813 != null){
             for (Course c : noOverlap813){
                 if (Objects.requireNonNull(sol.courseLookup(c)).overlaps(sol.courseLookup(c813))) {
-                    System.out.println("Fail 11");
+                    //System.out.println("Fail 11");
                     return false;
                 }
             }
@@ -203,7 +203,7 @@ public class Constr {
         if (c913 != null){
             for (Course c : noOverlap913){
                 if (Objects.requireNonNull(sol.courseLookup(c)).overlaps(sol.courseLookup(c913))) {
-                    System.out.println("Fail 12");
+                    //System.out.println("Fail 12");
                     return false;
                 }
             }

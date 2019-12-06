@@ -147,7 +147,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
     private suspend fun fTrans(node: AndTree<PSol>.Node?) {
         if (node == null) return
         node.expand(distQueue)
-        println(node.depth)
+        //println(node.depth)
         //println(node.data.value)
 
         // candidate?.value ?: 100000 explanation:
@@ -169,7 +169,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
         }
 
         // examine the children
-        if (node.children.isEmpty()) println("Dead End")
+        //if (node.children.isEmpty()) println("Dead End")
         node.children.forEach {
             it.solved = it.data.complete
             if (it.solved  && (it.data.value < (candidate?.value ?: 1000000000))) {
