@@ -140,7 +140,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
 
     private suspend fun asyncUpdate(sol: PSol){
         mutex.withLock {
-            if (candidate?.value ?: 1000000 >= sol.value) candidate = sol
+            if (candidate?.value ?: 1000000 > sol.value && sol.slotLookup(null).isEmpty()) candidate = sol
         }
     }
 
@@ -158,21 +158,23 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
 
         // examine the current node.
         node.solved = node.data.complete
-        if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 1000000000)) {
+        if (node.solved && node.data.complete && (node.data.slotLookup(null).isEmpty()) && node.data.value < (candidate?.value ?: 1000000000)) {
             coroutineScope {
                 launch{
                     asyncUpdate(node.data)
                 }
             }
-            model.depthmode = false
-            println(candidate?.value.toString()+ "||||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
+            if (candidate != null) {
+                model.depthmode = false
+                println(candidate?.value.toString() + "||||" + candidate?.slotLookup(null) + "||" + candidate?.courseSet()?.count() + "/" + (ParsedData.COURSES.count() + ParsedData.LABS.count()))
+            }
         }
 
         // examine the children
         //if (node.children.isEmpty()) println("Dead End")
         node.children.forEach {
             it.solved = it.data.complete
-            if (it.solved  && (it.data.value < (candidate?.value ?: 1000000000))) {
+            if (it.solved  && (it.data.slotLookup(null).isEmpty()) && (it.data.value < (candidate?.value ?: 1000000000))) {
                 coroutineScope {
                     launch{
                         asyncUpdate(node.data)
