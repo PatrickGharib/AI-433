@@ -4,11 +4,13 @@ import kotlinx.coroutines.*
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.lang.Thread.sleep
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.PriorityBlockingQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.concurrent.thread
 
 class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val num_threads: Int = 4): SearchProcess<CourseSchedulerTree, PSol>() {
 
@@ -59,25 +61,32 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
         for (i in 1..num_threads){
             queuePool.add(PriorityBlockingQueue(5))
         }
+        thread {
+
+        }
         // worker threads
         val jobs = List(num_threads){
-            GlobalScope.async(Dispatchers.Default){
+            thread{
                 println(it)
                 val queue = queuePool[it]
                 while (!done.get()) {
 
                     while (queue.peek() == null && !done.get()) {
-                        delay(5)
-                        if (done.get()) return@async
+                        //sleep(1)
+                        if (done.get()) break
                     }
+                    if (done.get()) break
                     count.incrementAndGet()
-
                     // do work
-                    fTrans(queue.poll())
+                    runBlocking {
+                        fTrans(queue.poll())
+                    }
                 }
                 println("$it done")
             }
         }
+
+        //jobs.forEach { it.start() }
 
         var current = 0
 
@@ -88,12 +97,12 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
 
         distQueue.add(model.best())
         // Manager thread
+
         runBlocking {
             launch{
                 while((System.currentTimeMillis() - start) < duration){
                     //println("running")
                     while (distQueue.peek() == null && (System.currentTimeMillis() - start) < duration){
-                        delay(5)
                         //println("waiting ${(System.currentTimeMillis() - start)} $duration")
                         if ((System.currentTimeMillis() - start) >= duration){
                             println("qutting")
@@ -101,11 +110,11 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
                             break
                         }
                     }
-                    if (done.get()) break
+                    if (done.get() || distQueue.peek() == null) break
                     val x = distQueue.poll()
                     if (x.data.value >= candidate?.value ?: 1000000) continue
                     queuePool[current].add(x)
-                    current = (current+1) % (num_threads-1)
+                    current = (current+1) % (num_threads)
                     stats[current]++
                 }
                 println("Quit")
@@ -117,7 +126,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
 
         //wait for threads to catch up
         runBlocking {
-            jobs.awaitAll()
+            jobs.forEach { it.join() }
         }
         println("Examined $count leaves, skipping $skipped. This means we skipped ${(skipped.get().toFloat()/count.get().toFloat())*100}%.")
         return candidate
