@@ -56,7 +56,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
         val done = AtomicBoolean(false)
 
 
-        for (i in 0..num_threads){
+        for (i in 1..num_threads){
             queuePool.add(PriorityBlockingQueue(5))
         }
         // worker threads
@@ -68,6 +68,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
 
                     while (queue.peek() == null && !done.get()) {
                         delay(5)
+                        if (done.get()) return@async
                     }
                     count.incrementAndGet()
 
@@ -85,14 +86,22 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
             stats.add(0)
         }
 
+        distQueue.add(model.best())
         // Manager thread
         runBlocking {
             launch{
-
                 while((System.currentTimeMillis() - start) < duration){
+                    //println("running")
                     while (distQueue.peek() == null && (System.currentTimeMillis() - start) < duration){
                         delay(5)
+                        //println("waiting ${(System.currentTimeMillis() - start)} $duration")
+                        if ((System.currentTimeMillis() - start) >= duration){
+                            println("qutting")
+                            done.set(true)
+                            break
+                        }
                     }
+                    if (done.get()) break
                     val x = distQueue.poll()
                     if (x.data.value >= candidate?.value ?: 1000000) continue
                     queuePool[current].add(x)
