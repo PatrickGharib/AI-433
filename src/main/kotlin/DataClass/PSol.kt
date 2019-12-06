@@ -6,8 +6,11 @@ import Tree.Eval
 // Data class automatically creates == and copy constructors that evaluate the fields instead of the reference.
 // makes the class struct-like.
 data class PSol(private val data: ManyToOneMutableMap<Course, Slot?>) : Comparable<PSol> {
+
+    val loadFactor = (data.valSet.filterNotNull().map { data.getKeys(it).size/it.max }.sum())/(ParsedData.LAB_SLOT.size+ParsedData.COURSE_SLOTS.size)
+
     override fun compareTo(other: PSol): Int {
-        return if (this.value > other.value) 1 else if (this.value< other.value) -1 else 0
+        return if (this.loadFactor < other.loadFactor) 1 else (if (other.loadFactor > this.loadFactor) -1 else (if (this.value > other.value) 1 else (if (this.value< other.value) -1 else 0)))
     }
 
     constructor(assignments: List<Assignment>) : this(ManyToOneMutableMap(assignments.map{ Pair<Course, Slot?>(it.course,it.courseSlot) }))

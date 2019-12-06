@@ -26,6 +26,7 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
 
     open inner class Node(val data: T, private val _children: MutableList<Node> = mutableListOf(), val depth: Int = 0) : Comparable<Node>{
 
+
         override fun compareTo(other: Node): Int {
             return depthFirstCompare(other)
         }
@@ -33,7 +34,10 @@ abstract class AndTree<T: Comparable<T>>(root: T ) {
             return when {
                 depth < other.depth -> 1
                 depth > other.depth -> -1
-                else -> this.data.compareTo(other.data)
+                else -> when{
+
+                    else -> this.data.compareTo(other.data)
+                }
             }
         }
         private fun bestFirstCompare(other: Node) : Int{

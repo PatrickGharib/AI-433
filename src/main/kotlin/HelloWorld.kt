@@ -1,7 +1,4 @@
-import DataClass.Assignment
-import DataClass.CourseSlot
-import DataClass.PSol
-import DataClass.Slot
+import DataClass.*
 import IO.ParsedData
 import IO.Parser
 import Tree.Constr
@@ -87,6 +84,8 @@ fun constructPSol() : PSol {
         ParsedData.PAIR.forEach {
             if (it.course1 == it2 || it.course2 == it2) complexity++
         }
+
+        if (it2 is Section && it2.lecNum >= 9) complexity +=100
 
         if(it2.courseNumber>=500) complexity+=100
 
