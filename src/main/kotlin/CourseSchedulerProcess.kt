@@ -42,7 +42,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
         model.depthFirst.clear()
 
         // search for anything better.
-        while (model.peekBest() != null && (System.currentTimeMillis()-start) < TimeUnit.MINUTES.toMillis(5)){
+        while (model.peekBest() != null && (System.currentTimeMillis()-start) < duration){
 
             // skip any bad nodes.
             while (model.peekBest()?.data?.value ?: 1000001 >= candidate?.value ?: 1000000) {
