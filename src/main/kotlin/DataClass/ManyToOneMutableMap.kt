@@ -34,8 +34,8 @@ data class ManyToOneMutableMap<K, V>(
     }
 
     fun getKeys(value: V): Set<K>{
-        //return manyToOne.keys.filter{ manyToOne[it] == value}.toSet()
-        return oneToMany[value].toSet()
+        return manyToOne.keys.filter{ manyToOne[it] == value}.toSet()
+        //return oneToMany[value].toSet()
     }
 
 }
