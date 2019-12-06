@@ -71,7 +71,7 @@ public abstract class Slot {
                 if(day != s.getDay()) return false;
         }
 
-        return getEndTime() >= s.getStartTime() && s.getEndTime() >= getStartTime();
+        return getEndTime() > s.getStartTime() && s.getEndTime() > getStartTime();
     }
 
     @Override

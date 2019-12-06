@@ -1,6 +1,7 @@
 import DataClass.Assignment
 import DataClass.CourseSlot
 import DataClass.PSol
+import DataClass.Slot
 import IO.ParsedData
 import IO.Parser
 import Tree.Eval
@@ -16,6 +17,9 @@ fun main(args: Array<String>) {
     Parser.inputReader(file)
     //Parser.inputReader("testsmall.txt")
 
+    println(CourseSlot(Slot.Day.MO,8.0f,1,1).overlaps(CourseSlot(Slot.Day.MO,9.0f,1,1)))
+
+    println(ParsedData.COURSE_SLOTS)
 
     println(Paths.get("").toAbsolutePath())
 
