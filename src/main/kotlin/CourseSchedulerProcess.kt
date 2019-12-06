@@ -56,7 +56,8 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
                 }
             }
         }
-        val jobs = List(4){
+        // number of "threads" to start. (not actually threads as they run on a pool but w/e)
+        val jobs = List(10){
             GlobalScope.async(Dispatchers.Default){
                 println(it)
                 while (model.peekBest() != null && (System.currentTimeMillis() - start) < duration) {
