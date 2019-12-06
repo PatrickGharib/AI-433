@@ -61,9 +61,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
         for (i in 1..num_threads){
             queuePool.add(PriorityBlockingQueue(5))
         }
-        thread {
 
-        }
         // worker threads
         val jobs = List(num_threads){
             thread{
@@ -105,7 +103,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
                     while (distQueue.peek() == null && (System.currentTimeMillis() - start) < duration){
                         //println("waiting ${(System.currentTimeMillis() - start)} $duration")
                         if ((System.currentTimeMillis() - start) >= duration){
-                            println("qutting")
+                            //println("qutting")
                             done.set(true)
                             break
                         }
@@ -117,12 +115,12 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
                     current = (current+1) % (num_threads)
                     stats[current]++
                 }
-                println("Quit")
+                //println("Quit")
                 done.set(true)
             }
         }
 
-        println(stats)
+        //println(stats)
 
         //wait for threads to catch up
         runBlocking {
