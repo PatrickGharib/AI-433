@@ -32,7 +32,7 @@ data class ManyToOneMutableMap<K, V>(
 
         val old = manyToOne[key]
         manyToOne[key] = value
-        oneToMany.remove(null,key)
+        oneToMany.remove(old,key)
         oneToMany.put(value,key)
 
     }

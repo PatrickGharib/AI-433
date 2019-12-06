@@ -71,15 +71,16 @@ public abstract class Slot {
         if (s == null) return false;
         if(this instanceof LabSlot)
         {
-            if(s instanceof LabSlot)
-                //System.out.println("A");
+            if(s instanceof LabSlot){
+                System.out.println("A");
                 if(!getDay().equals(s.getDay())) {
                     //System.out.println("Fail 1-2");
                     return false;
                 }
+            }
             else
             {
-                //System.out.println("B");
+                System.out.println("B");
                 if((day.equals(Day.MO)||day.equals(Day.FR)) && !s.getDay().equals(Day.MO)) {
                     //System.out.println("Fail 1-2");
                     return false;
@@ -94,7 +95,7 @@ public abstract class Slot {
         {
             if(s instanceof LabSlot)
             {
-                //System.out.println("C");
+                System.out.println("C");
                 if((s.getDay().equals(Day.MO)||s.getDay().equals(Day.FR)) && day.equals(Day.MO)) {
                     //System.out.println("Fail 1-1");
                     return false;
@@ -105,7 +106,7 @@ public abstract class Slot {
                 }
             }
             else
-                //System.out.println("D");
+                System.out.println("D");
                 if(day != s.getDay()) {
                     //System.out.println("Fail 1-3");
                     return false;
