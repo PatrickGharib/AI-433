@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
         println(x?.value)
         Eval.getInstance(ParsedData.PAIR, ParsedData.PREFERENCES).eval(x)
         println("done")
-        x?.value?.let { println(PSolStringBuilder(x).ToString(it).size) }
+        x?.value?.let { PSolStringBuilder(x).ToString(it) }
     }
 
 
