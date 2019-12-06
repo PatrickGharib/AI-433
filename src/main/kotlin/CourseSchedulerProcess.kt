@@ -4,18 +4,13 @@ import kotlinx.coroutines.*
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.lang.Thread.sleep
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.PriorityBlockingQueue
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.concurrent.thread
+import kotlin.coroutines.coroutineContext
 
-class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val num_threads: Int = 4): SearchProcess<CourseSchedulerTree, PSol>() {
+class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): SearchProcess<CourseSchedulerTree, PSol>() {
 
     val mutex  = Mutex()
-    val distQueue = ConcurrentLinkedQueue<AndTree<PSol>.Node>()
     override fun execute(): PSol? {
         // start time
 
@@ -53,80 +48,41 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
         // deallocate depth first queue.
 
 
-
-        val queuePool = mutableListOf<PriorityBlockingQueue<AndTree<PSol>.Node>>()
-        val done = AtomicBoolean(false)
-
-
-        for (i in 1..num_threads){
-            queuePool.add(PriorityBlockingQueue(5))
+        // search for anything better.
+        runBlocking{
+            launch {
+                for (i in 1..5) {
+                    fTrans(fLeafBest())
+                }
+            }
         }
-        thread {
-
-        }
-        // worker threads
-        val jobs = List(num_threads){
-            thread{
+        // number of "threads" to start. (not actually threads as they run on a pool but w/e)
+        val jobs = List(10){
+            GlobalScope.async(Dispatchers.Default){
                 println(it)
-                val queue = queuePool[it]
-                while (!done.get()) {
+                while (model.peekBest() != null && (System.currentTimeMillis() - start) < duration) {
 
-                    while (queue.peek() == null && !done.get()) {
-                        //sleep(1)
-                        if (done.get()) break
+                    // skip any bad nodes.
+                    while (model.peekBest()?.data?.value ?: 1000001 >= candidate?.value ?: 1000000) {
+                        model.best()
+                        skipped.incrementAndGet()
+                        count.incrementAndGet()
+                        if (model.peekBest() == null) {
+                            break
+                        }
                     }
-                    if (done.get()) break
+                    // quit if we run out of nodes.
+                    if (model.peekBest() == null) break
                     count.incrementAndGet()
+
                     // do work
-                    runBlocking {
-                        fTrans(queue.poll())
-                    }
+                    fTrans(fLeafBest())
                 }
                 println("$it done")
             }
         }
-
-        //jobs.forEach { it.start() }
-
-        var current = 0
-
-        val stats = mutableListOf<Int>()
-        for (i in 0..num_threads){
-            stats.add(0)
-        }
-
-        distQueue.add(model.best())
-        // Manager thread
-
         runBlocking {
-            launch{
-                while((System.currentTimeMillis() - start) < duration){
-                    //println("running")
-                    while (distQueue.peek() == null && (System.currentTimeMillis() - start) < duration){
-                        //println("waiting ${(System.currentTimeMillis() - start)} $duration")
-                        if ((System.currentTimeMillis() - start) >= duration){
-                            println("qutting")
-                            done.set(true)
-                            break
-                        }
-                    }
-                    if (done.get() || distQueue.peek() == null) break
-                    val x = distQueue.poll()
-                    if (x.data.value >= candidate?.value ?: 1000000) continue
-                    queuePool[current].add(x)
-                    current = (current+1) % (num_threads)
-                    stats[current]++
-                }
-                println("Quit")
-                done.set(true)
-            }
-        }
-
-        println(stats)
-
-        //wait for threads to catch up
-        runBlocking {
-            jobs.forEach { it.join() }
+            jobs.forEach { it.await() }
         }
         println("Examined $count leaves, skipping $skipped. This means we skipped ${(skipped.get().toFloat()/count.get().toFloat())*100}%.")
         return candidate
@@ -146,7 +102,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
 
     private suspend fun fTrans(node: AndTree<PSol>.Node?) {
         if (node == null) return
-        node.expand(distQueue)
+        node.expand()
 
         //println(node.data.value)
 

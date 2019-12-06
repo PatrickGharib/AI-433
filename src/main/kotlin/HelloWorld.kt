@@ -36,16 +36,9 @@ fun main(args: Array<String>) {
         15
     }
 
-    
-    val threads = if (args.size == 11){
-        args[10].toInt()
-    }else{
-        4
-    }
-
     val y = constructPSol();
     //println(PSolStringBuilder(y).ToString(y.value))
-    val x = CourseSchedulerProcess(y, time, threads).execute()
+    val x = CourseSchedulerProcess(y, time).execute()
 
     if( x == null){
         println(" No soloution")
