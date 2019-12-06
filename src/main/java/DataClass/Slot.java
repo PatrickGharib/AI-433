@@ -72,22 +72,44 @@ public abstract class Slot {
         if(this instanceof LabSlot)
         {
             if(s instanceof LabSlot)
-                if(!getDay().equals(s.getDay())) return false;
+                //System.out.println("A");
+                if(!getDay().equals(s.getDay())) {
+                    //System.out.println("Fail 1-2");
+                    return false;
+                }
             else
             {
-                if((day.equals(Day.MO)||day.equals(Day.FR)) && !s.getDay().equals(Day.MO)) return false;
-                if(day.equals(Day.TU) && !s.getDay().equals(Day.TU)) return false;
+                //System.out.println("B");
+                if((day.equals(Day.MO)||day.equals(Day.FR)) && !s.getDay().equals(Day.MO)) {
+                    //System.out.println("Fail 1-2");
+                    return false;
+                }
+                if(day.equals(Day.TU) && !s.getDay().equals(Day.TU)) {
+                    //System.out.println("Fail 1-2");
+                    return false;
+                }
             }
         }
         else
         {
             if(s instanceof LabSlot)
             {
-                if((s.getDay().equals(Day.MO)||s.getDay().equals(Day.FR)) && day.equals(Day.MO)) return false;
-                if(s.getDay().equals(Day.TU) && !getDay().equals(Day.TU)) return false;
+                //System.out.println("C");
+                if((s.getDay().equals(Day.MO)||s.getDay().equals(Day.FR)) && day.equals(Day.MO)) {
+                    //System.out.println("Fail 1-1");
+                    return false;
+                }
+                if(s.getDay().equals(Day.TU) && !day.equals(Day.TU)) {
+                    //System.out.println("Fail 1-2");
+                    return false;
+                }
             }
             else
-                if(day != s.getDay()) return false;
+                //System.out.println("D");
+                if(day != s.getDay()) {
+                    //System.out.println("Fail 1-3");
+                    return false;
+                }
         }
 
         return getEndTime() > s.getStartTime() && s.getEndTime() > getStartTime();
