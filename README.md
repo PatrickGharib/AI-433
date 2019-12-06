@@ -16,7 +16,7 @@ On Mac OS and Linux,  gradlew must be made executable. For example, chmod +x gra
 Arguements: [\<file\> [\<w_minfilled\> \<w_pref\> \<w_pair\> \<w_secdiff\>] [\<pen_coursemin> \<pen_labsmin> \<pen_section> \<pen_notpaired>] [\<time(MIN)>] [\<#threads(OPT)>]]
 
 Number of Threads > 0
-
+Time must be long enough for system to find a solution. It must be longer than 5 minutes for large instances.
 
 ## Example
 
@@ -40,8 +40,10 @@ In order to provide custom weights a file must be specified. Default weights are
 
 ./gradlew distZip - build and zips a runnable distribution under build\distributions
 
+
 ## Running Distributions
 Unzip the distribution, then go into the bin folder and run the script appropriate for your platform.
+
 
 ## All-in-one/"Fat" Jars
 Fat jars include all dependencies and are runnable on their own as self contained programs. Still need Java 8 of course, but it includes all libraries.
