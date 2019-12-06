@@ -26,9 +26,5 @@ public class LabSlot extends Slot {
         return super.equals(o) && o instanceof LabSlot;
     }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }
 

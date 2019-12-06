@@ -223,9 +223,9 @@ public class Parser {
 
                     Section newCourse = new Section(matcher.group(2), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(5)));
                     if (newCourse.getCourseName().equals("CPSC") && newCourse.getCourseNumber() == 313 )
-                        addData(ParsedData.COURSES, new Section("CPSC", 813, 1));
+                        addData(ParsedData.LABS, new Lab("CPSC", 813, "", 1));
                     if (newCourse.getCourseName().equals("CPSC") && newCourse.getCourseNumber() == 413 )
-                        addData(ParsedData.COURSES, new Section("CPSC", 913, 1));
+                        addData(ParsedData.LABS, new Lab("CPSC", 913, "", 1));
 
                     addData(ParsedData.COURSES, newCourse);
                 }

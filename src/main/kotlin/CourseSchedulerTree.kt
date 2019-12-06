@@ -31,6 +31,7 @@ class CourseSchedulerTree(val process :CourseSchedulerProcess, root: PSol) : And
             if (it != null) {
 
                 val p = pred.assign(c, it)
+
                 //TODO not sure if Cosntr() is correct
                 if (Constr.getInstance(ParsedData.NOT_COMPATIBLE,ParsedData.UNWANTED).constrPartial(p) && p.courseLookup(c) != null  && (process.candidate?.value ?: 1000000) > p.value) {
                     x.add(p)

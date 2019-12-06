@@ -85,21 +85,39 @@ public class Constr {
 
                     //Check if lab overlaps with its lecture
                     for (Section sec : ((Lab) course).getSections()){
-                        if (slot.overlaps(sol.courseLookup(sec)))
+                        if (slot.overlaps(sol.courseLookup(sec))) {
+
+                            //System.out.println("Fail 1");
+                            /*
+                            System.out.println(sec);
+                            System.out.println(course);
+                            System.out.println(slot);
+                            System.out.println(slot.getEndTime());
+                            System.out.println(sol.courseLookup(sec));
+                            System.out.println(sol.courseLookup(sec).getEndTime());
+                            System.out.println(slot.overlaps(sol.courseLookup(sec)));
+
+                             */
                             return false;
+                        }
                     }
                 } else {
                     coursenum++;
 
                     //Check evening courses
                     if(((Section)course).getLecNum() >= 9) {
-                        if ((int)slot.getStartTime() < 18)
+                        if ((int)slot.getStartTime() < 18) {
+                            //System.out.println("Fail 2");
                             return false;
+                        }
                     }
 
                     //Count 500-level courses
                     if ((course.getCourseNumber() / 100) == 5) {
-                        if (courses500.size() > 0)  return false;
+                        if (courses500.size() > 0)  {
+                            //System.out.println("Fail 3");
+                            return false;
+                        }
                         courses500.add(course);
                     }
                 }
@@ -107,21 +125,28 @@ public class Constr {
                 //No courses(assuming course sections) can be scheduled at tuesdays 11:00-12:30.
                 if (slot.getDay().equals(Slot.Day.TU)) {
                     if ((slot.getStartTime() == 11) || slot.getStartTime() == 12) {
-                        if (coursenum > 0)
+                        if (coursenum > 0) {
+                            //System.out.println("Fail 4");
                             return false;
+                        }
                     }
                 }
 
                 //Special "course" CPSC 813 has to be scheduled tuesdays/thursdays 18:00-19:00
                 if ((course.getCourseNumber() == 813) && (course.getCourseName().equals("CPSC"))){
-                    if (! (slot.getDay().equals(Slot.Day.TU) && slot.getStartTime() == 18))
+                    if (! (slot.getDay().equals(Slot.Day.TU) && slot.getStartTime() == 18)) {
+                        //System.out.println("Fail 5");
+                        //System.out.println(slot);
                         return false;
+                    }
                     c813 = course;
                 }
                 //Special "course" CPSC 913 has to be scheduled tuesdays/thursdays 18:00-19:00
                 if ((course.getCourseNumber() == 913) && (course.getCourseName().equals("CPSC"))){
-                    if (! (slot.getDay().equals(Slot.Day.TU) && slot.getStartTime() == 18))
+                    if (! (slot.getDay().equals(Slot.Day.TU) && slot.getStartTime() == 18)) {
+                        //System.out.println("Fail 6");
                         return false;
+                    }
                     c913 = course;
                 }
                 if ((course.getCourseNumber() == 313) && (course.getCourseName().equals("CPSC")))
@@ -133,10 +158,12 @@ public class Constr {
             //Check CourseMin and LabsMin
             if (slot instanceof CourseSlot) {
                 if (coursenum > slot.getMax()) {
+                    //System.out.println("Fail 7");
                     return false;
                 }
             } else {
                 if (labnum > slot.getMax()) {
+                    //System.out.println("Fail 8");
                     return false;
                 }
             }
@@ -147,6 +174,7 @@ public class Constr {
             Slot s1 = sol.courseLookup(pair.getCourse1());
             Slot s2 = sol.courseLookup(pair.getCourse2());
             if ((s1 != null) && (s1.equals(s2))) {
+                //System.out.println("Fail 9");
                 return false;
             }
         }
@@ -156,6 +184,7 @@ public class Constr {
             Course c = pair.getCourse();
             Slot s = pair.getSlot();
             if (Objects.equals(sol.courseLookup(c), s)) {
+                //System.out.println("Fail 10");
                 return false;
             }
         }
@@ -164,15 +193,19 @@ public class Constr {
         //CPSC 813 is not allowed to overlap with any labs/tutorials of CPSC 313 or with any course section of CPSC 313.
         if (c813 != null){
             for (Course c : noOverlap813){
-                if (Objects.requireNonNull(sol.courseLookup(c)).overlaps(sol.courseLookup(c813)))
+                if (Objects.requireNonNull(sol.courseLookup(c)).overlaps(sol.courseLookup(c813))) {
+                    //System.out.println("Fail 11");
                     return false;
+                }
             }
         }
         //CPSC 913 is not allowed to overlap with any labs/tutorials of CPSC 413 or with any course section of CPSC 413.
         if (c913 != null){
             for (Course c : noOverlap913){
-                if (Objects.requireNonNull(sol.courseLookup(c)).overlaps(sol.courseLookup(c913)))
+                if (Objects.requireNonNull(sol.courseLookup(c)).overlaps(sol.courseLookup(c913))) {
+                    //System.out.println("Fail 12");
                     return false;
+                }
             }
         }
 

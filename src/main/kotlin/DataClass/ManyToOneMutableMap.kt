@@ -2,10 +2,12 @@ package DataClass
 
 import java.lang.Exception
 
+import com.google.common.collect.HashMultimap
+import com.google.common.collect.Multimap
 
 data class ManyToOneMutableMap<K, V>(
-        private val manyToOne: MutableMap<K, V> = mutableMapOf(),
-        private val oneToMany: MultiMap<V?, K> = MultiMap()
+        private val manyToOne: MutableMap<K, V> = LinkedHashMap(),
+        private val oneToMany: Multimap<V?, K> = HashMultimap.create()
     ){
     constructor(l: List<Pair<K,V>>) : this() {
         l.forEach { set(it.first,it.second) }
@@ -19,7 +21,10 @@ data class ManyToOneMutableMap<K, V>(
     }
 
     fun deepCopy(): ManyToOneMutableMap<K,V>{
-        return ManyToOneMutableMap(LinkedHashMap(manyToOne), MultiMap(oneToMany))
+        val x = HashMultimap.create(oneToMany)
+        val y = LinkedHashMap(manyToOne)
+
+        return ManyToOneMutableMap(y,x)
     }
 
     fun set(key: K, value: V){
@@ -27,13 +32,19 @@ data class ManyToOneMutableMap<K, V>(
 
         val old = manyToOne[key]
         manyToOne[key] = value
-        //oneToMany.remove(old,key)
-        //oneToMany.put(value,key)
+        oneToMany.remove(old,key)
+        oneToMany.put(value,key)
+
     }
 
+    val m = HashMap<V, Set<K>>()
     fun getKeys(value: V): Set<K>{
         return manyToOne.keys.filter{ manyToOne[it] == value}.toSet()
-        //return oneToMany.get(value)
+        return oneToMany[value].toSet()
+        if (value !in m.keys){
+            m[value] = manyToOne.keys.filter{ manyToOne[it] == value}.toSet()
+        }
+        return m[value]!!
     }
 
 }

@@ -33,8 +33,4 @@ public class CourseSlot extends Slot {
         return super.equals(o) && o instanceof CourseSlot;
     }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }

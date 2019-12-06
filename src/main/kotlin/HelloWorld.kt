@@ -1,9 +1,7 @@
-import DataClass.Assignment
-import DataClass.CourseSlot
-import DataClass.PSol
-import DataClass.Slot
+import DataClass.*
 import IO.ParsedData
 import IO.Parser
+import Tree.Constr
 import Tree.Eval
 import java.nio.file.Paths
 
@@ -17,11 +15,9 @@ fun main(args: Array<String>) {
     Parser.inputReader(file)
     //Parser.inputReader("testsmall.txt")
 
-    println(CourseSlot(Slot.Day.MO,8.0f,1,1).overlaps(CourseSlot(Slot.Day.MO,9.0f,1,1)))
+    //println(ParsedData.COURSE_SLOTS)
 
-    println(ParsedData.COURSE_SLOTS)
-
-    println(Paths.get("").toAbsolutePath())
+    //println(Paths.get("").toAbsolutePath())
 
 
 
@@ -32,15 +28,24 @@ fun main(args: Array<String>) {
         Eval.getInstance(args[1].toInt(),args[2].toInt(),args[3].toInt(),args[4].toInt(),args[5].toInt(),args[6].toInt(),args[7].toInt(),args[8].toInt(),ParsedData.PAIR,ParsedData.PREFERENCES)
     }
 
-    val time = if (args.size == 10){
+    val time = if (args.size >= 10){
         args[9].toLong()
     }else{
         15
     }
 
+    
+    val threads = if (args.size == 11){
+        args[10].toInt()
+    }else{
+        4
+    }
+
     val y = constructPSol();
+    //println("Valid: ${Constr.getInstance(ParsedData.NOT_COMPATIBLE, ParsedData.UNWANTED).constrPartial(y)}")
     //println(PSolStringBuilder(y).ToString(y.value))
-    val x = CourseSchedulerProcess(y, time).execute()
+
+    val x = CourseSchedulerProcess(y, time, threads).execute()
 
     if( x == null){
         println(" No soloution")
@@ -48,8 +53,10 @@ fun main(args: Array<String>) {
         println(x?.value)
         Eval.getInstance(ParsedData.PAIR, ParsedData.PREFERENCES).eval(x)
         println("done")
-        x?.value?.let { PSolStringBuilder(x).ToString(it) }
+        x?.value?.let { println(PSolStringBuilder(x).ToString(it).size) }
     }
+
+
 
 }
 
@@ -59,7 +66,38 @@ fun constructPSol() : PSol {
         x.add(Assignment(it.course, it.slot))
     }
 
+    val sorted_courses = (ParsedData.COURSES + ParsedData.LABS).map{ it2 ->
+        var complexity = 0
+        ParsedData.UNWANTED.forEach {
+            if (it.course == it2) complexity++
+        }
+
+        ParsedData.NOT_COMPATIBLE.forEach {
+            if (it.course1 == it2 || it.course2 == it2) complexity++
+
+        }
+
+        ParsedData.PREFERENCES.forEach {
+            if (it.course == it2) complexity++
+        }
+
+        ParsedData.PAIR.forEach {
+            if (it.course1 == it2 || it.course2 == it2) complexity++
+        }
+
+        if (it2 is Section && it2.lecNum >= 9) complexity +=100
+
+        if(it2.courseNumber>=500) complexity+=100
+
+        if (it2.courseNumber >= 800) complexity +=1000
+
+        //println("Complexity: $complexity Name: ${it2.courseName} ${it2.courseNumber}")
+        Pair(complexity,it2)
+    }.sortedByDescending { it.first }.map{ it.second }
+
+    //println(sorted_courses.map { course -> course.courseName + course.courseNumber.toString() })
     val exclude = ParsedData.PARTIAL_ASSIGNMENTS.filter { it.course != null }.map { it.course }
+    /*
     ParsedData.COURSES.forEach {
         if (it in exclude) {
             return@forEach
@@ -75,5 +113,8 @@ fun constructPSol() : PSol {
             x.add(Assignment(it, null))
         }
     }
+    */
+    x.addAll(sorted_courses.filter { it !in exclude }.map { Assignment(it,null) })
+
     return PSol(x)
 }

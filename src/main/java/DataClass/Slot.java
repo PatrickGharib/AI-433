@@ -1,8 +1,27 @@
 package DataClass;
 
+import com.google.common.base.Objects;
+
 import java.util.*;
 
 public abstract class Slot {
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Slot slot = (Slot) o;
+        return Float.compare(slot.startTime, startTime) == 0 &&
+                Float.compare(slot.endTime, endTime) == 0 &&
+                max == slot.max &&
+                min == slot.min &&
+                day == slot.day;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(day, startTime, endTime, max, min);
+    }
 
     public enum Day
     {
@@ -52,41 +71,53 @@ public abstract class Slot {
         if (s == null) return false;
         if(this instanceof LabSlot)
         {
-            if(s instanceof LabSlot)
-                if(!getDay().equals(s.getDay())) return false;
+            if(s instanceof LabSlot){
+                //System.out.println("A");
+                if(!getDay().equals(s.getDay())) {
+                    //System.out.println("Fail 1-2");
+                    return false;
+                }
+            }
             else
             {
-                if((day.equals(Day.MO)||day.equals(Day.FR)) && !s.getDay().equals(Day.MO)) return false;
-                if(day.equals(Day.TU) && !s.getDay().equals(Day.TU)) return false;
+                //System.out.println("B");
+                if((day.equals(Day.MO)||day.equals(Day.FR)) && !s.getDay().equals(Day.MO)) {
+                    //System.out.println("Fail 1-2");
+                    return false;
+                }
+                if(day.equals(Day.TU) && !s.getDay().equals(Day.TU)) {
+                    //System.out.println("Fail 1-2");
+                    return false;
+                }
             }
         }
         else
         {
             if(s instanceof LabSlot)
             {
-                if((s.getDay().equals(Day.MO)||s.getDay().equals(Day.FR)) && day.equals(Day.MO)) return false;
-                if(s.getDay().equals(Day.TU) && !getDay().equals(Day.TU)) return false;
+                //System.out.println("C");
+                if((s.getDay().equals(Day.MO)||s.getDay().equals(Day.FR)) && day.equals(Day.MO)) {
+                    //System.out.println("Fail 1-1");
+                    return false;
+                }
+                if(s.getDay().equals(Day.TU) && !day.equals(Day.TU)) {
+                    //System.out.println("Fail 1-2");
+                    return false;
+                }
             }
             else
-                if(day != s.getDay()) return false;
+                //System.out.println("D");
+                if(day != s.getDay()) {
+                    //System.out.println("Fail 1-3");
+                    return false;
+                }
         }
 
         return getEndTime() > s.getStartTime() && s.getEndTime() > getStartTime();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Slot slot = (Slot) o;
-        return Float.compare(slot.getStartTime(), getStartTime()) == 0 &&
-                getDay() == slot.getDay();
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getDay(), getStartTime());
-    }
+
 
     @Override
     public String toString() {

@@ -1,9 +1,21 @@
 import DataClass.PSol
 import IO.ParsedData
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
+import kotlinx.coroutines.*
 
-class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): SearchProcess<CourseSchedulerTree, PSol>() {
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import java.lang.Thread.sleep
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.PriorityBlockingQueue
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.concurrent.thread
+
+class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val num_threads: Int = 4): SearchProcess<CourseSchedulerTree, PSol>() {
+
+    val mutex  = Mutex()
+    val distQueue = ConcurrentLinkedQueue<AndTree<PSol>.Node>()
     override fun execute(): PSol? {
         // start time
 
@@ -28,54 +40,112 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
         val count = AtomicInteger(0)
         val skipped = AtomicInteger(0)
 
+
         // find initial candidate
+        /*
         while (candidate== null && model.peekDeepest() !=null && (System.currentTimeMillis()-start) < duration){
             count.incrementAndGet()
 
             // do work
             fTrans(fLeafDepth())
         }
-
-
-
+        */
         // deallocate depth first queue.
-        model.depthFirst.clear()
 
-        // search for anything better.
-        while (model.peekBest() != null && (System.currentTimeMillis()-start) < duration){
 
-            // skip any bad nodes.
-            while (model.peekBest()?.data?.value ?: 1000001 >= candidate?.value ?: 1000000) {
-                model.best()
-                skipped.incrementAndGet()
-                count.incrementAndGet()
-                if (model.peekBest() == null) {
-                    break
+
+        val queuePool = mutableListOf<PriorityBlockingQueue<AndTree<PSol>.Node>>()
+        val done = AtomicBoolean(false)
+
+
+        for (i in 1..num_threads){
+            queuePool.add(PriorityBlockingQueue(5))
+        }
+
+        // worker threads
+        val jobs = List(num_threads){
+            thread{
+                //println(it)
+                val queue = queuePool[it]
+                while (!done.get()) {
+
+                    while (queue.peek() == null && !done.get()) {
+                        //sleep(1)
+                        if (done.get()) break
+                    }
+                    if (done.get()) break
+                    count.incrementAndGet()
+                    // do work
+                    runBlocking {
+                        fTrans(queue.poll())
+                    }
                 }
+                //println("$it done")
             }
-            // quit if we run out of nodes.
-            if (model.peekBest() == null) break
-            count.incrementAndGet()
+        }
 
-            // do work
-            fTrans(fLeafBest())
+        //jobs.forEach { it.start() }
+
+        var current = 0
+
+        val stats = mutableListOf<Int>()
+        for (i in 0..num_threads){
+            stats.add(0)
+        }
+
+        distQueue.add(model.best())
+        // Manager thread
+
+        runBlocking {
+            launch{
+                while((System.currentTimeMillis() - start) < duration){
+                    //println("running")
+                    while (distQueue.peek() == null && (System.currentTimeMillis() - start) < duration){
+                        //println("waiting ${(System.currentTimeMillis() - start)} $duration")
+                        if ((System.currentTimeMillis() - start) >= duration){
+                            //println("qutting")
+                            done.set(true)
+                            break
+                        }
+                    }
+                    if (done.get() || distQueue.peek() == null) break
+                    val x = distQueue.poll()
+                    if (x.data.value >= candidate?.value ?: 1000000) continue
+                    queuePool[current].add(x)
+                    current = (current+1) % (num_threads)
+                    stats[current]++
+                }
+                //println("Quit")
+                done.set(true)
+            }
+        }
+
+        //println(stats)
+
+        //wait for threads to catch up
+        runBlocking {
+            jobs.forEach { it.join() }
         }
         println("Examined $count leaves, skipping $skipped. This means we skipped ${(skipped.get().toFloat()/count.get().toFloat())*100}%.")
         return candidate
     }
 
-    private fun fLeafDepth(): AndTree<PSol>.Node? {
-        return model.deepest()
-    }
+
 
     private fun fLeafBest(): AndTree<PSol>.Node? {
         return model.best()
     }
 
-    private fun fTrans(node: AndTree<PSol>.Node?) {
+    private suspend fun asyncUpdate(sol: PSol){
+        mutex.withLock {
+            if (candidate?.value ?: 1000000 > sol.value && sol.slotLookup(null).isEmpty()) candidate = sol
+        }
+    }
 
-        node!!.expand()
-
+    private suspend fun fTrans(node: AndTree<PSol>.Node?) {
+        if (node == null) return
+        node.expand(distQueue)
+        //println(node.depth)
         //println(node.data.value)
 
         // candidate?.value ?: 100000 explanation:
@@ -83,21 +153,35 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
         // then ?: says if the left is null then return the right, in this case 100000.
         // so if candidate is null it goes: (candidate?.value) ?: 100000 -> (null) ?: 100000 -> 100000
 
+
         // examine the current node.
         node.solved = node.data.complete
-        if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 1000000000)) {
-            candidate = node.data
-            model.depthmode = false
-            println(candidate?.value.toString()+ "||||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
+        if (node.solved && node.data.complete && (node.data.slotLookup(null).isEmpty()) && node.data.value < (candidate?.value ?: 1000000000)) {
+            coroutineScope {
+                launch{
+                    asyncUpdate(node.data)
+                }
+            }
+            if (candidate != null) {
+                model.depthmode = false
+                println(candidate?.value.toString() + "||||" + candidate?.slotLookup(null) + "||" + candidate?.courseSet()?.count() + "/" + (ParsedData.COURSES.count() + ParsedData.LABS.count()))
+            }
         }
 
         // examine the children
+        //if (node.children.isEmpty()) println("Dead End")
         node.children.forEach {
             it.solved = it.data.complete
-            if (it.solved  && (it.data.value < (candidate?.value ?: 1000000000))) {
-                candidate = it.data
+            if (it.solved  && (it.data.slotLookup(null).isEmpty()) && (it.data.value < (candidate?.value ?: 1000000000))) {
+                coroutineScope {
+                    launch{
+                        asyncUpdate(node.data)
+                    }
+                }
                 model.depthmode = false
-                println(candidate?.value.toString()+ "||||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.filter { candidate?.courseLookup(it) != null }?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))
+                if (candidate != null) {
+                    println(candidate?.value.toString() + "||||" + candidate?.slotLookup(null) + "||" + candidate?.courseSet()?.filter { candidate?.courseLookup(it) != null }?.count() + "/" + (ParsedData.COURSES.count() + ParsedData.LABS.count()))
+                }
 
             }
         }

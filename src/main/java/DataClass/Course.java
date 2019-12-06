@@ -1,6 +1,6 @@
 package DataClass;
 
-import java.util.Objects;
+import com.google.common.base.Objects;
 
 public abstract class Course {
     protected String courseName;
@@ -21,19 +21,6 @@ public abstract class Course {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Course section = (Course) o;
-        return getCourseNumber() == section.getCourseNumber() &&
-                getCourseName().equals(section.getCourseName());
-    }
-
-    @Override
-    public int hashCode() {
-        return 87 * Objects.hash(getCourseName(), getCourseNumber());
-    }
 
     @Override
     public String toString() {
@@ -41,5 +28,19 @@ public abstract class Course {
                 "courseName='" + courseName + '\'' +
                 ", courseNumber=" + courseNumber +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return courseNumber == course.courseNumber &&
+                Objects.equal(courseName, course.courseName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(courseName, courseNumber);
     }
 }
