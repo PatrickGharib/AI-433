@@ -49,10 +49,14 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
 
 
         // search for anything better.
-        runBlocking {
-            fTrans(fLeafBest())
+        runBlocking{
+            launch {
+                for (i in 1..5) {
+                    fTrans(fLeafBest())
+                }
+            }
         }
-        val jobs = List(1){
+        val jobs = List(4){
             GlobalScope.async(Dispatchers.Default){
                 println(it)
                 while (model.peekBest() != null && (System.currentTimeMillis() - start) < duration) {
@@ -96,8 +100,8 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
     }
 
     private suspend fun fTrans(node: AndTree<PSol>.Node?) {
-
-        node!!.expand()
+        if (node == null) return
+        node.expand()
 
         //println(node.data.value)
 
@@ -110,8 +114,10 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): Sear
         // examine the current node.
         node.solved = node.data.complete
         if (node.solved && node.data.complete && node.data.value < (candidate?.value ?: 1000000000)) {
-            mutex.withLock {
-                candidate = node.data
+            coroutineScope {
+                launch{
+                    asyncUpdate(node.data)
+                }
             }
             model.depthmode = false
             println(candidate?.value.toString()+ "||||" + candidate?.slotLookup(null) + "||" +candidate?.courseSet()?.count()+"/"+(ParsedData.COURSES.count()+ParsedData.LABS.count()))

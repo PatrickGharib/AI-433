@@ -57,7 +57,34 @@ fun constructPSol() : PSol {
         x.add(Assignment(it.course, it.slot))
     }
 
+    val sorted_courses = (ParsedData.COURSES + ParsedData.LABS).map{ it2 ->
+        var complexity = 0
+        ParsedData.UNWANTED.forEach {
+            if (it.course == it2) complexity++
+        }
+
+        ParsedData.NOT_COMPATIBLE.forEach {
+            if (it.course1 == it2 || it.course2 == it2) complexity++
+
+        }
+
+        ParsedData.PREFERENCES.forEach {
+            if (it.course == it2) complexity++
+        }
+
+        ParsedData.PAIR.forEach {
+            if (it.course1 == it2 || it.course2 == it2) complexity++
+        }
+
+        if(it2.courseNumber>=500) complexity+=100
+
+        println("Complexity: $complexity Name: ${it2.courseName} ${it2.courseNumber}")
+        Pair(complexity,it2)
+    }.sortedByDescending { it.first }.map{ it.second }
+
+    println(sorted_courses.map { course -> course.courseName + course.courseNumber.toString() })
     val exclude = ParsedData.PARTIAL_ASSIGNMENTS.filter { it.course != null }.map { it.course }
+    /*
     ParsedData.COURSES.forEach {
         if (it in exclude) {
             return@forEach
@@ -73,5 +100,8 @@ fun constructPSol() : PSol {
             x.add(Assignment(it, null))
         }
     }
+    */
+    x.addAll(sorted_courses.filter { it !in exclude }.map { Assignment(it,null) })
+
     return PSol(x)
 }
