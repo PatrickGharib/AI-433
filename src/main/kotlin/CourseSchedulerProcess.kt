@@ -3,7 +3,7 @@ import IO.ParsedData
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
-class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSol>() {
+class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5): SearchProcess<CourseSchedulerTree, PSol>() {
     override fun execute(): PSol? {
         // start time
 
@@ -22,7 +22,7 @@ class CourseSchedulerProcess(root: PSol): SearchProcess<CourseSchedulerTree, PSo
         //      return x.data.value
         // }
 
-        val duration = TimeUnit.MINUTES.toMillis(5)
+        val duration = TimeUnit.MINUTES.toMillis(duration_m)
 
         // atomic in case we wanted to thread it
         val count = AtomicInteger(0)
