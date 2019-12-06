@@ -21,7 +21,10 @@ data class ManyToOneMutableMap<K, V>(
     }
 
     fun deepCopy(): ManyToOneMutableMap<K,V>{
-        return ManyToOneMutableMap(LinkedHashMap(manyToOne), HashMultimap.create(oneToMany))
+        val x = HashMultimap.create(oneToMany)
+        val y = LinkedHashMap(manyToOne)
+
+        return ManyToOneMutableMap(y,x)
     }
 
     fun set(key: K, value: V){
@@ -29,13 +32,18 @@ data class ManyToOneMutableMap<K, V>(
 
         val old = manyToOne[key]
         manyToOne[key] = value
-        oneToMany.remove(old,key)
+        oneToMany.remove(null,key)
         oneToMany.put(value,key)
+
     }
 
+    val m = HashMap<V, Set<K>>()
     fun getKeys(value: V): Set<K>{
-        return manyToOne.keys.filter{ manyToOne[it] == value}.toSet()
-        //return oneToMany[value].toSet()
+        return oneToMany[value].toSet()
+        if (value !in m.keys){
+            m[value] = manyToOne.keys.filter{ manyToOne[it] == value}.toSet()
+        }
+        return m[value]!!
     }
 
 }

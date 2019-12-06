@@ -1,8 +1,27 @@
 package DataClass;
 
+import com.google.common.base.Objects;
+
 import java.util.*;
 
 public abstract class Slot {
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Slot slot = (Slot) o;
+        return Float.compare(slot.startTime, startTime) == 0 &&
+                Float.compare(slot.endTime, endTime) == 0 &&
+                max == slot.max &&
+                min == slot.min &&
+                day == slot.day;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(day, startTime, endTime, max, min);
+    }
 
     public enum Day
     {
@@ -74,19 +93,8 @@ public abstract class Slot {
         return getEndTime() > s.getStartTime() && s.getEndTime() > getStartTime();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Slot slot = (Slot) o;
-        return Float.compare(slot.getStartTime(), getStartTime()) == 0 &&
-                getDay() == slot.getDay();
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getDay(), getStartTime());
-    }
+
 
     @Override
     public String toString() {
