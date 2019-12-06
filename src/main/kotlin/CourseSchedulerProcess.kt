@@ -90,7 +90,7 @@ class CourseSchedulerProcess(root: PSol, private val duration_m: Long = 5,val nu
             launch{
 
                 while((System.currentTimeMillis() - start) < duration){
-                    while (distQueue.peek() == null){
+                    while (distQueue.peek() == null && (System.currentTimeMillis() - start) < duration){
                         delay(5)
                     }
                     val x = distQueue.poll()

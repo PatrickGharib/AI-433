@@ -21,6 +21,7 @@ val coroutinesVersion = "1.3.2"
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("com.google.guava:guava:28.1-jre")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
 }
 
